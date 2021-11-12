@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 
 class MeterGroup {
-  String id;
+  final String _id;
   String name;
 
-  MeterGroup({required this.id, required this.name});
+  MeterGroup({String? id, required this.name})
+      : this._id = id ?? UniqueKey().toString();
+
+  String get id => _id;
 
   Map<String, dynamic> toJson() {
     return {
-      "id": id,
+      "id": _id,
       "name": name,
     };
   }
 
   MeterGroup.fromJson(Map<String, dynamic> map)
-      : id = map["id"] ?? UniqueKey().toString(),
+      : _id = map["id"] ?? UniqueKey().toString(),
         name = map["name"] ?? "";
 }

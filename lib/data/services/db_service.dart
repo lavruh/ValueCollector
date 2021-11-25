@@ -4,4 +4,5 @@ abstract class DbService {
   updateEntry(Map<String, dynamic> entry);
   removeEntry(String id);
   List<Map<String, dynamic>> getEntries(List<List<dynamic>> request);
+  selectTable(String tableName);
 }

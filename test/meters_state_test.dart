@@ -6,6 +6,7 @@ import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:test/test.dart';
 
 main() {
+  Get.put<DbService>(DbServiceMock.testMeterValues(), tag: "meter");
   Get.put<DbService>(DbServiceMock.testMeters(), tag: "meters");
   MetersState state = Get.put<MetersState>(MetersState());
   test("get meters", () {
@@ -20,7 +21,6 @@ main() {
     expect(state.meters.value.length, 1);
   });
 
-  // TODO Update meter
   test('Update meter', () {
     state.getMeters("W");
     Meter m = state.meters.first;

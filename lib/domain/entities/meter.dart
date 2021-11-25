@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 
 class Meter extends GetxController {
@@ -8,6 +10,8 @@ class Meter extends GetxController {
   String? unit;
   String groupId;
   final values = <MeterValue>[].obs;
+
+  final db = Get.find<DbService>(tag: "meter");
 
   Meter({
     String? id,
@@ -32,7 +36,34 @@ class Meter extends GetxController {
         unit = map['unit'],
         groupId = map["groupId"];
 
-  getValues() {}
+  getValues() {
+    db.getEntries([
+      ["date", ""]
+    ]).forEach((e) {
+      values.add(MeterValue.fromJson(e));
+    });
+  }
 
-  addValue() {}
+  addValue(MeterValue v) {
+    if (!values.contains(v)) {
+      values.add(v);
+      db.updateEntry(v.toJson());
+    }
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Meter &&
+        other._id == _id &&
+        other.name == name &&
+        other.unit == unit &&
+        other.groupId == groupId;
+  }
+
+  @override
+  int get hashCode {
+    return _id.hashCode ^ name.hashCode ^ unit.hashCode ^ groupId.hashCode;
+  }
 }

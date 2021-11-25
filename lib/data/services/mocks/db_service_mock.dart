@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:rh_collector/data/services/db_service.dart';
 
 class DbServiceMock implements DbService {
-  Map db = {};
+  String currentTable = "main";
+  Map db = {"main": {}};
   @override
-  addEntry(Map<String, dynamic> entry) {
-    db.putIfAbsent(entry["id"], () => entry);
+  addEntry(Map<String, dynamic> entry, {String? keyField}) {
+    db[currentTable].putIfAbsent(entry[keyField ?? "id"], () => entry);
   }
 
   @override
@@ -14,8 +15,10 @@ class DbServiceMock implements DbService {
     if (request.isNotEmpty) {
       for (List r in request) {
         if (r.isNotEmpty) {
-          db.forEach((key, value) {
-            if (value[r[0]].contains(r[1])) {
+          db[currentTable].forEach((key, value) {
+            if (r[1] == "" && value[r[0]] != "") {
+              result.add(value);
+            } else if (value[r[0]].contains(r[1])) {
               result.add(value);
             }
           });
@@ -27,15 +30,16 @@ class DbServiceMock implements DbService {
 
   @override
   removeEntry(String id) {
-    db.remove(id);
+    db[currentTable].remove(id);
   }
 
   @override
-  updateEntry(Map<String, dynamic> entry) {
-    if (db.containsKey(entry["id"])) {
-      db.update(entry["id"], (value) => entry);
+  updateEntry(Map<String, dynamic> entry, {String? keyField, String? table}) {
+    String f = keyField ?? "id";
+    if (db[currentTable].containsKey(entry[f])) {
+      db[currentTable].update(entry[f], (value) => entry);
     } else {
-      db.putIfAbsent(entry["id"], () => entry);
+      db[currentTable].putIfAbsent(entry[f], () => entry);
     }
   }
 
@@ -62,5 +66,35 @@ class DbServiceMock implements DbService {
     for (var element in values) {
       addEntry(element);
     }
+  }
+
+  DbServiceMock.testMeterValues() {
+    final values = [
+      {
+        "date": DateTime.now().millisecondsSinceEpoch,
+        "value": 1,
+        "correction": 1,
+      },
+      {
+        "date": DateTime.now().millisecondsSinceEpoch + 1,
+        "value": 2,
+        "correction": 0,
+      },
+      {
+        "date": DateTime.now().millisecondsSinceEpoch + 2,
+        "value": 3,
+        "correction": 1,
+      },
+    ];
+
+    for (var element in values) {
+      addEntry(element, keyField: "date");
+    }
+  }
+
+  @override
+  selectTable(String tableName) {
+    currentTable = tableName;
+    db.putIfAbsent(currentTable, () => {});
   }
 }

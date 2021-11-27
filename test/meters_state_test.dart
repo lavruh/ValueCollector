@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/data/services/mocks/db_service_mock.dart';
@@ -6,8 +7,27 @@ import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:test/test.dart';
 
 main() {
-  Get.put<DbService>(DbServiceMock.testMeterValues(), tag: "meter");
-  Get.put<DbService>(DbServiceMock.testMeters(), tag: "meters");
+  List<Map<String, dynamic>> values = [
+    {
+      "id": UniqueKey().toString(),
+      "name": "m1",
+      "groupId": "",
+    },
+    {
+      "id": UniqueKey().toString(),
+      "name": "name",
+      "unit": "unit",
+      "groupId": "W",
+    },
+    {
+      "id": UniqueKey().toString(),
+      "name": "m2",
+      "groupId": "W",
+    }
+  ];
+  // Get.put<DbService>(DbServiceMock(), tag: "meter");
+  Get.put<DbService>(
+      DbServiceMock.testData(values: values, tableName: "meters"));
   MetersState state = Get.put<MetersState>(MetersState());
   test("get meters", () {
     state.getMeters("W");

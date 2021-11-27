@@ -6,7 +6,27 @@ import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:test/test.dart';
 
 main() {
-  final db = Get.put<DbService>(DbServiceMock.testMeterValues(), tag: "meter");
+  final values = [
+    {
+      "id": "111",
+      "date": DateTime.now().millisecondsSinceEpoch,
+      "value": 1,
+      "correction": 1,
+    },
+    {
+      "id": "222",
+      "date": DateTime.now().millisecondsSinceEpoch + 1,
+      "value": 2,
+      "correction": 0,
+    },
+    {
+      "id": "333",
+      "date": DateTime.now().millisecondsSinceEpoch + 2,
+      "value": 3,
+      "correction": 1,
+    },
+  ];
+  final db = Get.put<DbService>(DbServiceMock());
   late Meter meter;
   late Meter m2;
 
@@ -18,12 +38,28 @@ main() {
   tearDown(() {
     (db as DbServiceMock).db.clear();
   });
-  // TODO update meter value
 
-  // TODO get values
-  test('get values', () {
+  test("Update value", () {
+    db.selectTable(meter.id);
+    (db as DbServiceMock).addEntries(values: values);
     meter.getValues();
+    final val = meter.values.first;
+    val.value = 666;
+    meter.updateValue(val);
+    final res = db.getEntries([
+      ["id", val.id]
+    ]);
+    print(res);
     expect(meter.values.length, 3);
+    expect(res.length, 1);
+    expect(res.last['value'], val.value);
+  });
+
+  test('get values', () {
+    db.selectTable(meter.id);
+    (db as DbServiceMock).addEntries(values: values, keyField: "date");
+    meter.getValues();
+    expect(meter.values.length, values.length);
   });
 
   test('add value', () {

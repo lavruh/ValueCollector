@@ -1,11 +1,18 @@
+import 'package:flutter/material.dart';
+
 class MeterValue {
+  final String _id;
   DateTime date;
   int value;
   int? correction;
-  MeterValue(this.date, this.value, {this.correction});
+  MeterValue(this.date, this.value, {this.correction, String? id})
+      : _id = id ?? UniqueKey().toString();
+
+  String get id => _id;
 
   Map<String, dynamic> toJson() {
     return {
+      "id": _id,
       "date": date.millisecondsSinceEpoch,
       "value": value,
       "correction": correction ?? 0,
@@ -13,7 +20,8 @@ class MeterValue {
   }
 
   MeterValue.fromJson(Map<String, dynamic> map)
-      : date = DateTime.fromMillisecondsSinceEpoch(map["date"]),
+      : _id = map["id"] ?? UniqueKey().toString(),
+        date = DateTime.fromMillisecondsSinceEpoch(map["date"]),
         value = map["value"],
         correction = map["correction"] ?? 0;
 
@@ -29,4 +37,8 @@ class MeterValue {
 
   @override
   int get hashCode => date.hashCode ^ value.hashCode ^ correction.hashCode;
+
+  @override
+  String toString() =>
+      'MeterValue(date: $date, value: $value, correction: $correction)';
 }

@@ -13,5 +13,5 @@ init_dependencies() async {
   Get.put<SharedPreferences>(await SharedPreferences.getInstance());
   Get.put<Recognizer>(Recognizer());
   Get.put<CameraState>(CameraState(), permanent: true);
-  Get.put<DbService>(DbServiceMock.testMeters(), tag: "meters");
+  Get.put<DbService>(DbServiceMock(tableName: "meters"));
 }

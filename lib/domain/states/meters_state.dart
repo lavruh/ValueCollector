@@ -4,9 +4,10 @@ import 'package:rh_collector/domain/entities/meter.dart';
 
 class MetersState extends GetxController {
   final meters = <Meter>[].obs;
-  final db = Get.find<DbService>(tag: "meters");
+  final db = Get.find<DbService>();
 
   getMeters(String groupId) {
+    db.selectTable("meters");
     meters.value = db
         .getEntries([
           ["groupId", groupId]
@@ -16,7 +17,7 @@ class MetersState extends GetxController {
   }
 
   updateMeter(Meter m) {
-    // db.addEntry(m.toJson());
+    db.selectTable("meters");
     db.updateEntry(m.toJson());
   }
 }

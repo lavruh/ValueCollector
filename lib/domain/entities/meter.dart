@@ -11,7 +11,7 @@ class Meter extends GetxController {
   String groupId;
   final values = <MeterValue>[].obs;
 
-  final db = Get.find<DbService>(tag: "meter");
+  final db = Get.find<DbService>();
 
   Meter({
     String? id,
@@ -37,6 +37,7 @@ class Meter extends GetxController {
         groupId = map["groupId"];
 
   getValues() {
+    db.selectTable(_id);
     db.getEntries([
       ["date", ""]
     ]).forEach((e) {
@@ -47,8 +48,18 @@ class Meter extends GetxController {
   addValue(MeterValue v) {
     if (!values.contains(v)) {
       values.add(v);
+      db.selectTable(_id);
       db.updateEntry(v.toJson());
     }
+  }
+
+  updateValue(MeterValue v) {
+    if (values.contains(v)) {
+      values.removeWhere((element) => element.id == v.id);
+    }
+    values.add(v);
+    db.selectTable(_id);
+    db.updateEntry(v.toJson());
   }
 
   @override

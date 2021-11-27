@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+
 import 'package:rh_collector/data/services/db_service.dart';
 
 class DbServiceMock implements DbService {
   String currentTable = "main";
+  DbServiceMock({
+    String? tableName,
+  }) : currentTable = tableName ?? "main";
   Map db = {"main": {}};
+
   @override
   addEntry(Map<String, dynamic> entry, {String? keyField}) {
-    db[currentTable].putIfAbsent(entry[keyField ?? "id"], () => entry);
+    db[currentTable]
+        .putIfAbsent(entry[keyField ?? "id"].toString(), () => entry);
   }
 
   @override
@@ -30,65 +36,32 @@ class DbServiceMock implements DbService {
 
   @override
   removeEntry(String id) {
-    db[currentTable].remove(id);
+    Map table = db[currentTable];
+    table.remove(id);
   }
 
   @override
-  updateEntry(Map<String, dynamic> entry, {String? keyField, String? table}) {
+  updateEntry(Map<String, dynamic> entry, {String? keyField}) {
     String f = keyField ?? "id";
-    if (db[currentTable].containsKey(entry[f])) {
-      db[currentTable].update(entry[f], (value) => entry);
+    String key = entry[f].toString();
+    if (db[currentTable].containsKey(key)) {
+      db[currentTable].update(key, (value) => entry);
     } else {
-      db[currentTable].putIfAbsent(entry[f], () => entry);
+      db[currentTable].putIfAbsent(key, () => entry);
     }
   }
 
-  DbServiceMock.testMeters() {
-    final values = [
-      {
-        "id": UniqueKey().toString(),
-        "name": "m1",
-        "groupId": "",
-      },
-      {
-        "id": UniqueKey().toString(),
-        "name": "name",
-        "unit": "unit",
-        "groupId": "W",
-      },
-      {
-        "id": UniqueKey().toString(),
-        "name": "m2",
-        "groupId": "W",
-      }
-    ];
-
-    for (var element in values) {
-      addEntry(element);
+  DbServiceMock.testData(
+      {required List<Map<String, dynamic>> values, String? tableName}) {
+    if (tableName != null) {
+      selectTable(tableName);
     }
+    addEntries(values: values);
   }
 
-  DbServiceMock.testMeterValues() {
-    final values = [
-      {
-        "date": DateTime.now().millisecondsSinceEpoch,
-        "value": 1,
-        "correction": 1,
-      },
-      {
-        "date": DateTime.now().millisecondsSinceEpoch + 1,
-        "value": 2,
-        "correction": 0,
-      },
-      {
-        "date": DateTime.now().millisecondsSinceEpoch + 2,
-        "value": 3,
-        "correction": 1,
-      },
-    ];
-
+  addEntries({required List<Map<String, dynamic>> values, String? keyField}) {
     for (var element in values) {
-      addEntry(element, keyField: "date");
+      addEntry(element, keyField: keyField);
     }
   }
 

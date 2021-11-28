@@ -1,0 +1,34 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:rh_collector/domain/states/meters_state.dart';
+import 'package:rh_collector/ui/widgets/meter_widget.dart';
+import 'package:rh_collector/ui/widgets/meters_bottom_panel_widget.dart';
+
+class MetersScreen extends StatefulWidget {
+  const MetersScreen({Key? key}) : super(key: key);
+
+  @override
+  _MetersScreenState createState() => _MetersScreenState();
+}
+
+class _MetersScreenState extends State<MetersScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GetBuilder<MetersState>(builder: (_) {
+        _.getMeters("W");
+        if (_.meters.isNotEmpty) {
+          return ListView.builder(
+            itemCount: _.meters.length,
+            itemBuilder: (BuildContext context, int i) {
+              return MeterWidget(meter: _.meters[i]);
+            },
+          );
+        } else {
+          return Container();
+        }
+      }),
+      bottomSheet: const MetersBottomPanalWidget(),
+    );
+  }
+}

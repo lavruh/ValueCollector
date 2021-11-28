@@ -2,15 +2,15 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:rh_collector/ui/screens/img_show_screen.dart';
+import 'package:rh_collector/ui/screens/meters_screen.dart';
 import 'di.dart';
 import 'package:rh_collector/domain/states/camera_state.dart';
-import 'package:rh_collector/ui/screens/camera_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
   await init_dependencies();
+  initTestData();
   runApp(const CameraApp());
   final camera = Get.find<CameraState>();
   camera.disposeCamera();
@@ -58,8 +58,7 @@ class _CameraAppState extends State<CameraApp>
         scrollDirection: Axis.horizontal,
         controller: controller,
         children: [
-          CameraScreen(),
-          ImgShowScreen(),
+          MetersScreen(),
         ],
       ),
     );

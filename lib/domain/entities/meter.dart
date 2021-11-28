@@ -17,7 +17,9 @@ class Meter extends GetxController {
     String? id,
     required this.name,
     required this.groupId,
-  }) : _id = id ?? UniqueKey().toString();
+  }) : _id = id ?? UniqueKey().toString() {
+    getValues();
+  }
 
   String get id => _id;
 
@@ -34,7 +36,9 @@ class Meter extends GetxController {
       : name = map['name'] ?? "",
         _id = map['id'] ?? UniqueKey().toString(),
         unit = map['unit'],
-        groupId = map["groupId"];
+        groupId = map["groupId"] {
+    getValues();
+  }
 
   getValues() {
     db.selectTable(_id);
@@ -76,5 +80,10 @@ class Meter extends GetxController {
   @override
   int get hashCode {
     return _id.hashCode ^ name.hashCode ^ unit.hashCode ^ groupId.hashCode;
+  }
+
+  @override
+  String toString() {
+    return 'Meter(_id: $_id, name: $name, unit: $unit, groupId: $groupId)';
   }
 }

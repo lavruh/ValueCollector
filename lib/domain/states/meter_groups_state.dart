@@ -1,15 +1,32 @@
+import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/meter_group.dart';
 
-class MeterGroups {
+class MeterGroups extends GetxController {
   Map<String, MeterGroup> _groups = {
     "W": MeterGroup(name: "Weekly", id: "W"),
     "M": MeterGroup(name: "Monthly", id: "M"),
-  };
+  }.obs;
+
+  final selected = <String>[].obs();
 
   Map<String, MeterGroup> get groups => _groups;
 
   set groups(Map<String, MeterGroup> groups) {
     _groups = groups;
+  }
+
+  bool isSelected(MeterGroup g) {
+    return selected.contains(g.id);
+  }
+
+  toggleGroupSelect(MeterGroup g) {
+    final idx = selected.indexOf(g.id);
+    if (idx == -1) {
+      selected.add(g.id);
+    } else {
+      selected.removeAt(idx);
+    }
+    update();
   }
 
   addGroup(MeterGroup g) {

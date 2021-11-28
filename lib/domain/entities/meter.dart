@@ -9,6 +9,7 @@ class Meter extends GetxController {
   String name;
   String? unit;
   String groupId;
+  int correction = 0;
   final values = <MeterValue>[].obs;
 
   final db = Get.find<DbService>();
@@ -55,6 +56,7 @@ class Meter extends GetxController {
       db.selectTable(_id);
       db.updateEntry(v.toJson());
     }
+    update();
   }
 
   updateValue(MeterValue v) {

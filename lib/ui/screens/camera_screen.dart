@@ -1,10 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/states/camera_state.dart';
 import 'package:rh_collector/ui/widgets/cam_prev_widget.dart';
 
 // TODO check if screen turned
-
+// TODO flutter issue no cursor on text field
+// TODO text field decoration
 class CameraScreen extends StatefulWidget {
   const CameraScreen({Key? key}) : super(key: key);
 
@@ -49,14 +51,23 @@ class _CameraScreenState extends State<CameraScreen> {
                   child: GetBuilder<CameraState>(
                     builder: (_) {
                       textCtrl.text = _.reading.value;
+                      print("set val build");
                       return TextField(
                         controller: textCtrl,
+                        showCursor: true,
                         keyboardType: TextInputType.number,
                         style: Theme.of(context).textTheme.headline5,
                         textAlign: TextAlign.center,
                         onSubmitted: (String val) {
                           _.reading.value = val;
                         },
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            suffix: IconButton(
+                                onPressed: () {
+                                  Navigator.pop(context, _.reading.value);
+                                },
+                                icon: const Icon(Icons.check))),
                       );
                     },
                   )),

@@ -4,6 +4,8 @@ import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/widgets/meter_widget.dart';
 import 'package:rh_collector/ui/widgets/meters_bottom_panel_widget.dart';
 
+// TODO change groups
+
 class MetersScreen extends StatefulWidget {
   const MetersScreen({Key? key}) : super(key: key);
 

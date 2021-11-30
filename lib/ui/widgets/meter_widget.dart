@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:rh_collector/ui/screens/camera_screen.dart';
+import 'package:rh_collector/ui/screens/meter_edit_screen.dart';
 import 'package:rh_collector/ui/widgets/meter_value_widget.dart';
 
 class MeterWidget extends StatelessWidget {
@@ -34,20 +35,33 @@ class MeterWidget extends StatelessWidget {
                     ? MeterValueWidget(v: _meter.values.last)
                     : const SizedBox.shrink(),
                 IconButton(
-                    onPressed: () async {
-                      String reading = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CameraScreen()));
-                      Get.snackbar("Reading", reading);
-                      _meter.addValue(MeterValue(
-                          DateTime.now(), int.tryParse(reading) ?? 0));
-                      print(_meter.values);
+                    onPressed: () {
+                      _openEditor(context);
+                    },
+                    icon: const Icon(Icons.edit)),
+                IconButton(
+                    onPressed: () {
+                      _addReading(context);
                     },
                     icon: const Icon(Icons.add)),
               ],
             );
           }),
     );
+  }
+
+  _openEditor(BuildContext context) async {
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MeterEditScreen(
+                  meter: _meter,
+                )));
+  }
+
+  _addReading(BuildContext context) async {
+    String reading = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => CameraScreen()));
+    _meter.addValue(MeterValue(DateTime.now(), int.tryParse(reading) ?? 0));
   }
 }

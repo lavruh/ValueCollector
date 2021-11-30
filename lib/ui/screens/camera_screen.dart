@@ -51,7 +51,6 @@ class _CameraScreenState extends State<CameraScreen> {
                   child: GetBuilder<CameraState>(
                     builder: (_) {
                       textCtrl.text = _.reading.value;
-                      print("set val build");
                       return TextField(
                         controller: textCtrl,
                         showCursor: true,

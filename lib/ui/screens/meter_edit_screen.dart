@@ -5,10 +5,11 @@ import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:rh_collector/ui/widgets/meter_value_edit_widget.dart';
 
 // TODO set get state managment
-// TODO correct widgets position
 
 class MeterEditScreen extends StatefulWidget {
-  MeterEditScreen({Key? key, required Meter meter}) : _meter = meter {
+  MeterEditScreen({Key? key, required Meter meter})
+      : _meter = meter,
+        super(key: key) {
     Get.replace<Meter>(_meter, tag: "meterEdit");
   }
 

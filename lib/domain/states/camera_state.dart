@@ -14,7 +14,7 @@ class CameraState extends GetxController {
   final settings = Get.find<SharedPreferences>();
 
   FlashMode flashMode = FlashMode.off;
-  final reading = "ready".obs;
+  final reading = "".obs;
   File tmpFile = File("/storage/emulated/0/tmp.jpg");
 
   toggleFlashMode() {

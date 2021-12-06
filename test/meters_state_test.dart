@@ -30,23 +30,23 @@ main() {
       DbServiceMock.testData(values: values, tableName: "meters"));
   MetersState state = Get.put<MetersState>(MetersState());
   test("get meters", () {
-    state.getMeters("W");
+    state.getMeters(["W"]);
     expect(state.meters.value.length, 2);
   });
 
   test('Add meter', () {
     Meter m = Meter(groupId: 'M', name: 'Engine PS');
     state.updateMeter(m);
-    state.getMeters(m.groupId);
+    state.getMeters([m.groupId]);
     expect(state.meters.value.length, 1);
   });
 
   test('Update meter', () {
-    state.getMeters("W");
+    state.getMeters(["W"]);
     Meter m = state.meters.first;
     m.unit = "mm";
     state.updateMeter(m);
-    state.getMeters("W");
+    state.getMeters(["W"]);
     expect(state.meters.value.singleWhere((element) => element.id == m.id).unit,
         m.unit);
   });

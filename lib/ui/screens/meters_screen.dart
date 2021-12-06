@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rh_collector/domain/entities/meter.dart';
+import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/widgets/meter_widget.dart';
 import 'package:rh_collector/ui/widgets/meters_bottom_panel_widget.dart';
@@ -17,8 +19,20 @@ class _MetersScreenState extends State<MetersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                Get.find<MetersState>().updateMeter(Meter(
+                  name: "name",
+                  groupId: Get.find<MeterGroups>().selected.first,
+                ));
+              },
+              icon: const Icon(Icons.add)),
+        ],
+      ),
       body: GetBuilder<MetersState>(builder: (_) {
-        _.getMeters("W");
+        _.getMeters(Get.find<MeterGroups>().selected);
         if (_.meters.isNotEmpty) {
           return ListView.builder(
             itemCount: _.meters.length,
@@ -31,6 +45,9 @@ class _MetersScreenState extends State<MetersScreen> {
         }
       }),
       bottomSheet: const MetersBottomPanalWidget(),
+      drawer: Drawer(
+        child: Wrap(),
+      ),
     );
   }
 }

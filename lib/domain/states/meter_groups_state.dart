@@ -9,6 +9,10 @@ class MeterGroups extends GetxController {
 
   final selected = <String>[].obs();
 
+  MeterGroups() {
+    _preventSelectedEmpty();
+  }
+
   Map<String, MeterGroup> get groups => _groups;
 
   set groups(Map<String, MeterGroup> groups) {
@@ -25,8 +29,13 @@ class MeterGroups extends GetxController {
       selected.add(g.id);
     } else {
       selected.removeAt(idx);
+      _preventSelectedEmpty();
     }
     update();
+  }
+
+  String getName(String id) {
+    return _groups[id]?.name ?? "";
   }
 
   addGroup(MeterGroup g) {
@@ -36,6 +45,12 @@ class MeterGroups extends GetxController {
   MeterGroup? getGroup(String id) {
     if (_groups.containsKey(id)) {
       return _groups[id];
+    }
+  }
+
+  void _preventSelectedEmpty() {
+    if (selected.isEmpty) {
+      selected.add(_groups.values.first.id);
     }
   }
 }

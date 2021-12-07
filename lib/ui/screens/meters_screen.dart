@@ -6,7 +6,8 @@ import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/widgets/meter_widget.dart';
 import 'package:rh_collector/ui/widgets/meters_bottom_panel_widget.dart';
 
-// TODO change groups
+// TODO Drawer menu
+// TODO Open pdf , get meters data
 
 class MetersScreen extends StatefulWidget {
   const MetersScreen({Key? key}) : super(key: key);
@@ -16,23 +17,29 @@ class MetersScreen extends StatefulWidget {
 }
 
 class _MetersScreenState extends State<MetersScreen> {
+  final _meterGroups = Get.find<MeterGroups>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: GetBuilder<MeterGroups>(builder: (_) {
+          return Text(
+              "${_meterGroups.selected.map((e) => _meterGroups.getName(e))}");
+        }),
         actions: [
           IconButton(
               onPressed: () {
                 Get.find<MetersState>().updateMeter(Meter(
                   name: "name",
-                  groupId: Get.find<MeterGroups>().selected.first,
+                  groupId: _meterGroups.selected.first,
                 ));
               },
               icon: const Icon(Icons.add)),
         ],
       ),
       body: GetBuilder<MetersState>(builder: (_) {
-        _.getMeters(Get.find<MeterGroups>().selected);
+        _.getMeters(_meterGroups.selected);
         if (_.meters.isNotEmpty) {
           return ListView.builder(
             itemCount: _.meters.length,

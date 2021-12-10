@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/data/services/db_service.dart';
@@ -10,8 +12,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rh_collector/domain/states/camera_state.dart';
 
 List<CameraDescription> cameras = [];
+String appDataPath = "/storage/emulated/0/ValueCollector";
+// TODO store all data in related folder
 
 init_dependencies() async {
+  if (Directory(appDataPath).existsSync() == false) {
+    final d = Directory(appDataPath).create();
+  }
   Get.put<SharedPreferences>(await SharedPreferences.getInstance());
   Get.put<Recognizer>(Recognizer());
   Get.put<CameraState>(CameraState(), permanent: true);

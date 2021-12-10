@@ -16,6 +16,7 @@ dependencies:
   shared_preferences: ^2.0.8
   google_ml_vision: ^0.0.7
   image: ^3.0.8
+  syncfusion_flutter_pdf: ^19.3.57-beta
 
 dev_dependencies:
   flutter_test:

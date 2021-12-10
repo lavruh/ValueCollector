@@ -23,9 +23,14 @@ class MeterWidget extends StatelessWidget {
               alignment: WrapAlignment.spaceBetween,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                Text(
-                  _meter.name,
-                  style: Theme.of(context).textTheme.headline5,
+                TextButton(
+                  onPressed: () {
+                    _openEditor(context);
+                  },
+                  child: Text(
+                    _meter.name,
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
                 ),
                 Text(_meter.unit ?? ""),
                 _meter.values.length > 1
@@ -36,14 +41,9 @@ class MeterWidget extends StatelessWidget {
                     : const SizedBox.shrink(),
                 IconButton(
                     onPressed: () {
-                      _openEditor(context);
-                    },
-                    icon: const Icon(Icons.edit)),
-                IconButton(
-                    onPressed: () {
                       _addReading(context);
                     },
-                    icon: const Icon(Icons.add)),
+                    icon: const Icon(Icons.add_a_photo_outlined)),
               ],
             );
           }),

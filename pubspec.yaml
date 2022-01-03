@@ -17,6 +17,7 @@ dependencies:
   google_ml_vision: ^0.0.7
   image: ^3.0.8
   syncfusion_flutter_pdf: ^19.3.57-beta
+  file_picker: ^4.3.0
 
 dev_dependencies:
   flutter_test:

@@ -8,6 +8,16 @@ class MetersState extends GetxController {
   final meters = <Meter>[].obs;
   final db = Get.find<DbService>();
 
+  Meter getMeter(String id) {
+    int idx = meters.indexWhere((element) => element.id == id);
+    if (idx != -1) {
+      Meter m = meters[idx];
+      return m;
+    } else {
+      throw Exception("No Meter with id[$id] found");
+    }
+  }
+
   getMeters(List<String> groupId) {
     db.selectTable("meters");
     List<List> request = [];
@@ -27,6 +37,7 @@ class MetersState extends GetxController {
   addNewMeter(Meter? m) {
     if (m != null) {
       updateMeter(m);
+      meters.add(m);
     } else {
       updateMeter(Meter(
         name: "name",

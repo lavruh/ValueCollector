@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rh_collector/domain/states/data_from_file_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/widgets/meters_groups_widget.dart';
 
@@ -40,7 +41,9 @@ class DrawerMenuWidget extends StatelessWidget {
               "Import from file",
               style: textTheme,
             ),
-            onTap: () async {},
+            onTap: () async {
+              Get.find<DataFromFileState>().initImportData();
+            },
           ),
           ListTile(
             leading: const Icon(Icons.logout_outlined),

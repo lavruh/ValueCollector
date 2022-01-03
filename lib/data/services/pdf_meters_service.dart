@@ -5,11 +5,12 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
 
 class PdfMetersService implements DataFromFileService {
-  File? pdf;
+  String? fPath;
   PdfDocument? document;
   Map pdfData = {};
   double outputLeft = 0;
   Rect outputDate = Rect.fromLTWH(0, 0, 100, 50);
+  DateTime dateOfReadings = DateTime.now();
 
   @override
   List<Map> getMeterValues(String meterId) {
@@ -32,8 +33,9 @@ class PdfMetersService implements DataFromFileService {
   @override
   openFile(String filePath) async {
     if (await File(filePath).exists()) {
-      pdf = File(filePath);
-      document = PdfDocument(inputBytes: pdf?.readAsBytesSync());
+      File pdf = File(filePath);
+      fPath = filePath;
+      document = PdfDocument(inputBytes: pdf.readAsBytesSync());
       parsePDF();
     } else {
       throw Exception("File does not exist");
@@ -80,7 +82,7 @@ class PdfMetersService implements DataFromFileService {
         }
       }
       if (meter.isNotEmpty) {
-        var v = pdfData.putIfAbsent(meter[0],
+        pdfData.putIfAbsent(meter[0],
             () => processRawData(meter: meter, pos: pos, page: l.pageIndex));
       }
     }
@@ -98,11 +100,23 @@ class PdfMetersService implements DataFromFileService {
       name += meter[i];
     }
 
+    DateTime? d;
+    try {
+      d = DateFormat("d-M-yy").parse((meter[l - 2]));
+    } on Exception {
+      // if record has no date use previous date
+      // normally readings in file from same date
+      d = dateOfReadings;
+    }
+    dateOfReadings = d;
+    String readingStr = meter[l - 1].substring(0, meter[l - 1].length - 3);
+    readingStr = readingStr.replaceAll(RegExp(r','), "");
+
     return {
       "id": meter[0],
       "name": name,
-      "date": meter[l - 2],
-      "reading": meter[l - 1],
+      "date": d,
+      "reading": int.parse(readingStr),
       "rect": pos,
       "page": page,
     };
@@ -145,7 +159,7 @@ class PdfMetersService implements DataFromFileService {
   }
 
   String getExportPath() {
-    String out = pdf!.path.replaceFirst(r".pdf",
+    String out = fPath!.replaceFirst(r".pdf",
         "_" + DateFormat("y-M-d_hh:mm").format(DateTime.now()) + ".pdf");
     return out;
   }

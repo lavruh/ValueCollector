@@ -33,15 +33,15 @@ main() {
     expect(res, hasLength(11));
     expect(res['DREDPUENG2']['id'], 'DREDPUENG2');
     expect(res['DREDPUENG2']['name'], 'E-Motor, Dredge Pump, SB');
-    expect(res['DREDPUENG2']['date'], '27-11-21');
-    expect(res['DREDPUENG2']['reading'], '20,873.00');
+    expect(res['DREDPUENG2']['date'], DateTime(2021, 11, 27));
+    expect(res['DREDPUENG2']['reading'], 20873);
 
     await serv.openFile(file2Path);
     res = (serv as PdfMetersService).pdfData;
     expect(res['MAINENGSB']['id'], 'MAINENGSB');
     expect(res['MAINENGSB']['name'], 'Main Engine, SB');
-    expect(res['MAINENGSB']['date'], '18-12-21');
-    expect(res['MAINENGSB']['reading'], '149,208.00');
+    expect(res['MAINENGSB']['date'], DateTime(2021, 12, 18));
+    expect(res['MAINENGSB']['reading'], 149208);
     expect((serv as PdfMetersService).outputLeft, greaterThanOrEqualTo(400));
   });
 
@@ -52,8 +52,8 @@ main() {
     expect(res, isNotEmpty);
     expect(res, hasLength(105)); //May be wrong correct value
     expect(res['PMPLJGLP']['id'], 'PMPLJGLP');
-    expect(res['PMPLJGLP']['date'], '01-12-21');
-    expect(res['PMPLJGLP']['reading'], '64,032.00');
+    expect(res['PMPLJGLP']['date'], DateTime(2021, 12, 1));
+    expect(res['PMPLJGLP']['reading'], 64032);
     expect(
         res['INTMDWCHS2']['name'], 'Intermediate Winch, Extended Trail Pipe');
     expect(res['PMPTRHS2PS']['name'], 'Pump, Transfer, Hydraulic System, PS');
@@ -89,14 +89,14 @@ main() {
     for (Map i in data) {
       serv.setMeterReading(meterId: i["id"], val: i["reading"]);
     }
-    String sufix = "_" + DateFormat("yyyy-M-d_hh:mm").format(DateTime.now());
+    String sufix = "_" + DateFormat("y-M-d_hh:mm").format(DateTime.now());
     String newFilePath =
         "/home/lavruh/AndroidStudioProjects/RhCollector/test/examples/RBW-ChkRnHrs-W$sufix.pdf";
 
     await serv.exportData();
 
     expect(File(newFilePath).existsSync(), true);
-  });
+  }, skip: "creating files");
 
   test("export monthly", () async {
     await serv.openFile(filePathM);
@@ -104,7 +104,7 @@ main() {
     for (Map i in data) {
       serv.setMeterReading(meterId: i["id"], val: i["reading"]);
     }
-    String sufix = "_" + DateFormat("yyyy-M-d_hh:mm").format(DateTime.now());
+    String sufix = "_" + DateFormat("y-M-d_hh:mm").format(DateTime.now());
     String newFilePath =
         "/home/lavruh/AndroidStudioProjects/RhCollector/test/examples/RBW-ChkRnHrs-W$sufix.pdf";
 
@@ -114,7 +114,7 @@ main() {
   }, skip: "");
 
   test("correct export file name", () {
-    String sufix = "_" + DateFormat("yyyy-M-d_hh:mm").format(DateTime.now());
+    String sufix = "_" + DateFormat("y-M-d_hh:mm").format(DateTime.now());
     String newFilePath =
         "/home/lavruh/AndroidStudioProjects/RhCollector/test/examples/RBW-ChkRnHrs-W$sufix.pdf";
 

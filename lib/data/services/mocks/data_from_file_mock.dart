@@ -7,7 +7,7 @@ class DataFromFileMock implements DataFromFileService {
   Map data = {};
 
   @override
-  exportData() {
+  exportData({String? outputPath}) {
     // TODO: implement exportData
     throw UnimplementedError();
   }

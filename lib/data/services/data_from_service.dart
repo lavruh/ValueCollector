@@ -8,5 +8,5 @@ abstract class DataFromFileService {
     required String meterId,
     required String val,
   });
-  exportData();
+  exportData({String? outputPath});
 }

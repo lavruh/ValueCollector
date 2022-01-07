@@ -50,7 +50,7 @@ class PdfMetersService implements DataFromFileService {
     if (pdfData.containsKey(meterId)) {
       pdfData[meterId]["newValue"] = val;
     } else {
-      throw Exception("File does not contain meter id[$meterId]");
+      // throw Exception("File does not contain meter id[$meterId]");
     }
   }
 
@@ -134,7 +134,10 @@ class PdfMetersService implements DataFromFileService {
   }
 
   @override
-  exportData() {
+  exportData({String? outputPath}) {
+    if (fPath == null || document == null) {
+      throw Exception("No file to export selected");
+    }
     int p = -1;
     for (Map m in pdfData.values) {
       if (p != m["page"]) {
@@ -155,7 +158,11 @@ class PdfMetersService implements DataFromFileService {
         brush: PdfBrushes.black,
       );
     }
-    File(getExportPath()).writeAsBytes(document!.save());
+    if (outputPath != null) {
+      File(outputPath).writeAsBytes(document!.save());
+    } else {
+      File(getExportPath()).writeAsBytes(document!.save());
+    }
   }
 
   String getExportPath() {

@@ -51,7 +51,9 @@ class DrawerMenuWidget extends StatelessWidget {
               "Export to file",
               style: textTheme,
             ),
-            onTap: () async {},
+            onTap: () async {
+              Get.find<DataFromFileState>().exportToFile();
+            },
           ),
         ],
       ),

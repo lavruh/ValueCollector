@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
+import 'package:rh_collector/di.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
@@ -39,5 +41,28 @@ class DataFromFileState extends GetxController {
       }
       m.addValue(MeterValue(e["date"], e["reading"]));
     }
+  }
+
+  exportToFile() async {
+    String? output = appDataPath +
+        "/readings@" +
+        DateFormat("yyyy-MM-dd").format(DateTime.now()) +
+        ".pdf";
+    for (Meter m in metersState.meters) {
+      try {
+        int val = 0;
+        if (m.values.isNotEmpty) {
+          val = m.values.last.value;
+        }
+        print("${m.id} -> $val");
+        print(m.values);
+        service.setMeterReading(meterId: m.id, val: val.toString());
+      } on Exception catch (e) {
+        Get.snackbar("Error", e.toString());
+        continue;
+      }
+    }
+    service.exportData(outputPath: output);
+    Get.snackbar("Export", "Done");
   }
 }

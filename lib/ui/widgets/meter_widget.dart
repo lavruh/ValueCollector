@@ -29,7 +29,7 @@ class MeterWidget extends StatelessWidget {
                   },
                   child: Text(
                     _meter.name,
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headline2,
                   ),
                 ),
                 Text(_meter.unit ?? ""),

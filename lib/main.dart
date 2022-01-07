@@ -74,6 +74,7 @@ class _CameraAppState extends State<CameraApp>
       fontFamily: "Georgia",
       textTheme: const TextTheme(
         headline1: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+        headline2: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
         headline3: TextStyle(
             fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
         headline6: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),

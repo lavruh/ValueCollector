@@ -78,7 +78,8 @@ class _MeterEditScreenState extends State<MeterEditScreen> {
                       tag: "meterEdit",
                       builder: (_) {
                         return ListView(
-                          children: _.values.reversed
+                          reverse: true,
+                          children: _.values
                               .map((element) => MeterValueEditWidget(
                                     meterValue: element,
                                     deleteCallback: _.deleteValue,

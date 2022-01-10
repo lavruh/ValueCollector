@@ -5,11 +5,12 @@ import 'package:rh_collector/domain/entities/meter_value.dart';
 
 class DataFromFileMock implements DataFromFileService {
   Map data = {};
+  Map newValues = {};
 
   @override
   exportData({String? outputPath}) {
     // TODO: implement exportData
-    throw UnimplementedError();
+    // throw UnimplementedError();
   }
 
   @override
@@ -49,7 +50,7 @@ class DataFromFileMock implements DataFromFileService {
     required String val,
   }) {
     if (data.containsKey(meterId)) {
-      data[meterId]["newValue"] = val;
+      newValues[meterId] = val;
     } else {
       throw Exception("File does not contain meter id[$meterId]");
     }

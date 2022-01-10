@@ -21,14 +21,13 @@ main() {
 
   test("open file", () async {
     await serv.openFile(filePath);
-    expect((serv as PdfMetersService).document, isNotNull);
+    expect((serv as PdfMetersService).pdfData, isNotEmpty);
   });
 
   test("parse weekly pdf", () async {
     await serv.openFile(filePath);
     Map res = (serv as PdfMetersService).pdfData;
 
-    expect((serv as PdfMetersService).document, isNotNull);
     expect(res, isNotEmpty);
     expect(res, hasLength(11));
     expect(res['DREDPUENG2']['id'], 'DREDPUENG2');
@@ -48,7 +47,6 @@ main() {
   test("parse monthly pdf", () async {
     await serv.openFile(filePathM);
     Map res = (serv as PdfMetersService).pdfData;
-    expect((serv as PdfMetersService).document, isNotNull);
     expect(res, isNotEmpty);
     expect(res, hasLength(105)); //May be wrong correct value
     expect(res['PMPLJGLP']['id'], 'PMPLJGLP');
@@ -79,8 +77,8 @@ main() {
     String id = data.first["id"];
     int newVal = 123;
     serv.setMeterReading(meterId: id, val: newVal.toString());
-    Map res = (serv as PdfMetersService).pdfData;
-    expect(res[id]["newValue"], newVal.toString());
+    Map res = (serv as PdfMetersService).newValues;
+    expect(res[id], newVal.toString());
   });
 
   test("export values", () async {
@@ -97,6 +95,17 @@ main() {
 
     expect(File(newFilePath).existsSync(), true);
   }, skip: "creating files");
+
+  test("export 2 times", () async {
+    await serv.openFile(filePath);
+    List data = serv.getMeters();
+    for (Map i in data) {
+      serv.setMeterReading(meterId: i["id"], val: i["reading"].toString());
+    }
+
+    await serv.exportData(outputPath: filePath + "_test.pdf");
+    await serv.exportData(outputPath: filePath + "_test2.pdf");
+  });
 
   test("export monthly", () async {
     await serv.openFile(filePathM);

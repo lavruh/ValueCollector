@@ -50,7 +50,9 @@ main() {
       ["id", val.id]
     ]);
     print(res);
+    print(meter.values);
     expect(meter.values.length, 3);
+    expect(meter.values.last.value, val.value);
     expect(res.length, 1);
     expect(res.last['value'], val.value);
   });

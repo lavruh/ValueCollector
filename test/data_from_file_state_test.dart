@@ -34,10 +34,39 @@ main() async {
     Meter newMeter = Meter(id: "newmeter", name: "newmeter", groupId: "W");
     (fileData)
         .addFakeMeter(m: newMeter, v: MeterValue(DateTime(2021, 1, 1), 123));
-
+    int l = meters.meters.length;
     await service.getDataFromFile("filePath");
 
     expect(meters.getMeter("newmeter"), newMeter);
     expect(meters.getMeter("MAINENGPS").values.last.value, 123);
+    expect(meters.meters.length, l + 1);
+  });
+
+  test("export last readings", () async {
+    initTestData();
+    final existingMeters = Get.find<MetersState>();
+    existingMeters.getMeters(['W']);
+    expect(existingMeters.meters, isNotEmpty);
+    final fileData = Get.find<DataFromFileService>();
+    final meters = Get.find<MetersState>();
+    (fileData as DataFromFileMock).addFakeMeter(
+        m: Meter(id: "MAINENGPS", name: "ME PS", groupId: "W"),
+        v: MeterValue(DateTime(2021, 1, 1), 123));
+    fileData.addFakeMeter(
+        m: Meter(id: "MAINENGSB", name: "ME SB", groupId: "W"),
+        v: MeterValue(DateTime(2021, 1, 1), 123));
+    fileData.addFakeMeter(
+        m: Meter(id: "EMENG", name: "EM", groupId: "W"),
+        v: MeterValue(DateTime(2021, 1, 1), 123));
+
+    await service.getDataFromFile("");
+
+    expect(meters.getMeter("MAINENGPS").values.last.value, 123);
+    int idx = meters.meters.indexWhere((element) => element.id == "MAINENGPS");
+    meters.meters[idx].addValue(MeterValue(DateTime(2021, 1, 1), 345));
+    expect(meters.getMeter("MAINENGPS").values.last.value, 345);
+
+    service.exportToFile();
+    expect(fileData.newValues["MAINENGPS"], "345");
   });
 }

@@ -8,6 +8,7 @@ class PdfMetersService implements DataFromFileService {
   String? fPath;
   PdfDocument? document;
   Map pdfData = {};
+  Map newValues = {};
   double outputLeft = 0;
   Rect outputDate = Rect.fromLTWH(0, 0, 100, 50);
   DateTime dateOfReadings = DateTime.now();
@@ -48,7 +49,7 @@ class PdfMetersService implements DataFromFileService {
     required String val,
   }) {
     if (pdfData.containsKey(meterId)) {
-      pdfData[meterId]["newValue"] = val;
+      newValues[meterId] = val;
     } else {
       // throw Exception("File does not contain meter id[$meterId]");
     }
@@ -134,10 +135,13 @@ class PdfMetersService implements DataFromFileService {
   }
 
   @override
-  exportData({String? outputPath}) {
-    if (fPath == null || document == null) {
+  exportData({String? outputPath}) async {
+    if (fPath == null) {
       throw Exception("No file to export selected");
     }
+
+    document = null;
+    await openFile(fPath!);
     int p = -1;
     for (Map m in pdfData.values) {
       if (p != m["page"]) {
@@ -152,7 +156,7 @@ class PdfMetersService implements DataFromFileService {
 
       Rect? r = m["rect"];
       document?.pages[p].graphics.drawString(
-        m["newValue"],
+        newValues[m["id"]] ?? "-",
         PdfStandardFont(PdfFontFamily.helvetica, 7),
         bounds: Rect.fromLTRB(outputLeft, r!.top, 100, 50),
         brush: PdfBrushes.black,

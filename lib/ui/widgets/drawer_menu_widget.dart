@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rh_collector/di.dart';
 import 'package:rh_collector/domain/states/data_from_file_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/widgets/meters_groups_widget.dart';
@@ -41,20 +42,29 @@ class DrawerMenuWidget extends StatelessWidget {
               "Import from file",
               style: textTheme,
             ),
+            subtitle: GetX<DataFromFileState>(builder: (_) {
+              return Text(_.filePath.value.toString());
+            }),
             onTap: () async {
               Get.find<DataFromFileState>().initImportData();
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.logout_outlined),
-            title: Text(
-              "Export to file",
-              style: textTheme,
-            ),
-            onTap: () async {
-              Get.find<DataFromFileState>().exportToFile();
-            },
-          ),
+          GetX<DataFromFileState>(builder: (_) {
+            return ListTile(
+              enabled: _.exportAlowed.value,
+              leading: const Icon(Icons.logout_outlined),
+              title: Text(
+                "Export to file",
+                style: textTheme,
+              ),
+              subtitle: _.exportAlowed.value
+                  ? Text("Export to $appDataPath")
+                  : const Text("Import file first"),
+              onTap: () async {
+                _.exportToFile();
+              },
+            );
+          }),
         ],
       ),
     );

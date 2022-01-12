@@ -24,8 +24,11 @@ class MetersState extends GetxController {
     for (String id in groupId) {
       request.add(["groupId", id]);
     }
-    meters.value =
-        db.getEntries(request).map((e) => Meter.fromJson(e)).toList();
+    meters.value = db.getEntries(request).map((e) {
+      Meter m = Meter.fromJson(e);
+      Get.put<Meter>(m, tag: m.id);
+      return m;
+    }).toList();
   }
 
   updateMeter(Meter m) {
@@ -37,6 +40,7 @@ class MetersState extends GetxController {
   addNewMeter(Meter? m) {
     if (m != null) {
       meters.add(m);
+      Get.put<Meter>(m, tag: m.id);
       updateMeter(m);
     } else {
       updateMeter(Meter(

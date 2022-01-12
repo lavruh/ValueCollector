@@ -10,13 +10,14 @@ import 'package:rh_collector/domain/states/meters_state.dart';
 
 class DataFromFileState extends GetxController {
   final service = Get.find<DataFromFileService>();
-  String filePath = "";
+  final filePath = "".obs;
+  final exportAlowed = false.obs;
 
   initImportData() async {
     FilePickerResult? r = await FilePicker.platform.pickFiles();
     if (r != null) {
-      filePath = r.files.single.path!;
-      getDataFromFile(filePath);
+      filePath.value = r.files.single.path!;
+      getDataFromFile(filePath.value);
     }
   }
 
@@ -44,6 +45,7 @@ class DataFromFileState extends GetxController {
     metersState.update();
     metersState.notifyChildrens();
     Get.snackbar("Import", "Done");
+    exportAlowed.value = true;
   }
 
   exportToFile() async {

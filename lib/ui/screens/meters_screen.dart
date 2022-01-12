@@ -42,7 +42,6 @@ class _MetersScreenState extends State<MetersScreen> {
           return ListView.builder(
             itemCount: _.meters.length,
             itemBuilder: (BuildContext context, int i) {
-              Get.put<Meter>(_.meters[i], tag: _.meters[i].id);
               return MeterWidget(meterId: _.meters[i].id);
             },
           );

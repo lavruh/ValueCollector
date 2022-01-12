@@ -7,9 +7,6 @@ import 'package:rh_collector/ui/widgets/drawer_menu_widget.dart';
 import 'package:rh_collector/ui/widgets/meter_widget.dart';
 import 'package:rh_collector/ui/widgets/meters_bottom_panel_widget.dart';
 
-// TODO Drawer menu
-// TODO Open pdf , get meters data
-
 class MetersScreen extends StatefulWidget {
   const MetersScreen({Key? key}) : super(key: key);
 
@@ -45,14 +42,16 @@ class _MetersScreenState extends State<MetersScreen> {
           return ListView.builder(
             itemCount: _.meters.length,
             itemBuilder: (BuildContext context, int i) {
-              return MeterWidget(meter: _.meters[i]);
+              Get.put<Meter>(_.meters[i], tag: _.meters[i].id);
+              return MeterWidget(meterId: _.meters[i].id);
             },
           );
         } else {
           return Container();
         }
       }),
-      bottomSheet: const MetersBottomPanalWidget(),
+      bottomNavigationBar: const MetersBottomPanalWidget(),
+      resizeToAvoidBottomInset: true,
       drawer: DrawerMenuWidget(),
     );
   }

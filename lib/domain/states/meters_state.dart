@@ -36,8 +36,8 @@ class MetersState extends GetxController {
 
   addNewMeter(Meter? m) {
     if (m != null) {
-      updateMeter(m);
       meters.add(m);
+      updateMeter(m);
     } else {
       updateMeter(Meter(
         name: "name",

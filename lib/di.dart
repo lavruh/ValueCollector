@@ -16,7 +16,6 @@ import 'package:rh_collector/domain/states/camera_state.dart';
 
 List<CameraDescription> cameras = [];
 String appDataPath = "/storage/emulated/0/ValueCollector";
-// TODO store all data in related folder
 
 init_dependencies() async {
   if (Directory(appDataPath).existsSync() == false) {
@@ -92,6 +91,6 @@ initTestData() {
     db.selectTable("meters");
     (db as DbServiceMock).addEntries(values: meters);
     db.selectTable("22");
-    (db as DbServiceMock).addEntries(values: meterValues);
+    db.addEntries(values: meterValues);
   }
 }

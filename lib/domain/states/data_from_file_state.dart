@@ -10,7 +10,6 @@ import 'package:rh_collector/domain/states/meters_state.dart';
 
 class DataFromFileState extends GetxController {
   final service = Get.find<DataFromFileService>();
-  final metersState = Get.find<MetersState>();
   String filePath = "";
 
   initImportData() async {
@@ -22,6 +21,7 @@ class DataFromFileState extends GetxController {
   }
 
   getDataFromFile(String filePath) async {
+    MetersState metersState = Get.find<MetersState>();
     List selectedGroupIds = Get.find<MeterGroups>().selected;
     late String groupId;
     if (selectedGroupIds.isNotEmpty) {
@@ -34,28 +34,31 @@ class DataFromFileState extends GetxController {
     for (Map e in dataFromFile) {
       late Meter m;
       try {
-        m = metersState.getMeter(e["id"]);
-      } on Exception {
+        m = Get.find(tag: e["id"]);
+      } catch (err) {
         m = Meter(id: e["id"], name: e["name"], groupId: groupId);
         metersState.addNewMeter(m);
       }
       m.addValue(MeterValue(e["date"], e["reading"]));
     }
+    metersState.update();
+    metersState.notifyChildrens();
+    Get.snackbar("Import", "Done");
   }
 
   exportToFile() async {
+    MetersState metersState = Get.find<MetersState>();
     String? output = appDataPath +
         "/readings@" +
-        DateFormat("yyyy-MM-dd").format(DateTime.now()) +
+        DateFormat("yyyy-MM-dd_ms").format(DateTime.now()) +
         ".pdf";
     for (Meter m in metersState.meters) {
       try {
         int val = 0;
-        if (m.values.isNotEmpty) {
-          val = m.values.last.value;
+        Meter t = Get.find<Meter>(tag: m.id);
+        if (t.values.isNotEmpty) {
+          val = t.values.last.value;
         }
-        print("${m.id} -> $val");
-        print(m.values);
         service.setMeterReading(meterId: m.id, val: val.toString());
       } on Exception catch (e) {
         Get.snackbar("Error", e.toString());

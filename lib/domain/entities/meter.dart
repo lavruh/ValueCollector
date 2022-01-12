@@ -64,6 +64,7 @@ class Meter extends GetxController {
 
   getValues() {
     db.selectTable(_id);
+    values.clear();
     db.getEntries([
       ["date", ""]
     ]).forEach((e) {

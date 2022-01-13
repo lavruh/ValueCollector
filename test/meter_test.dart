@@ -71,8 +71,8 @@ main() {
     m2.addValue(v2);
     meter.getValues();
 
-    expect(meter.values.any((element) => element == v1), true);
-    expect(m2.values.any((element) => element == v2), true);
+    expect(meter.values.any((element) => element.value == v1.value), true);
+    expect(m2.values.any((element) => element.value == v2.value), true);
     expect(
         db.getEntries([
           ["date", ""]

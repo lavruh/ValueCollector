@@ -39,7 +39,7 @@ class _MeterValueEditWidgetState extends State<MeterValueEditWidget> {
               style: Theme.of(context).textTheme.subtitle1,
             ),
             FractionallySizedBox(
-              widthFactor: 0.4,
+              widthFactor: 0.3,
               child: TextField(
                 controller: ctrl,
                 keyboardType: TextInputType.number,
@@ -50,6 +50,7 @@ class _MeterValueEditWidgetState extends State<MeterValueEditWidget> {
                 },
               ),
             ),
+            Text(widget.meterValue.correctedValue.toString()),
             IconButton(
                 onPressed: () {
                   widget.deleteCallback!(widget.meterValue);

@@ -73,6 +73,7 @@ class Meter extends GetxController {
   }
 
   addValue(MeterValue v) {
+    v.correction = _correction;
     if (!values.contains(v)) {
       values.add(v);
       db.selectTable(_id);
@@ -82,9 +83,13 @@ class Meter extends GetxController {
   }
 
   updateValue(MeterValue v) {
+    int? tmp_correction;
     if (values.contains(v)) {
-      values.removeWhere((element) => element.id == v.id);
+      int idx = values.indexWhere((element) => element.id == v.id);
+      tmp_correction = values[idx].correction;
+      values.removeAt(idx);
     }
+    v.correction = tmp_correction;
     values.add(v);
     db.selectTable(_id);
     db.updateEntry(v.toJson());

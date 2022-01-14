@@ -40,7 +40,7 @@ main() {
     expect(valWidget, findsOneWidget);
     expect(textField, findsOneWidget);
     expect(find.descendant(of: valWidget, matching: find.text("0")),
-        findsOneWidget);
+        findsNWidgets(2));
     expect(
         find.descendant(
             of: valWidget, matching: find.byIcon(Icons.delete_forever)),
@@ -58,7 +58,7 @@ main() {
     expect(meter.values.first.value, 123);
     expect(meter.values.last.value, 0);
     expect(find.textContaining("2022"), findsNWidgets(2));
-    expect(find.textContaining("123"), findsOneWidget);
+    expect(find.textContaining("123"), findsNWidgets(2));
     final valWidget = find.ancestor(
         matching: find.byType(Wrap),
         of: find.textContaining(
@@ -66,7 +66,7 @@ main() {
         ));
     expect(valWidget, findsOneWidget);
     expect(find.descendant(of: valWidget, matching: find.text("0")),
-        findsOneWidget);
+        findsNWidgets(2));
   });
 
   testWidgets("Update value", (WidgetTester tester) async {

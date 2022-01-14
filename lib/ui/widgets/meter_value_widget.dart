@@ -15,7 +15,7 @@ class MeterValueWidget extends StatelessWidget {
     return Column(
       children: [
         Text(DateFormat("y-MM-dd").format(v.date)),
-        Text(v.value.toString()),
+        Text(v.correctedValue.toString()),
       ],
     );
   }

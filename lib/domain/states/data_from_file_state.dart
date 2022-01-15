@@ -59,7 +59,7 @@ class DataFromFileState extends GetxController {
         int val = 0;
         Meter t = Get.find<Meter>(tag: m.id);
         if (t.values.isNotEmpty) {
-          val = t.values.last.value;
+          val = t.values.last.correctedValue;
         }
         service.setMeterReading(meterId: m.id, val: val.toString());
       } on Exception catch (e) {

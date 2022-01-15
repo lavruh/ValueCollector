@@ -1,14 +1,16 @@
 import 'package:rh_collector/data/services/db_service.dart';
-import 'package:rh_collector/data/services/mocks/db_service_mock.dart';
+import 'package:rh_collector/data/services/sembast_db_service.dart';
+import 'package:rh_collector/di.dart';
 import 'package:test/test.dart';
 
 main() {
-  DbService db = DbServiceMock();
+  appDataPath = "/home/lavruh/AndroidStudioProjects/RhCollector/test/db_tests";
+  DbService db = SembastDbService(dbName: "tests");
 
   Map<String, dynamic> entry = {"data": "data", "value": 0, "id": "1"};
 
-  tearDown(() {
-    db = DbServiceMock();
+  tearDown(() async {
+    await db.clearDb();
   });
 
   test("select table", () {
@@ -19,12 +21,11 @@ main() {
   });
 
   test('add and get entry', () async {
-    db.addEntry(entry);
+    await db.addEntry(entry);
 
-    List<Map<String, dynamic>> res = await db.getEntries([
-      ["data", ""]
-    ]);
-    expect(res, contains(entry));
+    List<Map<String, dynamic>> res = await db.getEntries([]);
+    expect(res.any((element) => element["value"] == entry["value"]), true);
+    expect(res.any((element) => element["data"] == entry["data"]), true);
   });
 
   test("update entry", () async {

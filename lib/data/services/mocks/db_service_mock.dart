@@ -16,7 +16,7 @@ class DbServiceMock implements DbService {
   }
 
   @override
-  List<Map<String, dynamic>> getEntries(List<List> request) {
+  Future<List<Map<String, dynamic>>> getEntries(List<List> request) async {
     List<Map<String, dynamic>> result = [];
     if (request.isNotEmpty) {
       for (List r in request) {
@@ -69,5 +69,10 @@ class DbServiceMock implements DbService {
   selectTable(String tableName) {
     currentTable = tableName;
     db.putIfAbsent(currentTable, () => {});
+  }
+
+  @override
+  clearDb() {
+    db["main"].clear();
   }
 }

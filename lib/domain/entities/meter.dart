@@ -62,12 +62,13 @@ class Meter extends GetxController {
     getValues();
   }
 
-  getValues() {
+  getValues() async {
     db.selectTable(_id);
     values.clear();
-    db.getEntries([
+    List res = await db.getEntries([
       ["date", ""]
-    ]).forEach((e) {
+    ]);
+    res.forEach((e) {
       values.add(MeterValue.fromJson(e));
     });
   }

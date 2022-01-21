@@ -25,7 +25,6 @@ main() {
       "groupId": "W",
     }
   ];
-  // Get.put<DbService>(DbServiceMock(), tag: "meter");
   Get.put<DbService>(
       DbServiceMock.testData(values: values, tableName: "meters"));
   MetersState state = Get.put<MetersState>(MetersState());
@@ -36,7 +35,7 @@ main() {
 
   test('Add meter', () async {
     Meter m = Meter(groupId: 'M', name: 'Engine PS');
-    state.updateMeter(m);
+    await state.updateMeter(m);
     await state.getMeters([m.groupId]);
     expect(state.meters.value.length, 1);
   });

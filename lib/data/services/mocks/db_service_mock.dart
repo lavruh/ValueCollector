@@ -4,19 +4,22 @@ import 'package:rh_collector/data/services/db_service.dart';
 
 class DbServiceMock implements DbService {
   String currentTable = "main";
+  @override
+  bool isLoaded = false;
   DbServiceMock({
     String? tableName,
   }) : currentTable = tableName ?? "main";
   Map db = {"main": {}};
 
   @override
-  addEntry(Map<String, dynamic> entry, {String? keyField}) {
+  addEntry(Map<String, dynamic> entry, {String? keyField, String? table}) {
     db[currentTable]
         .putIfAbsent(entry[keyField ?? "id"].toString(), () => entry);
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getEntries(List<List> request) async {
+  Future<List<Map<String, dynamic>>> getEntries(List<List> request,
+      {String? table}) async {
     List<Map<String, dynamic>> result = [];
     if (request.isNotEmpty) {
       for (List r in request) {
@@ -35,13 +38,13 @@ class DbServiceMock implements DbService {
   }
 
   @override
-  removeEntry(String id) {
+  removeEntry(String id, {String? table}) {
     Map table = db[currentTable];
     table.remove(id);
   }
 
   @override
-  updateEntry(Map<String, dynamic> entry, {String? keyField}) {
+  updateEntry(Map<String, dynamic> entry, {String? keyField, String? table}) {
     String f = keyField ?? "id";
     String key = entry[f].toString();
     if (db[currentTable].containsKey(key)) {
@@ -72,7 +75,13 @@ class DbServiceMock implements DbService {
   }
 
   @override
-  clearDb() {
+  clearDb({required String table}) {
     db["main"].clear();
+  }
+
+  @override
+  openDb() {
+    // TODO: implement openDb
+    throw UnimplementedError();
   }
 }

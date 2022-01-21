@@ -20,7 +20,6 @@ class MetersBottomPanalWidget extends StatelessWidget {
                       context: context,
                       builder: (BuildContext context) =>
                           const MetersGroupsWidget());
-                  Get.find<MetersState>().update();
                 },
                 icon: const Icon(Icons.checklist_outlined)),
             // TODO make autofill hints

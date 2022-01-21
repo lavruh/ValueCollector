@@ -10,26 +10,26 @@ import 'package:sembast/sembast_io.dart';
 class SembastDbService implements DbService {
   @override
   String _dbName = "values_db";
-  late Database _db;
+  @override
+  bool isLoaded = false;
+  Database? _db;
   Completer<Database>? _dbOpenCompleter;
-  late StoreRef _store;
-  String get currentTable => _store.name;
 
   SembastDbService({required String dbName}) {
     if (dbName.isNotEmpty) {
       _dbName = dbName;
-      _openDb().then((value) => _db = value);
-      _store = intMapStoreFactory.store("main");
+      openDb().then((value) => _db = value);
     }
   }
 
-  Future<Database> _openDb() async {
+  Future<Database> openDb() async {
     if (_dbOpenCompleter == null) {
       _dbOpenCompleter = Completer();
       try {
         final String path = join(appDataPath, _dbName + ".db");
         final database = await databaseFactoryIo.openDatabase(path);
         _dbOpenCompleter!.complete(database);
+        isLoaded = true;
       } on PlatformException {
         throw ("Failed to open db");
       }
@@ -41,25 +41,28 @@ class SembastDbService implements DbService {
     List<Filter> filters = [];
     for (List req in request) {
       if (req.length == 2) {
-        filters.add(Filter.matches(req[0], req[1]));
+        filters.add(Filter.equals(req[0], req[1]));
       }
     }
     return Finder(filter: Filter.and(filters));
   }
 
   @override
-  addEntry(Map<String, dynamic> entry) async {
+  addEntry(Map<String, dynamic> entry, {required String table}) async {
+    StoreRef _store = intMapStoreFactory.store(table);
     await _dbOpenCompleter!.future;
-    await _db.transaction((transaction) async {
-      return await _store.add(transaction, entry);
+    await _db?.transaction((transaction) async {
+      await _store.add(transaction, entry);
     });
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getEntries(List<List> request) async {
+  Future<List<Map<String, dynamic>>> getEntries(List<List> request,
+      {required String table}) async {
+    StoreRef _store = intMapStoreFactory.store(table);
     final Finder finder = mapRequestToFinder(request);
     await _dbOpenCompleter!.future;
-    var res = await _store.find(_db, finder: finder);
+    var res = await _store.find(_db!, finder: finder);
     if (res.isNotEmpty) {
       List<Map<String, dynamic>> r = res.map((e) {
         Map<String, dynamic> m = {};
@@ -73,30 +76,59 @@ class SembastDbService implements DbService {
   }
 
   @override
-  removeEntry(String id) {
-    // TODO: implement removeEntry
-    throw UnimplementedError();
+  removeEntry(String id, {required String table}) async {
+    StoreRef _store = intMapStoreFactory.store(table);
+    int key = await _getEntryKey(id, table: table);
+    await _db?.transaction((transaction) async {
+      await _store.record(key).delete(transaction);
+    });
   }
 
   @override
-  selectTable(String tableName) {
-    _store = intMapStoreFactory.store(tableName);
-  }
+  selectTable(String tableName) {}
 
   @override
-  updateEntry(Map<String, dynamic> entry) {
-    // TODO: implement updateEntry
-    throw UnimplementedError();
+  updateEntry(Map<String, dynamic> entry, {required String table}) async {
+    StoreRef _store = intMapStoreFactory.store(table);
+    int? key = entry["dbKey"];
+    if (key == null) {
+      String id = entry["id"];
+      try {
+        key = await _getEntryKey(id, table: table);
+      } catch (e) {
+        addEntry(entry, table: table);
+      }
+    }
+    if (key != null) {
+      await _dbOpenCompleter?.future;
+      await _db?.transaction((transaction) async {
+        await _store.record(key).update(transaction, entry);
+      });
+    }
   }
 
   @override
   set currentTable(String _currentTable) {
-    // TODO: implement currentTable
+    // selectTable(_currentTable);
   }
 
   @override
-  clearDb() async {
+  clearDb({required String table}) async {
+    StoreRef _store = intMapStoreFactory.store(table);
     await _dbOpenCompleter!.future;
-    await _store.delete(_db);
+    await _store.delete(_db!);
+  }
+
+  Future<int> _getEntryKey(String id, {required String table}) async {
+    late int key;
+    StoreRef _store = intMapStoreFactory.store(table);
+    List entries = await getEntries([
+      ["id", id]
+    ], table: table);
+    if (entries.isNotEmpty) {
+      return entries.first['dbKey'];
+    } else {
+      throw ("Entry is not in db");
+    }
   }
 }

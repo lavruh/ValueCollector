@@ -83,6 +83,7 @@ class _MeterEditScreenState extends State<MeterEditScreen> {
                               .map((element) => MeterValueEditWidget(
                                     meterValue: element,
                                     deleteCallback: _.deleteValue,
+                                    updateCallback: _.updateValue,
                                   ))
                               .toList(),
                         );
@@ -104,6 +105,7 @@ class _MeterEditScreenState extends State<MeterEditScreen> {
     widget._meter.name = nameCtrl.text;
     widget._meter.unit = unitCtrl.text;
     widget._meter.correction = int.tryParse(correctionCtrl.text) ?? 0;
+    widget._meter.updateDb();
     Navigator.pop(context);
   }
 

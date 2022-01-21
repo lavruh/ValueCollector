@@ -11,59 +11,56 @@ main() {
     db = DbServiceMock();
   });
 
-  test("select table", () {
-    String inp = "some name";
-    expect(db.currentTable, equals("main"));
-    db.selectTable(inp);
-    expect(db.currentTable, equals(inp));
-  });
-
   test('add and get entry', () async {
-    db.addEntry(entry);
+    String table = "main";
+    db.addEntry(entry, table: table);
 
     List<Map<String, dynamic>> res = await db.getEntries([
       ["data", ""]
-    ]);
+    ], table: table);
     expect(res, contains(entry));
   });
 
   test("update entry", () async {
-    db.addEntry(entry);
-    db.addEntry({"data": "d1", "id": "2"});
+    String table = "main";
+    db.addEntry(entry, table: table);
+    db.addEntry({"data": "d1", "id": "2"}, table: table);
     List<Map<String, dynamic>> res = await db.getEntries([
       ["data", ""]
-    ]);
+    ], table: table);
     var e = res.first;
     e["data"] = "new data";
-    db.updateEntry(e);
+    db.updateEntry(e, table: table);
     res = await db.getEntries([
       ["data", ""]
-    ]);
+    ], table: table);
     expect(res.length, 2);
     expect(res.first["data"], equals("new data"));
   });
 
   test("remove entry", () async {
-    db.addEntry(entry);
-    db.addEntry({"data": "d1", "id": "2"});
+    String table = "main";
+    db.addEntry(entry, table: table);
+    db.addEntry({"data": "d1", "id": "2"}, table: table);
     List<Map<String, dynamic>> res = await db.getEntries([
       ["data", ""]
-    ]);
+    ], table: table);
     expect(res.length, 2);
-    db.removeEntry("2");
+    db.removeEntry("2", table: table);
     res = await db.getEntries([
       ["data", ""]
-    ]);
+    ], table: table);
     expect(res.length, 1);
   });
 
   test('get by id', () async {
-    db.addEntry(entry);
-    db.addEntry({"data": "d1", "id": "66"});
-    db.addEntry({"data": "d1", "id": "3"});
+    String table = "main";
+    db.addEntry(entry, table: table);
+    db.addEntry({"data": "d1", "id": "66"}, table: table);
+    db.addEntry({"data": "d1", "id": "3"}, table: table);
     List<Map<String, dynamic>> res = await db.getEntries([
       ["id", "66"]
-    ]);
+    ], table: table);
     expect(res.length, 1);
     expect(res.first["id"], "66");
   });

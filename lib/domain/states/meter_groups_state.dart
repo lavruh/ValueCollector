@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/meter_group.dart';
+import 'package:rh_collector/domain/states/meters_state.dart';
 
 class MeterGroups extends GetxController {
   Map<String, MeterGroup> _groups = {
@@ -31,7 +32,14 @@ class MeterGroups extends GetxController {
       selected.removeAt(idx);
       _preventSelectedEmpty();
     }
+    updateMetersState();
     update();
+  }
+
+  updateMetersState() {
+    final metersState = Get.find<MetersState>();
+    metersState.getMeters(selected);
+    metersState.update();
   }
 
   String getName(String id) {

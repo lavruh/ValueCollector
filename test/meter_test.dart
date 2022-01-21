@@ -40,7 +40,6 @@ main() {
   });
 
   test("Update value", () async {
-    db.selectTable(meter.id);
     (db as DbServiceMock).addEntries(values: values);
     await meter.getValues();
     final val = meter.values.first;
@@ -56,7 +55,6 @@ main() {
   });
 
   test('get values', () async {
-    db.selectTable(meter.id);
     (db as DbServiceMock).addEntries(values: values, keyField: "date");
     await meter.getValues();
     expect(meter.values.length, values.length);
@@ -73,7 +71,7 @@ main() {
     expect(m2.values.any((element) => element.value == v2.value), true);
     List r = await db.getEntries([
       ["date", ""]
-    ]);
+    ], table: v1.id);
     expect(r.length, 1);
   });
 }

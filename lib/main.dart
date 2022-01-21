@@ -10,7 +10,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
   await init_dependencies();
-  initTestData();
   runApp(const CameraApp());
   final camera = Get.find<CameraState>();
   camera.disposeCamera();
@@ -57,7 +56,7 @@ class _CameraAppState extends State<CameraApp>
       home: PageView(
         scrollDirection: Axis.horizontal,
         controller: controller,
-        children: [
+        children: const [
           MetersScreen(),
         ],
       ),

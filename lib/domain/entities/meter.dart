@@ -62,44 +62,36 @@ class Meter extends GetxController {
     getValues();
   }
 
-  getValues() {
-    db.selectTable(_id);
-    values.clear();
-    db.getEntries([
-      ["date", ""]
-    ]).forEach((e) {
-      values.add(MeterValue.fromJson(e));
-    });
+  updateDb() async {
+    await db.updateEntry(toJson(), table: "meters");
   }
 
-  addValue(MeterValue v) {
+  getValues() async {
+    values.clear();
+    List res = await db.getEntries([], table: _id);
+    res.forEach((e) {
+      values.add(MeterValue.fromJson(e));
+    });
+    update();
+  }
+
+  addValue(MeterValue v) async {
     v.correction = _correction;
     if (!values.contains(v)) {
       values.add(v);
-      db.selectTable(_id);
-      db.updateEntry(v.toJson());
+      await db.updateEntry(v.toJson(), table: _id);
     }
     update();
   }
 
-  updateValue(MeterValue v) {
-    int? tmp_correction;
-    if (values.contains(v)) {
-      int idx = values.indexWhere((element) => element.id == v.id);
-      tmp_correction = values[idx].correction;
-      values.removeAt(idx);
-    }
-    v.correction = tmp_correction;
-    values.add(v);
-    db.selectTable(_id);
-    db.updateEntry(v.toJson());
+  updateValue(MeterValue v) async {
+    await db.updateEntry(v.toJson(), table: _id);
   }
 
-  deleteValue(MeterValue v) {
+  deleteValue(MeterValue v) async {
     if (values.contains(v)) {
       values.removeWhere((element) => element.id == v.id);
-      db.selectTable(_id);
-      db.removeEntry(v.id);
+      await db.removeEntry(v.id, table: _id);
     }
     update();
   }

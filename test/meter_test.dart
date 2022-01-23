@@ -39,44 +39,39 @@ main() {
     (db as DbServiceMock).db.clear();
   });
 
-  test("Update value", () {
-    db.selectTable(meter.id);
+  test("Update value", () async {
     (db as DbServiceMock).addEntries(values: values);
-    meter.getValues();
+    await meter.getValues();
     final val = meter.values.first;
     val.value = 666;
     meter.updateValue(val);
-    final res = db.getEntries([
+    final res = await db.getEntries([
       ["id", val.id]
     ]);
-    print(res);
-    print(meter.values);
     expect(meter.values.length, 3);
     expect(meter.values.last.value, val.value);
     expect(res.length, 1);
     expect(res.last['value'], val.value);
   });
 
-  test('get values', () {
-    db.selectTable(meter.id);
+  test('get values', () async {
     (db as DbServiceMock).addEntries(values: values, keyField: "date");
-    meter.getValues();
+    await meter.getValues();
     expect(meter.values.length, values.length);
   });
 
-  test('add value', () {
+  test('add value', () async {
     MeterValue v1 = MeterValue(DateTime.now(), 2);
     MeterValue v2 = MeterValue(DateTime(2016, 8, 26), 4);
     meter.addValue(v1);
     m2.addValue(v2);
-    meter.getValues();
+    await meter.getValues();
 
     expect(meter.values.any((element) => element.value == v1.value), true);
     expect(m2.values.any((element) => element.value == v2.value), true);
-    expect(
-        db.getEntries([
-          ["date", ""]
-        ]).length,
-        1);
+    List r = await db.getEntries([
+      ["date", ""]
+    ], table: v1.id);
+    expect(r.length, 1);
   });
 }

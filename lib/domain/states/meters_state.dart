@@ -18,22 +18,25 @@ class MetersState extends GetxController {
     }
   }
 
-  getMeters(List<String> groupId) {
-    db.selectTable("meters");
+  getMeters(List<String> groupId) async {
+    meters.clear();
     List<List> request = [];
     for (String id in groupId) {
       request.add(["groupId", id]);
     }
-    meters.value = db.getEntries(request).map((e) {
+    List res = await db.getEntries(request, table: "meters");
+
+    for (Map<String, dynamic> e in res) {
       Meter m = Meter.fromJson(e);
-      Get.put<Meter>(m, tag: m.id);
-      return m;
-    }).toList();
+      final tmp = Get.put<Meter>(m, tag: m.id);
+      meters.value.add(m);
+    }
+
+    update();
   }
 
-  updateMeter(Meter m) {
-    db.selectTable("meters");
-    db.updateEntry(m.toJson());
+  updateMeter(Meter m) async {
+    await m.updateDb();
     update();
   }
 

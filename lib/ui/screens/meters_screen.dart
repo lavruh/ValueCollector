@@ -18,6 +18,12 @@ class _MetersScreenState extends State<MetersScreen> {
   final _meterGroups = Get.find<MeterGroups>();
 
   @override
+  void initState() {
+    Get.find<MetersState>().getMeters(_meterGroups.selected);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -37,7 +43,6 @@ class _MetersScreenState extends State<MetersScreen> {
         ],
       ),
       body: GetBuilder<MetersState>(builder: (_) {
-        _.getMeters(_meterGroups.selected);
         if (_.meters.isNotEmpty) {
           return ListView.builder(
             itemCount: _.meters.length,

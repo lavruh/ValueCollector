@@ -7,10 +7,12 @@ class MeterValueEditWidget extends StatefulWidget {
     Key? key,
     required this.meterValue,
     this.deleteCallback,
+    this.updateCallback,
   }) : super(key: key);
 
   MeterValue meterValue;
   Function? deleteCallback;
+  Function? updateCallback;
 
   @override
   State<MeterValueEditWidget> createState() => _MeterValueEditWidgetState();
@@ -47,6 +49,7 @@ class _MeterValueEditWidgetState extends State<MeterValueEditWidget> {
                 style: Theme.of(context).textTheme.subtitle1,
                 onSubmitted: (String v) {
                   widget.meterValue.value = int.tryParse(ctrl.text) ?? 0;
+                  widget.updateCallback!(widget.meterValue);
                 },
               ),
             ),

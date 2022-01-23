@@ -8,6 +8,8 @@ import 'package:rh_collector/domain/states/data_from_file_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:test/test.dart';
 
+// TODO How to handle Getx snack bars in tests
+
 main() async {
   await init_dependencies_test();
   Get.replace<DataFromFileService>(DataFromFileMock());
@@ -24,7 +26,7 @@ main() async {
   test("get data from file", () async {
     initTestData();
     final existingMeters = Get.find<MetersState>();
-    existingMeters.getMeters(['W']);
+    await existingMeters.getMeters(['W']);
     expect(existingMeters.meters, isNotEmpty);
     final fileData = Get.find<DataFromFileService>();
     final meters = Get.find<MetersState>();

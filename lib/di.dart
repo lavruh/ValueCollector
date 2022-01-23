@@ -6,6 +6,7 @@ import 'package:rh_collector/data/services/data_from_service.dart';
 import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/data/services/mocks/db_service_mock.dart';
 import 'package:rh_collector/data/services/pdf_meters_service.dart';
+import 'package:rh_collector/data/services/sembast_db_service.dart';
 import 'package:rh_collector/domain/states/data_from_file_state.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
@@ -22,10 +23,11 @@ init_dependencies() async {
     final d = Directory(appDataPath).create();
   }
   Get.put<SharedPreferences>(await SharedPreferences.getInstance());
+  final db = Get.put<DbService>(SembastDbService(dbName: "metersReadings"));
+  await db.openDb();
   Get.put<DataFromFileService>(PdfMetersService());
   Get.put<Recognizer>(Recognizer());
   Get.put<CameraState>(CameraState(), permanent: true);
-  Get.put<DbService>(DbServiceMock(tableName: "meters"));
   Get.put<MeterGroups>(MeterGroups());
   Get.put<MetersState>(MetersState());
   Get.put<DataFromFileState>(DataFromFileState());
@@ -88,7 +90,6 @@ initTestData() {
   ];
   final db = Get.find<DbService>();
   if (db.runtimeType == DbServiceMock) {
-    db.selectTable("meters");
     (db as DbServiceMock).addEntries(values: meters);
     db.selectTable("22");
     db.addEntries(values: meterValues);

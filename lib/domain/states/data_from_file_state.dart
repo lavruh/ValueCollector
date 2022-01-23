@@ -40,7 +40,7 @@ class DataFromFileState extends GetxController {
         m = Meter(id: e["id"], name: e["name"], groupId: groupId);
         metersState.addNewMeter(m);
       }
-      m.addValue(MeterValue(e["date"], e["reading"]));
+      m.addValue(MeterValue(e["date"], e["reading"], correct: 0));
     }
     metersState.update();
     metersState.notifyChildrens();

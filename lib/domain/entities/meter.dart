@@ -76,7 +76,7 @@ class Meter extends GetxController {
   }
 
   addValue(MeterValue v) async {
-    v.correction = _correction;
+    v.correction ??= _correction;
     if (!values.contains(v)) {
       values.add(v);
       await db.updateEntry(v.toJson(), table: _id);

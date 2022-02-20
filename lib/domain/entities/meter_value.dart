@@ -9,6 +9,7 @@ class MeterValue {
 
   MeterValue(this.date, this._value, {int? correct, String? id})
       : _id = id ?? UniqueKey().toString(),
+        _correction = correct,
         _correctedValue = _value + (correct ?? 0);
 
   String get id => _id;

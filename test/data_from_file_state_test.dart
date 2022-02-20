@@ -23,8 +23,16 @@ main() async {
     }
   ];
 
+  setUp(() async {
+    await initTestData();
+  });
+
+  tearDown(() {
+    final fileData = Get.find<DataFromFileService>();
+    (fileData as DataFromFileMock).data.clear();
+  });
+
   test("get data from file", () async {
-    initTestData();
     final existingMeters = Get.find<MetersState>();
     await existingMeters.getMeters(['W']);
     expect(existingMeters.meters, isNotEmpty);
@@ -45,9 +53,8 @@ main() async {
   });
 
   test("export last readings", () async {
-    initTestData();
     final existingMeters = Get.find<MetersState>();
-    existingMeters.getMeters(['W']);
+    await existingMeters.getMeters(['W']);
     expect(existingMeters.meters, isNotEmpty);
     final fileData = Get.find<DataFromFileService>();
     final meters = Get.find<MetersState>();
@@ -60,15 +67,41 @@ main() async {
     fileData.addFakeMeter(
         m: Meter(id: "EMENG", name: "EM", groupId: "W"),
         v: MeterValue(DateTime(2021, 1, 1), 123));
-
     await service.getDataFromFile("");
-
     expect(meters.getMeter("MAINENGPS").values.last.value, 123);
     int idx = meters.meters.indexWhere((element) => element.id == "MAINENGPS");
-    meters.meters[idx].addValue(MeterValue(DateTime(2021, 1, 1), 345));
-    expect(meters.getMeter("MAINENGPS").values.last.value, 345);
+    final m = Get.find<Meter>(tag: "MAINENGPS");
+    expect(meters.meters[idx].values.length, 1);
+    await m.addValue(MeterValue(DateTime(2021, 1, 1), 345));
+
+    expect(m.values.last.correctedValue, 345);
 
     service.exportToFile();
     expect(fileData.newValues["MAINENGPS"], "345");
+  });
+
+  test("import corrected values", () async {
+    final existingMeters = Get.find<MetersState>();
+    await existingMeters.getMeters(['W']);
+    expect(existingMeters.meters, isNotEmpty);
+    Meter meter = Get.find<Meter>(tag: "MAINENGSB");
+    meter.values.clear();
+    expect(meter.values.length, 0);
+    meter.correction = 2;
+    await meter.addValue(MeterValue(DateTime(2022, 1, 1), 2));
+    expect(meter.values.last.correctedValue, 4);
+    expect(meter.values.length, 1);
+
+    final fileData = Get.find<DataFromFileService>();
+    (fileData as DataFromFileMock).addFakeMeter(
+        m: Meter(id: "MAINENGSB", name: "ME SB", groupId: "W"),
+        v: MeterValue(DateTime(2021, 2, 2), 666));
+
+    await service.getDataFromFile("filePath");
+    // meter = Get.find<Meter>(tag: "MAINENGSB");
+    expect(meter.values.length, 2);
+    expect(meter.values.last.correction, 0);
+    expect(meter.values.last.value, 666);
+    expect(meter.values.last.correctedValue, 666);
   });
 }

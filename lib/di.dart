@@ -90,8 +90,7 @@ initTestData() {
   ];
   final db = Get.find<DbService>();
   if (db.runtimeType == DbServiceMock) {
-    (db as DbServiceMock).addEntries(values: meters);
-    db.selectTable("22");
-    db.addEntries(values: meterValues);
+    (db as DbServiceMock).addEntries(values: meters, table: "meters");
+    db.addEntries(values: meterValues, table: "22");
   }
 }

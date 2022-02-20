@@ -40,22 +40,25 @@ main() {
   });
 
   test("Update value", () async {
-    (db as DbServiceMock).addEntries(values: values);
+    await (db as DbServiceMock)
+        .addEntries(values: values, keyField: "id", table: meter.id);
     await meter.getValues();
+    expect(meter.values, isNotEmpty);
     final val = meter.values.first;
     val.value = 666;
-    meter.updateValue(val);
+    await meter.updateValue(val);
     final res = await db.getEntries([
       ["id", val.id]
-    ]);
+    ], table: meter.id);
     expect(meter.values.length, 3);
-    expect(meter.values.last.value, val.value);
+    expect(meter.values.firstWhere((element) => element.id == val.id).value,
+        val.value);
     expect(res.length, 1);
     expect(res.last['value'], val.value);
   });
 
   test('get values', () async {
-    (db as DbServiceMock).addEntries(values: values, keyField: "date");
+    await (db as DbServiceMock).addEntries(values: values, table: meter.id);
     await meter.getValues();
     expect(meter.values.length, values.length);
   });
@@ -63,15 +66,29 @@ main() {
   test('add value', () async {
     MeterValue v1 = MeterValue(DateTime.now(), 2);
     MeterValue v2 = MeterValue(DateTime(2016, 8, 26), 4);
-    meter.addValue(v1);
-    m2.addValue(v2);
+    await meter.addValue(v1);
+    await m2.addValue(v2);
     await meter.getValues();
 
     expect(meter.values.any((element) => element.value == v1.value), true);
     expect(m2.values.any((element) => element.value == v2.value), true);
-    List r = await db.getEntries([
-      ["date", ""]
-    ], table: v1.id);
+    List r = await db.getEntries([], table: meter.id);
+    expect(r.length, 1);
+  });
+
+  test('add corrected value', () async {
+    MeterValue v1 = MeterValue(DateTime.now(), 2);
+    MeterValue v2 = MeterValue(DateTime(2016, 8, 26), 4, correct: 4);
+    await meter.addValue(v1);
+    await m2.addValue(v2);
+    await meter.getValues();
+
+    expect(meter.values.any((element) => element.value == v1.value), true);
+    expect(meter.values.any((element) => element.correctedValue == 2), true);
+    expect(m2.values.any((element) => element.value == v2.value), true);
+    expect(m2.values.any((element) => element.correctedValue == 8), true);
+    expect(meter.values.length, 1);
+    List r = await db.getEntries([], table: meter.id);
     expect(r.length, 1);
   });
 }

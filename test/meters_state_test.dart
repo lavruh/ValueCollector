@@ -40,12 +40,12 @@ main() {
     expect(state.meters.value.length, 1);
   });
 
-  test('Update meter', () {
-    state.getMeters(["W"]);
+  test('Update meter', () async {
+    await state.getMeters(["W"]);
     Meter m = state.meters.first;
     m.unit = "mm";
-    state.updateMeter(m);
-    state.getMeters(["W"]);
+    await state.updateMeter(m);
+    await state.getMeters(["W"]);
     expect(state.meters.value.singleWhere((element) => element.id == m.id).unit,
         m.unit);
   });

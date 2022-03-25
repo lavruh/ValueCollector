@@ -44,7 +44,6 @@ class DataFromFileState extends GetxController {
     }
     metersState.update();
     metersState.notifyChildrens();
-    Get.snackbar("Import", "Done");
     exportAlowed.value = true;
   }
 
@@ -63,11 +62,9 @@ class DataFromFileState extends GetxController {
         }
         service.setMeterReading(meterId: m.id, val: val.toString());
       } on Exception catch (e) {
-        Get.snackbar("Error", e.toString());
         continue;
       }
     }
     service.exportData(outputPath: output);
-    Get.snackbar("Export", "Done");
   }
 }

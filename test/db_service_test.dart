@@ -15,9 +15,7 @@ main() {
     String table = "main";
     db.addEntry(entry, table: table);
 
-    List<Map<String, dynamic>> res = await db.getEntries([
-      ["data", ""]
-    ], table: table);
+    List<Map<String, dynamic>> res = await db.getEntries([], table: table);
     expect(res, contains(entry));
   });
 
@@ -25,15 +23,11 @@ main() {
     String table = "main";
     db.addEntry(entry, table: table);
     db.addEntry({"data": "d1", "id": "2"}, table: table);
-    List<Map<String, dynamic>> res = await db.getEntries([
-      ["data", ""]
-    ], table: table);
+    List<Map<String, dynamic>> res = await db.getEntries([], table: table);
     var e = res.first;
     e["data"] = "new data";
     db.updateEntry(e, table: table);
-    res = await db.getEntries([
-      ["data", ""]
-    ], table: table);
+    res = await db.getEntries([], table: table);
     expect(res.length, 2);
     expect(res.first["data"], equals("new data"));
   });
@@ -42,14 +36,10 @@ main() {
     String table = "main";
     db.addEntry(entry, table: table);
     db.addEntry({"data": "d1", "id": "2"}, table: table);
-    List<Map<String, dynamic>> res = await db.getEntries([
-      ["data", ""]
-    ], table: table);
+    List<Map<String, dynamic>> res = await db.getEntries([], table: table);
     expect(res.length, 2);
     db.removeEntry("2", table: table);
-    res = await db.getEntries([
-      ["data", ""]
-    ], table: table);
+    res = await db.getEntries([], table: table);
     expect(res.length, 1);
   });
 

@@ -4,9 +4,12 @@ import 'package:camera/camera.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
 import 'package:rh_collector/data/services/db_service.dart';
+import 'package:rh_collector/data/services/mocks/data_from_file_mock.dart';
 import 'package:rh_collector/data/services/mocks/db_service_mock.dart';
 import 'package:rh_collector/data/services/pdf_meters_service.dart';
 import 'package:rh_collector/data/services/sembast_db_service.dart';
+import 'package:rh_collector/domain/states/camera_state_device.dart';
+import 'package:rh_collector/domain/states/camera_state_mock.dart';
 import 'package:rh_collector/domain/states/data_from_file_state.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
@@ -27,15 +30,16 @@ init_dependencies() async {
   await db.openDb();
   Get.put<DataFromFileService>(PdfMetersService());
   Get.put<Recognizer>(Recognizer());
-  Get.put<CameraState>(CameraState(), permanent: true);
+  Get.put<CameraState>(CameraStateDevice(), permanent: true);
   Get.put<MeterGroups>(MeterGroups());
   Get.put<MetersState>(MetersState());
   Get.put<DataFromFileState>(DataFromFileState());
 }
 
 init_dependencies_test() {
-  Get.put<DataFromFileService>(PdfMetersService());
+  Get.put<DataFromFileService>(DataFromFileMock());
   Get.put<DbService>(DbServiceMock(tableName: "meters"));
+  Get.put<CameraState>(CameraStateMock(), permanent: true);
   Get.put<MeterGroups>(MeterGroups());
   Get.put<MetersState>(MetersState());
 }
@@ -90,8 +94,7 @@ initTestData() {
   ];
   final db = Get.find<DbService>();
   if (db.runtimeType == DbServiceMock) {
-    (db as DbServiceMock).addEntries(values: meters);
-    db.selectTable("22");
-    db.addEntries(values: meterValues);
+    (db as DbServiceMock).addEntries(values: meters, table: "meters");
+    db.addEntries(values: meterValues, table: "22");
   }
 }

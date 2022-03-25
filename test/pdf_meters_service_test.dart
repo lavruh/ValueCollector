@@ -111,11 +111,11 @@ main() {
     await serv.openFile(filePathM);
     List data = serv.getMeters();
     for (Map i in data) {
-      serv.setMeterReading(meterId: i["id"], val: i["reading"]);
+      serv.setMeterReading(meterId: i["id"], val: i["reading"].toString());
     }
     String sufix = "_" + DateFormat("y-M-d_hh:mm").format(DateTime.now());
     String newFilePath =
-        "/home/lavruh/AndroidStudioProjects/RhCollector/test/examples/RBW-ChkRnHrs-W$sufix.pdf";
+        "/home/lavruh/AndroidStudioProjects/RhCollector/test/examples/RBW-ChkRnHrs-M$sufix.pdf";
 
     await serv.exportData();
 

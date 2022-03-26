@@ -2,12 +2,15 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
+import 'package:rh_collector/data/services/console_info_msg_service.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
 import 'package:rh_collector/data/services/db_service.dart';
+import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/data/services/mocks/data_from_file_mock.dart';
 import 'package:rh_collector/data/services/mocks/db_service_mock.dart';
 import 'package:rh_collector/data/services/pdf_meters_service.dart';
 import 'package:rh_collector/data/services/sembast_db_service.dart';
+import 'package:rh_collector/data/services/snackbar_info_msg_service.dart';
 import 'package:rh_collector/domain/states/camera_state_device.dart';
 import 'package:rh_collector/domain/states/camera_state_mock.dart';
 import 'package:rh_collector/domain/states/data_from_file_state.dart';
@@ -22,6 +25,7 @@ List<CameraDescription> cameras = [];
 String appDataPath = "/storage/emulated/0/ValueCollector";
 
 init_dependencies() async {
+  Get.put<InfoMsgService>(SnackbarInfoMsgService());
   if (Directory(appDataPath).existsSync() == false) {
     final d = Directory(appDataPath).create();
   }
@@ -37,6 +41,7 @@ init_dependencies() async {
 }
 
 init_dependencies_test() {
+  Get.put<InfoMsgService>(ConsoleInfoMsgService());
   Get.put<DataFromFileService>(DataFromFileMock());
   Get.put<DbService>(DbServiceMock(tableName: "meters"));
   Get.put<CameraState>(CameraStateMock(), permanent: true);

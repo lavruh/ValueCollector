@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
+import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/di.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
@@ -12,6 +13,7 @@ class DataFromFileState extends GetxController {
   final service = Get.find<DataFromFileService>();
   final filePath = "".obs;
   final exportAlowed = false.obs;
+  final msg = Get.find<InfoMsgService>();
 
   initImportData() async {
     FilePickerResult? r = await FilePicker.platform.pickFiles();
@@ -28,6 +30,7 @@ class DataFromFileState extends GetxController {
     if (selectedGroupIds.isNotEmpty) {
       groupId = Get.find<MeterGroups>().selected.first;
     } else {
+      msg.push(msg: "No meter group selected");
       throw Exception("No meter group selected");
     }
     await service.openFile(filePath);
@@ -45,6 +48,7 @@ class DataFromFileState extends GetxController {
     metersState.update();
     metersState.notifyChildrens();
     exportAlowed.value = true;
+    msg.push(msg: "Import done");
   }
 
   exportToFile() async {
@@ -62,9 +66,11 @@ class DataFromFileState extends GetxController {
         }
         service.setMeterReading(meterId: m.id, val: val.toString());
       } on Exception catch (e) {
+        msg.push(msg: "Error $e");
         continue;
       }
     }
     service.exportData(outputPath: output);
+    msg.push(msg: "Export done to file $output");
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/widgets/drawer_menu_widget.dart';
@@ -34,10 +33,7 @@ class _MetersScreenState extends State<MetersScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                Get.find<MetersState>().updateMeter(Meter(
-                  name: "name",
-                  groupId: _meterGroups.selected.first,
-                ));
+                Get.find<MetersState>().addNewMeter(null);
               },
               icon: const Icon(Icons.add)),
         ],

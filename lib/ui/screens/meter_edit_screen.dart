@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
+import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/widgets/meter_value_edit_widget.dart';
-
-// TODO set get state managment
 
 class MeterEditScreen extends StatefulWidget {
   MeterEditScreen({Key? key, required Meter meter})
@@ -46,6 +45,8 @@ class _MeterEditScreenState extends State<MeterEditScreen> {
                   elevation: 3,
                   child: Wrap(
                     alignment: WrapAlignment.center,
+                    spacing: 3,
+                    runSpacing: 3,
                     children: [
                       Wrap(
                         direction: Axis.vertical,
@@ -65,6 +66,10 @@ class _MeterEditScreenState extends State<MeterEditScreen> {
                       ElevatedButton(
                         onPressed: _submit,
                         child: const Icon(Icons.check),
+                      ),
+                      ElevatedButton(
+                        onPressed: _delete,
+                        child: const Icon(Icons.delete_forever),
                       ),
                     ],
                   ),
@@ -107,6 +112,35 @@ class _MeterEditScreenState extends State<MeterEditScreen> {
     widget._meter.correction = int.tryParse(correctionCtrl.text) ?? 0;
     widget._meter.updateDb();
     Navigator.pop(context);
+  }
+
+  _delete() async {
+    if (await _deleteConfirmDialog()) {
+      Get.find<MetersState>().deleteMeter(widget._meter.id);
+      Navigator.pop(context);
+    }
+  }
+
+  Future<bool> _deleteConfirmDialog() async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Meter'),
+          content: const Text("Are you sure to want delete"),
+          actions: [
+            ElevatedButton(
+              child: const Text('Yes'),
+              onPressed: () => Navigator.of(context).pop(true),
+            ),
+            ElevatedButton(
+              child: const Text('No'),
+              onPressed: () => Navigator.of(context).pop(false),
+            )
+          ],
+        );
+      },
+    );
   }
 
   Widget _input(TextEditingController ctrl, {TextInputType? keyboardType}) {

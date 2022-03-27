@@ -49,4 +49,12 @@ main() {
     expect(state.meters.value.singleWhere((element) => element.id == m.id).unit,
         m.unit);
   });
+
+  test('Delete meter', () async {
+    await state.getMeters(["W"]);
+    Meter m = state.meters.first;
+    await state.deleteMeter(m.id);
+    await state.getMeters(["W"]);
+    expect(state.meters.value.any((element) => element.id == m.id), false);
+  });
 }

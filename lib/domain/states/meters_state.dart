@@ -41,15 +41,27 @@ class MetersState extends GetxController {
   }
 
   addNewMeter(Meter? m) {
+    late Meter _m;
     if (m != null) {
-      meters.add(m);
-      Get.put<Meter>(m, tag: m.id);
-      updateMeter(m);
+      _m = m;
     } else {
-      updateMeter(Meter(
-        name: "name",
+      _m = Meter(
+        name: "new_meter",
         groupId: Get.find<MeterGroups>().selected.first,
-      ));
+      );
     }
+    meters.add(_m);
+    Get.put<Meter>(_m, tag: _m.id);
+    updateMeter(_m);
+  }
+
+  deleteMeter(String id) async {
+    int index = meters.indexWhere((element) => element.id == id);
+    if (index > -1) {
+      db.removeEntry(id, table: "meters");
+      db.clearDb(table: id);
+      meters.removeAt(index);
+    }
+    update();
   }
 }

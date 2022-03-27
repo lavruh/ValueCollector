@@ -57,4 +57,18 @@ main() {
     await state.getMeters(["W"]);
     expect(state.meters.value.any((element) => element.id == m.id), false);
   });
+
+  test('filter meters', () async {
+    await state.addNewMeter(Meter(name: "another", groupId: "W"));
+    await state.addNewMeter(Meter(name: "other2", groupId: "M"));
+    await state.addNewMeter(Meter(name: "Meter", groupId: "W"));
+    await state.addNewMeter(Meter(name: "mNew", groupId: "W"));
+    await state.addNewMeter(Meter(name: "some", groupId: "W"));
+
+    await state.filterMetersByName(filter: "", groupId: ["W"]);
+    expect(state.meters.value.length, 4);
+
+    await state.filterMetersByName(filter: "m", groupId: ["W"]);
+    expect(state.meters.value.length, 3);
+  });
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/widgets/meters_groups_widget.dart';
 
 class MetersBottomPanalWidget extends StatelessWidget {
-  const MetersBottomPanalWidget({Key? key}) : super(key: key);
+  MetersBottomPanalWidget({Key? key}) : super(key: key);
+  TextEditingController filterInputTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +14,6 @@ class MetersBottomPanalWidget extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       child: Card(
         child: Wrap(
-          alignment: WrapAlignment.spaceBetween,
           children: [
             IconButton(
                 onPressed: () async {
@@ -22,16 +23,27 @@ class MetersBottomPanalWidget extends StatelessWidget {
                           const MetersGroupsWidget());
                 },
                 icon: const Icon(Icons.checklist_outlined)),
-            // TODO make autofill hints
             FractionallySizedBox(
-              widthFactor: 0.6,
+              widthFactor: 0.8,
               child: TextField(
-                decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                  icon: const Icon(Icons.manage_search_outlined),
-                  onPressed: () {},
-                )),
-              ),
+                  controller: filterInputTextController,
+                  decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                    icon: const Icon(Icons.close_outlined),
+                    onPressed: () {
+                      filterInputTextController.clear();
+                      Get.find<MetersState>().filterMetersByName(
+                        filter: "",
+                        groupId: Get.find<MeterGroups>().selected,
+                      );
+                    },
+                  )),
+                  onChanged: (String newText) {
+                    Get.find<MetersState>().filterMetersByName(
+                      filter: newText,
+                      groupId: Get.find<MeterGroups>().selected,
+                    );
+                  }),
             ),
           ],
         ),

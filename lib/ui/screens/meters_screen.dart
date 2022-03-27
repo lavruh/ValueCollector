@@ -50,7 +50,7 @@ class _MetersScreenState extends State<MetersScreen> {
           return Container();
         }
       }),
-      bottomNavigationBar: const MetersBottomPanalWidget(),
+      bottomNavigationBar: MetersBottomPanalWidget(),
       resizeToAvoidBottomInset: true,
       drawer: DrawerMenuWidget(),
     );

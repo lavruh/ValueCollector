@@ -20,15 +20,10 @@ class MetersState extends GetxController {
 
   getMeters(List<String> groupId) async {
     meters.clear();
-    List<List> request = [];
-    for (String id in groupId) {
-      request.add(["groupId", id]);
-    }
-    List res = await db.getEntries(request, table: "meters");
-
+    List res = await db.getEntries(_createRequest(groupId), table: "meters");
     for (Map<String, dynamic> e in res) {
       Meter m = Meter.fromJson(e);
-      final tmp = Get.put<Meter>(m, tag: m.id);
+      Get.put<Meter>(m, tag: m.id);
       meters.value.add(m);
     }
 
@@ -63,5 +58,31 @@ class MetersState extends GetxController {
       meters.removeAt(index);
     }
     update();
+  }
+
+  filterMetersByName({
+    required String filter,
+    required List<String> groupId,
+  }) async {
+    meters.clear();
+    List<List> req = _createRequest(groupId);
+    List res = await db.getEntries(req, table: "meters");
+    for (Map<String, dynamic> e in res) {
+      Meter m = Meter.fromJson(e);
+      if (m.name.contains(RegExp(filter, caseSensitive: false))) {
+        Get.put<Meter>(m, tag: m.id);
+        meters.value.add(m);
+      }
+    }
+
+    update();
+  }
+
+  List<List> _createRequest(List<String> groupId) {
+    List<List> request = [];
+    for (String id in groupId) {
+      request.add(["groupId", id]);
+    }
+    return request;
   }
 }

@@ -10,7 +10,11 @@ class MeterValueDelta {
     required MeterValue v2,
   }) {
     _delta = v2.correctedValue - v1.correctedValue;
-    _dateRange = DateTimeRange(start: v1.date, end: v2.date);
+    try {
+      _dateRange = DateTimeRange(start: v1.date, end: v2.date);
+    } catch (e) {
+      _dateRange = DateTimeRange(start: v1.date, end: v1.date);
+    }
     _color = Colors.black;
     if (_delta < 0) {
       _color = Colors.redAccent;

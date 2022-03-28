@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
+import 'package:rh_collector/domain/entities/meter_value_delta.dart';
 import 'package:rh_collector/ui/screens/camera_screen.dart';
 import 'package:rh_collector/ui/screens/meter_edit_screen.dart';
+import 'package:rh_collector/ui/widgets/meter_value_delta_widget.dart';
 import 'package:rh_collector/ui/widgets/meter_value_widget.dart';
 
 class MeterWidget extends StatelessWidget {
   MeterWidget({Key? key, required String meterId}) : _id = meterId;
-  String _id;
+  final String _id;
   late Meter _meter;
 
   @override
@@ -40,6 +42,13 @@ class MeterWidget extends StatelessWidget {
                   width: 30,
                   child: Text(_meter.unit ?? ""),
                 ),
+                _meter.values.length > 1
+                    ? MeterValueDeltaWidget(
+                        v: MeterValueDelta(
+                        v1: _meter.values.reversed.toList()[1],
+                        v2: _meter.values.last,
+                      ))
+                    : const SizedBox.shrink(),
                 _meter.values.length > 1
                     ? MeterValueWidget(v: _meter.values.reversed.toList()[1])
                     : const SizedBox.shrink(),

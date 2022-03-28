@@ -29,12 +29,18 @@ main() {
       DbServiceMock.testData(values: values, tableName: "meters"));
   MetersState state = Get.put<MetersState>(MetersState());
   test("get meters", () async {
+    await state.addNewMeter(Meter(name: "another", groupId: "M"));
+    await state.addNewMeter(Meter(name: "other2", groupId: "M"));
     await state.getMeters(["W"]);
     expect(state.meters.value.length, 2);
+    await state.getMeters(["M"]);
+    expect(state.meters.value.length, 2);
+    await state.getMeters(["M", "W"]);
+    expect(state.meters.value.length, 4);
   });
 
   test('Add meter', () async {
-    Meter m = Meter(groupId: 'M', name: 'Engine PS');
+    Meter m = Meter(groupId: 'MN', name: 'Engine PS');
     await state.updateMeter(m);
     await state.getMeters([m.groupId]);
     expect(state.meters.value.length, 1);

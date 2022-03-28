@@ -17,7 +17,9 @@ main() {
     String table = "main";
     await db.addEntry(entry, table: table);
 
-    List<Map<String, dynamic>> res = await db.getEntries([], table: table);
+    List<Map<String, dynamic>> res = await db.getEntries([
+      ["id", entry["id"]]
+    ], table: table);
     expect(res.length, 1);
     expect(res.any((element) => element["value"] == entry["value"]), true);
     expect(res.any((element) => element["data"] == entry["data"]), true);

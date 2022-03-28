@@ -39,12 +39,15 @@ class SembastDbService implements DbService {
 
   Finder mapRequestToFinder(List<List> request) {
     List<Filter> filters = [];
+    if (request.isEmpty) {
+      return Finder();
+    }
     for (List req in request) {
       if (req.length == 2) {
         filters.add(Filter.equals(req[0], req[1]));
       }
     }
-    return Finder(filter: Filter.and(filters));
+    return Finder(filter: Filter.or(filters));
   }
 
   @override

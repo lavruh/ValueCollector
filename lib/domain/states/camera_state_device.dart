@@ -15,7 +15,10 @@ class CameraStateDevice extends GetxController implements CameraState {
   final settings = Get.find<SharedPreferences>();
 
   FlashMode flashMode = FlashMode.off;
+  @override
   final reading = "".obs;
+  final rec = Get.find<Recognizer>();
+
   File tmpFile = File(appDataPath + "/tmp.jpg");
 
   @override
@@ -45,9 +48,8 @@ class CameraStateDevice extends GetxController implements CameraState {
     try {
       XFile pic = await camCtrl!.takePicture();
 
-      prepareImage(pic);
+      await prepareImage(pic);
 
-      final rec = Get.find<Recognizer>();
       rec.inp = tmpFile;
       reading.value = rec.cleanString(await rec.recognizeReading());
     } on Exception catch (e) {
@@ -57,19 +59,13 @@ class CameraStateDevice extends GetxController implements CameraState {
   }
 
   @override
-  void prepareImage(XFile pic) async {
+  Future prepareImage(XFile pic) async {
     Image src = decodeImage(await pic.readAsBytes())!;
-    double widthRatio = 1;
-    double heightRatio = 1;
-    Size? ps = camCtrl!.value.previewSize;
-    if (ps != null) {
-      widthRatio = (src.width / 350);
-      heightRatio = (src.height / 350);
-    }
+
     Rect rect = Rect.fromCenter(
       center: Offset(src.width / 2, src.height / 2),
-      width: 200 * widthRatio,
-      height: 50 * heightRatio,
+      width: src.width * 0.6,
+      height: src.height * 0.072,
     );
     Image pImg = copyCrop(
       src,
@@ -107,6 +103,7 @@ class CameraStateDevice extends GetxController implements CameraState {
     } on CameraException catch (e) {
       Get.snackbar("Camera", e.toString());
     }
+
     update();
   }
 

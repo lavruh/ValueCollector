@@ -77,8 +77,14 @@ class MeterWidget extends StatelessWidget {
 
   _addReading(BuildContext context) async {
     String? reading = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => CameraScreen()));
-    Get.find<Meter>(tag: _id).addValue(
-        MeterValue(DateTime.now(), int.tryParse(reading ?? "0") ?? 0));
+        context,
+        MaterialPageRoute(
+            builder: (context) => CameraScreen(
+                  meterName: _meter.name,
+                )));
+    if (reading != null) {
+      Get.find<Meter>(tag: _id)
+          .addValue(MeterValue(DateTime.now(), int.tryParse(reading) ?? 0));
+    }
   }
 }

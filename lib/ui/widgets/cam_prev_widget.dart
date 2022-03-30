@@ -10,32 +10,49 @@ class CamPrevWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 350,
-      height: 350,
-      child: GetBuilder<CameraState>(builder: (_) {
-        if ((_.camCtrl != null) & (!_.camCtrl!.value.isInitialized)) {
-          return Container(
-            color: Colors.indigo,
-            child: const Center(
-              child: Text(
-                "Camera not init",
-              ),
-            ),
-          );
-        } else {
-          CameraController controller = _.camCtrl!;
-          controller.unlockCaptureOrientation();
-          return AspectRatio(
-              aspectRatio: 1,
+    double devWidth = MediaQuery.of(context).size.width;
+    return GetBuilder<CameraState>(builder: (_) {
+      Widget child = _blind();
+      if ((_.camCtrl != null) & (_.camCtrl!.value.isInitialized)) {
+        CameraController controller = _.camCtrl!;
+        controller.unlockCaptureOrientation();
+        child = SizedBox(
+          width: devWidth / _.camCtrl!.value.aspectRatio,
+          height: devWidth,
+          child: AspectRatio(
+              aspectRatio: _.camCtrl!.value.aspectRatio,
               child: CameraPreview(
                 controller,
                 child: CustomPaint(
                   painter: SelectorRect(),
                 ),
-              ));
-        }
-      }),
+              )),
+        );
+      }
+      return SizedBox(
+        width: devWidth,
+        height: devWidth,
+        child: ClipRect(
+          child: OverflowBox(
+            alignment: Alignment.center,
+            child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: child,
+            ),
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget _blind() {
+    return Container(
+      color: Colors.indigo,
+      child: const Center(
+        child: Text(
+          "Camera not init",
+        ),
+      ),
     );
   }
 }
@@ -46,8 +63,8 @@ class SelectorRect extends CustomPainter {
     canvas.drawRect(
         Rect.fromCenter(
           center: Offset(size.width / 2, size.height / 2),
-          width: 200,
-          height: 50,
+          width: size.width * 0.6,
+          height: size.height * 0.08,
         ),
         Paint()
           ..style = PaintingStyle.stroke

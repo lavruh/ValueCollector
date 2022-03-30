@@ -7,10 +7,12 @@ import 'package:rh_collector/ui/widgets/cam_prev_widget.dart';
 // TODO check if screen turned
 // TODO text field decoration
 class CameraScreen extends StatefulWidget {
-  CameraScreen({Key? key})
+  CameraScreen({Key? key, this.meterName})
       : state = Get.find<CameraState>(),
         super(key: key);
   CameraState state;
+  String? meterName;
+
   @override
   State<CameraScreen> createState() => _CameraScreenState();
 }
@@ -19,15 +21,15 @@ class _CameraScreenState extends State<CameraScreen> {
   TextEditingController textCtrl = TextEditingController();
   @override
   void initState() {
-    widget.state.initCamera();
     super.initState();
+    widget.state.initCamera();
   }
 
   @override
   void dispose() {
+    super.dispose();
     widget.state.disposeCamera();
     widget.state.saveState();
-    super.dispose();
   }
 
   @override
@@ -40,6 +42,9 @@ class _CameraScreenState extends State<CameraScreen> {
       child: SafeArea(
         child: Scaffold(
           // backgroundColor: Colors.black12,
+          appBar: AppBar(
+            title: Text(widget.meterName ?? ""),
+          ),
           body: SingleChildScrollView(
             child: Wrap(
               direction: Axis.vertical,
@@ -67,9 +72,8 @@ class _CameraScreenState extends State<CameraScreen> {
                           keyboardType: TextInputType.number,
                           style: Theme.of(context).textTheme.headline5,
                           textAlign: TextAlign.center,
-                          onSubmitted: (String val) {
-                            _.reading.value = val;
-                          },
+                          onSubmitted: _setValue,
+                          onChanged: _setValue,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               suffix: IconButton(
@@ -86,5 +90,9 @@ class _CameraScreenState extends State<CameraScreen> {
         ),
       ),
     );
+  }
+
+  _setValue(String val) {
+    widget.state.reading.value = val;
   }
 }

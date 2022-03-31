@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:permission_handler/permission_handler.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/data/services/console_info_msg_service.dart';
@@ -47,6 +47,24 @@ init_dependencies_test() {
   Get.put<CameraState>(CameraStateMock(), permanent: true);
   Get.put<MeterGroups>(MeterGroups());
   Get.put<MetersState>(MetersState());
+}
+
+Future<bool> isPermissionsGranted() async {
+  bool fl = false;
+  // if (await Permission.manageExternalStorage.status.isDenied) {
+  //   await Permission.manageExternalStorage.request();
+  // }
+  if (await Permission.storage.status.isDenied) {
+    await Permission.storage.request();
+  }
+  if (await Permission.camera.status.isDenied) {
+    await Permission.camera.request();
+  }
+  if (await Permission.storage.status.isGranted &
+      await Permission.camera.status.isGranted) {
+    fl = true;
+  }
+  return fl;
 }
 
 initTestData() {

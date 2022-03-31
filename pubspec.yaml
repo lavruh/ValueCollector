@@ -19,6 +19,7 @@ dependencies:
   syncfusion_flutter_pdf: ^19.3.57-beta
   file_picker: ^4.3.0
   sembast: ^3.1.1+1
+  permission_handler: ^9.0.2
 
 dev_dependencies:
   flutter_test:
@@ -30,3 +31,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+flutter_icons:
+  ios: false
+  android: true
+  image_path: "assets/planner2.png"

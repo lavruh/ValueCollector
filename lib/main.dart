@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -8,11 +9,15 @@ import 'package:rh_collector/domain/states/camera_state.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  cameras = await availableCameras();
-  await init_dependencies();
-  runApp(const CameraApp());
-  final camera = Get.find<CameraState>();
-  camera.disposeCamera();
+  if (await isPermissionsGranted()) {
+    cameras = await availableCameras();
+    await init_dependencies();
+    runApp(const CameraApp());
+    final camera = Get.find<CameraState>();
+    camera.disposeCamera();
+  } else {
+    // exit(0);
+  }
 }
 
 class CameraApp extends StatefulWidget {

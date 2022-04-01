@@ -33,11 +33,16 @@ class PdfMetersService implements DataFromFileService {
 
   @override
   openFile(String filePath) async {
+    await setFilePath(filePath);
+    File pdf = File(fPath!);
+    document = PdfDocument(inputBytes: pdf.readAsBytesSync());
+    parsePDF();
+  }
+
+  @override
+  setFilePath(String filePath) async {
     if (await File(filePath).exists()) {
-      File pdf = File(filePath);
       fPath = filePath;
-      document = PdfDocument(inputBytes: pdf.readAsBytesSync());
-      parsePDF();
     } else {
       throw Exception("File does not exist");
     }
@@ -48,11 +53,7 @@ class PdfMetersService implements DataFromFileService {
     required String meterId,
     required String val,
   }) {
-    if (pdfData.containsKey(meterId)) {
-      newValues[meterId] = val;
-    } else {
-      // throw Exception("File does not contain meter id[$meterId]");
-    }
+    newValues[meterId] = val;
   }
 
   parsePDF() {

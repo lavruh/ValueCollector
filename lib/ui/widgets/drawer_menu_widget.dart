@@ -51,7 +51,6 @@ class DrawerMenuWidget extends StatelessWidget {
           ),
           GetX<DataFromFileState>(builder: (_) {
             return ListTile(
-              enabled: _.exportAlowed.value,
               leading: const Icon(Icons.logout_outlined),
               title: Text(
                 "Export to file",
@@ -59,9 +58,9 @@ class DrawerMenuWidget extends StatelessWidget {
               ),
               subtitle: _.exportAlowed.value
                   ? Text("Export to $appDataPath")
-                  : const Text("Import file first"),
+                  : const Text("Select export template file"),
               onTap: () async {
-                _.exportToFile();
+                _.initExportData();
               },
             );
           }),

@@ -96,6 +96,14 @@ class Meter extends GetxController {
     update();
   }
 
+  int getLastValueCorrected() {
+    if (values.isNotEmpty) {
+      return values.last.correctedValue;
+    } else {
+      throw Exception("No values in meter $_id - $_name");
+    }
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;

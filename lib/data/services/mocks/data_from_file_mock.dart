@@ -8,10 +8,10 @@ class DataFromFileMock implements DataFromFileService {
   Map newValues = {};
 
   @override
-  exportData({String? outputPath}) {
-    // TODO: implement exportData
-    // throw UnimplementedError();
-  }
+  exportData({String? outputPath}) {}
+
+  @override
+  setFilePath(String filePath) {}
 
   @override
   List<Map> getMeterValues(String meterId) {

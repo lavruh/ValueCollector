@@ -16,11 +16,30 @@ class DataFromFileState extends GetxController {
   final msg = Get.find<InfoMsgService>();
 
   initImportData() async {
+    try {
+      filePath.value = await _selectFile();
+      getDataFromFile(filePath.value);
+    } on Exception catch (e) {
+      msg.push(msg: "Error $e");
+    }
+  }
+
+  initExportData() async {
+    try {
+      filePath.value = await _selectFile();
+      exportAlowed.value = true;
+      exportToFile();
+    } on Exception catch (e) {
+      msg.push(msg: "Error $e");
+    }
+  }
+
+  Future<String> _selectFile() async {
     FilePickerResult? r = await FilePicker.platform.pickFiles();
     if (r != null) {
-      filePath.value = r.files.single.path!;
-      getDataFromFile(filePath.value);
+      return r.files.single.path!;
     }
+    throw Exception("No file selected");
   }
 
   getDataFromFile(String filePath) async {
@@ -59,18 +78,19 @@ class DataFromFileState extends GetxController {
         ".pdf";
     for (Meter m in metersState.meters) {
       try {
-        int val = 0;
-        Meter t = Get.find<Meter>(tag: m.id);
-        if (t.values.isNotEmpty) {
-          val = t.values.last.correctedValue;
-        }
+        int val = Get.find<Meter>(tag: m.id).getLastValueCorrected();
         service.setMeterReading(meterId: m.id, val: val.toString());
       } on Exception catch (e) {
         msg.push(msg: "Error $e");
         continue;
       }
     }
-    service.exportData(outputPath: output);
+    try {
+      await service.setFilePath(filePath.value);
+      await service.exportData(outputPath: output);
+    } on Exception catch (e) {
+      msg.push(msg: "Error $e");
+    }
     msg.push(msg: "Export done to file $output");
   }
 }

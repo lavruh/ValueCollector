@@ -10,8 +10,11 @@ class PdfMetersService implements DataFromFileService {
   Map pdfData = {};
   Map newValues = {};
   double outputLeft = 0;
-  Rect outputDate = Rect.fromLTWH(0, 0, 100, 50);
+  Rect _outputDateFieldPosition = Rect.fromLTWH(0, 0, 100, 50);
   DateTime dateOfReadings = DateTime.now();
+  bool meterDetected = false;
+  List<String> meter = [];
+  Rect? pos;
 
   @override
   List<Map> getMeterValues(String meterId) {
@@ -58,81 +61,83 @@ class PdfMetersService implements DataFromFileService {
 
   parsePDF() {
     pdfData.clear();
+    meterDetected = false;
     List<TextLine> lines = PdfTextExtractor(document!).extractTextLines();
-
+    int page = 0;
     for (TextLine l in lines) {
       List<TextWord> words = l.wordCollection;
-      List<String> meter = [];
-      Rect? pos;
-      for (int j = 0; j < words.length; j++) {
-        String t = words[j].text;
-        if (t.contains("New")) {
-          Rect p = words[j].bounds;
-          outputLeft = p.left;
-        }
-        if (t.contains("Date:")) {
-          Rect p = words[j].bounds;
-          outputDate = Rect.fromLTWH(p.left + 30, p.top - 5, 100, 0);
-        }
-        if (t.contains(RegExp(r'[A-Z]{4,}'))) {
-          meter.add(t);
-          pos = words[j].bounds;
+      for (TextWord word in words) {
+        _detectAndSetOutputLeft(word);
+        _detectAndSetDateOutput(word);
+        if (_detectMeterDataStart(word.text)) {
+          if (meterDetected == true) {
+            _addPdfData(page);
+          }
+          page = l.pageIndex;
+          _initMeterDataCollecting(word);
           continue;
         }
-        if (meter.isNotEmpty) {
-          meter.add(t);
+        if (meterDetected) {
+          meter.add(word.text);
         }
       }
-      if (meter.isNotEmpty) {
-        pdfData.putIfAbsent(meter[0],
-            () => processRawData(meter: meter, pos: pos, page: l.pageIndex));
-      }
+    }
+    _addPdfData(page);
+  }
+
+  bool _detectMeterDataStart(String t) {
+    return t.contains(RegExp(r'[A-Z]{4,}[0-9]{0,2}')) & !t.contains("HISTORY");
+  }
+
+  _addPdfData(int page) {
+    if (meter.isNotEmpty) {
+      pdfData.putIfAbsent(meter[0], () => processRawData(page: page));
     }
   }
 
-  Map processRawData({
-    required List<String> meter,
-    Rect? pos,
-    required int page,
-  }) {
-    int l = getEndOfRawDataString(meter);
-    String name = "";
-
-    for (int i = 5; i < l - 2; i++) {
-      name += meter[i];
-    }
-
+  DateTime? _parseDate(String s) {
     DateTime? d;
     try {
-      d = DateFormat("d-M-yy").parse((meter[l - 2]));
+      d = DateFormat("dd-M-yy").parse(s);
     } on Exception {
       // if record has no date use previous date
       // normally readings in file from same date
       d = dateOfReadings;
     }
     dateOfReadings = d;
-    String readingStr = meter[l - 1].substring(0, meter[l - 1].length - 3);
-    readingStr = readingStr.replaceAll(RegExp(r','), "");
-
-    return {
-      "id": meter[0],
-      "name": name,
-      "date": d,
-      "reading": int.parse(readingStr),
-      "rect": pos,
-      "page": page,
-    };
+    return d;
   }
 
-  int getEndOfRawDataString(List<String> meter) {
+  Map processRawData({
+    required int page,
+  }) {
+    String _id = meter[0];
+    DateTime? d;
     int l = meter.length;
-    for (int i = l; i > 3; i--) {
-      if (meter[i - 1].contains(RegExp(r'\d{2,}'))) {
+    String name = "";
+    int reading = 0;
+    for (int i = 0; i < meter.length; i++) {
+      String s = meter[i];
+      if (_isDate(s)) {
+        d = _parseDate(s);
         l = i;
+      }
+      if (_isReading(s)) {
+        reading = _parseReading(s);
         break;
       }
     }
-    return l;
+    for (int i = 5; i < l; i++) {
+      name += meter[i];
+    }
+    return {
+      "id": _id,
+      "name": name.isNotEmpty ? name : _id,
+      "date": d ?? dateOfReadings,
+      "reading": reading,
+      "rect": pos,
+      "page": page,
+    };
   }
 
   @override
@@ -140,7 +145,6 @@ class PdfMetersService implements DataFromFileService {
     if (fPath == null) {
       throw Exception("No file to export selected");
     }
-
     document = null;
     await openFile(fPath!);
     int p = -1;
@@ -148,13 +152,12 @@ class PdfMetersService implements DataFromFileService {
       if (p != m["page"]) {
         p = m["page"];
         document?.pages[p].graphics.drawString(
-          DateFormat("y-M-dd").format(DateTime.now()),
+          DateFormat("y-MM-dd").format(DateTime.now()),
           PdfStandardFont(PdfFontFamily.helvetica, 9),
-          bounds: outputDate,
+          bounds: _outputDateFieldPosition,
           brush: PdfBrushes.black,
         );
       }
-
       Rect? r = m["rect"];
       document?.pages[p].graphics.drawString(
         newValues[m["id"]] ?? "-",
@@ -175,4 +178,39 @@ class PdfMetersService implements DataFromFileService {
         "_" + DateFormat("y-M-d_hh:mm").format(DateTime.now()) + ".pdf");
     return out;
   }
+
+  void _detectAndSetOutputLeft(TextWord word) {
+    if (word.text.contains("New")) {
+      outputLeft = word.bounds.left;
+    }
+  }
+
+  void _detectAndSetDateOutput(TextWord word) {
+    if (word.text.contains("Date:")) {
+      Rect p = word.bounds;
+      _outputDateFieldPosition = Rect.fromLTWH(p.left + 30, p.top - 5, 100, 0);
+    }
+  }
+
+  void _initMeterDataCollecting(TextWord word) {
+    meter.clear();
+    meter.add(word.text);
+    pos = word.bounds;
+    meterDetected = true;
+  }
+}
+
+int _parseReading(String s) {
+  String readingStr = "";
+  readingStr = s.substring(0, s.length - 3);
+  readingStr = readingStr.replaceAll(RegExp(r','), "");
+  return int.tryParse(readingStr) ?? 0;
+}
+
+bool _isReading(String s) {
+  return s.contains(RegExp(r'\.00'));
+}
+
+bool _isDate(String s) {
+  return s.contains(RegExp(r'\d{1,2}-\d{1,2}-\d{1,2}'));
 }

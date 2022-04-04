@@ -9,9 +9,11 @@ import 'package:rh_collector/ui/widgets/meter_value_delta_widget.dart';
 import 'package:rh_collector/ui/widgets/meter_value_widget.dart';
 
 class MeterWidget extends StatelessWidget {
-  MeterWidget({Key? key, required String meterId}) : _id = meterId;
+  MeterWidget({Key? key, required String meterId, this.newReadingSetCallBack})
+      : _id = meterId;
   final String _id;
   late Meter _meter;
+  Function? newReadingSetCallBack;
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +87,7 @@ class MeterWidget extends StatelessWidget {
     if (reading != null) {
       Get.find<Meter>(tag: _id)
           .addValue(MeterValue(DateTime.now(), int.tryParse(reading) ?? 0));
+      newReadingSetCallBack!();
     }
   }
 }

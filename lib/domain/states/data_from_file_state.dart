@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
+import 'package:rh_collector/data/services/fs_selection_service.dart';
 import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/di.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
@@ -10,6 +10,7 @@ import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 
 class DataFromFileState extends GetxController {
+  final fs = Get.find<FsSelectionService>();
   final service = Get.find<DataFromFileService>();
   final filePath = "".obs;
   final exportAlowed = false.obs;
@@ -17,7 +18,7 @@ class DataFromFileState extends GetxController {
 
   initImportData() async {
     try {
-      filePath.value = await _selectFile();
+      filePath.value = await fs.selectFile(allowedExtensions: ["pdf"]);
       getDataFromFile(filePath.value);
     } on Exception catch (e) {
       msg.push(msg: "Error $e");
@@ -26,20 +27,12 @@ class DataFromFileState extends GetxController {
 
   initExportData() async {
     try {
-      filePath.value = await _selectFile();
+      filePath.value = await fs.selectFile(allowedExtensions: ["pdf"]);
       exportAlowed.value = true;
       exportToFile();
     } on Exception catch (e) {
       msg.push(msg: "Error $e");
     }
-  }
-
-  Future<String> _selectFile() async {
-    FilePickerResult? r = await FilePicker.platform.pickFiles();
-    if (r != null) {
-      return r.files.single.path!;
-    }
-    throw Exception("No file selected");
   }
 
   getDataFromFile(String filePath) async {

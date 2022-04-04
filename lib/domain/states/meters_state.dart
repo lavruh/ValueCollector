@@ -8,13 +8,16 @@ class MetersState extends GetxController {
   final meters = <Meter>[].obs;
   final db = Get.find<DbService>();
 
-  Meter getMeter(String id) {
+  getMeter(String id) async {
     int idx = meters.indexWhere((element) => element.id == id);
     if (idx != -1) {
       Meter m = meters[idx];
-      return m;
+      Get.put<Meter>(m, tag: m.id, permanent: true);
     } else {
-      throw Exception("No Meter with id[$id] found");
+      await getMeters([]);
+      if (meters.indexWhere((element) => element.id == id) == -1) {
+        throw Exception("No Meter with id[$id] found");
+      }
     }
   }
 
@@ -23,7 +26,7 @@ class MetersState extends GetxController {
     List res = await db.getEntries(_createRequest(groupId), table: "meters");
     for (Map<String, dynamic> e in res) {
       Meter m = Meter.fromJson(e);
-      Get.put<Meter>(m, tag: m.id);
+      Get.put<Meter>(m, tag: m.id, permanent: true);
       meters.value.add(m);
     }
 

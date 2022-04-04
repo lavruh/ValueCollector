@@ -3,12 +3,17 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/data/services/console_info_msg_service.dart';
+import 'package:rh_collector/data/services/csv_route_service.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
 import 'package:rh_collector/data/services/db_service.dart';
+import 'package:rh_collector/data/services/filepicker_selection_service.dart';
+import 'package:rh_collector/data/services/fs_selection_service.dart';
 import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/data/services/mocks/data_from_file_mock.dart';
 import 'package:rh_collector/data/services/mocks/db_service_mock.dart';
+import 'package:rh_collector/data/services/mocks/fs_selection_service_mock.dart';
 import 'package:rh_collector/data/services/pdf_meters_service.dart';
+import 'package:rh_collector/data/services/route_service.dart';
 import 'package:rh_collector/data/services/sembast_db_service.dart';
 import 'package:rh_collector/data/services/snackbar_info_msg_service.dart';
 import 'package:rh_collector/domain/states/camera_state_device.dart';
@@ -17,6 +22,7 @@ import 'package:rh_collector/domain/states/data_from_file_state.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/domain/states/recognizer.dart';
+import 'package:rh_collector/domain/states/route_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:rh_collector/domain/states/camera_state.dart';
@@ -32,16 +38,20 @@ init_dependencies() async {
   Get.put<SharedPreferences>(await SharedPreferences.getInstance());
   final db = Get.put<DbService>(SembastDbService(dbName: "metersReadings"));
   await db.openDb();
+  Get.put<FsSelectionService>(FilePickerSelectionService());
   Get.put<DataFromFileService>(PdfMetersService());
+  Get.put<RouteService>(CsvRouteService());
   Get.put<Recognizer>(Recognizer());
   Get.put<CameraState>(CameraStateDevice(), permanent: true);
   Get.put<MeterGroups>(MeterGroups());
   Get.put<MetersState>(MetersState());
+  Get.put<RouteState>(RouteState());
   Get.put<DataFromFileState>(DataFromFileState());
 }
 
 init_dependencies_test() {
   Get.put<InfoMsgService>(ConsoleInfoMsgService());
+  Get.put<FsSelectionService>(FsSelectionServiceMock());
   Get.put<DataFromFileService>(DataFromFileMock());
   Get.put<DbService>(DbServiceMock(tableName: "meters"));
   Get.put<CameraState>(CameraStateMock(), permanent: true);
@@ -51,6 +61,7 @@ init_dependencies_test() {
 
 Future<bool> isPermissionsGranted() async {
   bool fl = false;
+  // Request of this permission on old devices leads to crash
   // if (await Permission.manageExternalStorage.status.isDenied) {
   //   await Permission.manageExternalStorage.request();
   // }

@@ -19,14 +19,14 @@ class RouteScreen extends StatelessWidget {
             IconButton(
                 onPressed: _loadRoute, icon: const Icon(Icons.get_app_outlined))
           ],
-          bottom: const TabBar(
+          bottom: TabBar(
             tabs: [
-              Tab(
-                text: "ToDo",
-              ),
-              Tab(
-                text: "Done",
-              )
+              GetX<RouteState>(builder: (_) {
+                return Tab(text: "ToDo(${_.route.length})");
+              }),
+              GetX<RouteState>(builder: (_) {
+                return Tab(text: "Done(${_.doneMeters.length})");
+              })
             ],
           ),
         ),
@@ -50,7 +50,6 @@ class RouteScreen extends StatelessWidget {
             GetX<RouteState>(
               builder: (_) {
                 return ListView.builder(
-                  reverse: true,
                   itemCount: _.doneMeters.length,
                   itemBuilder: (BuildContext context, int i) {
                     return MeterWidget(

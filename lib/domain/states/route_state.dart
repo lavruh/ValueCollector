@@ -11,8 +11,7 @@ class RouteState extends GetxController {
   final meters = Get.find<MetersState>();
   final route = <String>[].obs;
   final doneMeters = <String>[].obs;
-  final currentMeterIndex = 0.obs;
-  final routeName = "".obs;
+  final routeName = "Open route file".obs;
 
   loadRoute() async {
     route.clear();
@@ -32,7 +31,7 @@ class RouteState extends GetxController {
 
   readingDoneGoNext({required int doneMeterIndex}) {
     String id = route.removeAt(doneMeterIndex);
-    doneMeters.add(id);
+    doneMeters.insert(0, id);
   }
 
   extractRouteName(String path) {

@@ -19,8 +19,7 @@ class MetersBottomPanalWidget extends StatelessWidget {
                 onPressed: () async {
                   await showDialog(
                       context: context,
-                      builder: (BuildContext context) =>
-                          const MetersGroupsWidget());
+                      builder: (BuildContext context) => MetersGroupsWidget());
                 },
                 icon: const Icon(Icons.checklist_outlined)),
             FractionallySizedBox(

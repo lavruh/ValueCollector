@@ -1,23 +1,21 @@
 import 'package:get/get.dart';
+import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/domain/entities/meter_group.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 
 class MeterGroups extends GetxController {
-  Map<String, MeterGroup> _groups = {
+  final groups = <String, MeterGroup>{
     "W": MeterGroup(name: "Weekly", id: "W"),
     "M": MeterGroup(name: "Monthly", id: "M"),
   }.obs;
-
-  final selected = <String>[].obs();
+  final db = Get.find<DbService>();
+  final selected = <String>[].obs;
+  final String table = "groups";
+  final editMode = false.obs;
 
   MeterGroups() {
     _preventSelectedEmpty();
-  }
-
-  Map<String, MeterGroup> get groups => _groups;
-
-  set groups(Map<String, MeterGroup> groups) {
-    _groups = groups;
+    getGroups();
   }
 
   bool isSelected(MeterGroup g) {
@@ -43,22 +41,54 @@ class MeterGroups extends GetxController {
   }
 
   String getName(String id) {
-    return _groups[id]?.name ?? "";
+    return groups[id]?.name ?? "";
   }
 
   addGroup(MeterGroup g) {
-    _groups.putIfAbsent(g.id, () => g);
+    groups.putIfAbsent(g.id, () => g);
+    db.updateEntry(g.toJson(), table: table);
+    update();
+  }
+
+  updateGroup(MeterGroup g) {
+    if (groups.keys.contains(g.id)) {
+      groups[g.id] = g;
+      db.updateEntry(g.toJson(), table: table);
+    }
   }
 
   MeterGroup? getGroup(String id) {
-    if (_groups.containsKey(id)) {
-      return _groups[id];
+    if (groups.containsKey(id)) {
+      return groups[id];
     }
   }
 
   void _preventSelectedEmpty() {
     if (selected.isEmpty) {
-      selected.add(_groups.values.first.id);
+      selected.add(groups.values.first.id);
     }
+  }
+
+  getGroups() async {
+    groups.clear();
+    List<Map<String, dynamic>> r = await db.getEntries([], table: table);
+    for (Map<String, dynamic> map in r) {
+      MeterGroup g = MeterGroup.fromJson(map);
+      groups.putIfAbsent(g.id, () => g);
+    }
+// Put standart groups
+    groups.putIfAbsent("W", () => MeterGroup(name: "Weekly", id: "W"));
+    groups.putIfAbsent("M", () => MeterGroup(name: "Monthly", id: "M"));
+  }
+
+  void deleteGroup(String id) async {
+    groups.remove(id);
+    selected.removeWhere((element) => element == id);
+    await db.removeEntry(id, table: table);
+    _preventSelectedEmpty();
+  }
+
+  toggleMode() {
+    editMode.value = !editMode.value;
   }
 }

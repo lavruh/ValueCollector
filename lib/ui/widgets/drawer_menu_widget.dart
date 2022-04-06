@@ -24,8 +24,7 @@ class DrawerMenuWidget extends StatelessWidget {
             onTap: () async {
               await showDialog(
                   context: context,
-                  builder: (BuildContext context) =>
-                      const MetersGroupsWidget());
+                  builder: (BuildContext context) => MetersGroupsWidget());
               Get.find<MetersState>().update();
             },
           ),

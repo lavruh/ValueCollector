@@ -26,7 +26,7 @@ class _MetersScreenState extends State<MetersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: GetBuilder<MeterGroups>(builder: (_) {
+        title: GetX<MeterGroups>(builder: (_) {
           return Text(
               "${_meterGroups.selected.map((e) => _meterGroups.getName(e))}");
         }),

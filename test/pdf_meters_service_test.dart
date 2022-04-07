@@ -36,17 +36,15 @@ main() {
     expect(res['DREDPUENG2']['reading'], 20873);
 
     await serv.openFile(file2Path);
-    res = (serv as PdfMetersService).pdfData;
+    res = serv.pdfData;
     expect(res['MAINENGSB']['id'], 'MAINENGSB');
     expect(res['MAINENGSB']['name'], 'Main Engine, SB');
     expect(res['MAINENGSB']['date'], DateTime(2021, 12, 18));
     expect(res['MAINENGSB']['reading'], 149208);
     expect(res['BOWTH']['page'], 0);
-    expect((serv as PdfMetersService).outputLeft, greaterThanOrEqualTo(400));
+    expect(serv.outputLeft, greaterThanOrEqualTo(400));
 
     for (var e in res.values) {
-      print(e);
-      print("\n");
       expect(e['name'], isNotEmpty);
       expect(e['date'], isNotNull);
       expect(e['rect'], isNotNull);
@@ -88,14 +86,12 @@ main() {
     expect(res, hasLength(105)); //May be wrong correct value
 
     for (var e in res.values) {
-      print(e);
-      print("\n");
       expect(e['name'], isNotEmpty);
       expect(e['date'], isNotNull);
       expect(e['rect'], isNotNull);
       expect(e['page'], isNotNull);
     }
-    expect((serv as PdfMetersService).outputLeft, greaterThanOrEqualTo(400));
+    expect(serv.outputLeft, greaterThanOrEqualTo(400));
   });
 
   test("get meters", () async {
@@ -104,11 +100,6 @@ main() {
     expect(res.length, 11);
     expect(
         res.indexWhere((element) => element["id"] == 'MAINENGSB') > -1, true);
-  });
-
-  test("get values", () async {
-    await serv.openFile(filePath);
-    List<Map> res = serv.getMeterValues('MAINENGSB');
   });
 
   test("set new value", () async {

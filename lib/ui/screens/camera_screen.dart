@@ -4,14 +4,12 @@ import 'package:get/get.dart';
 import 'package:rh_collector/domain/states/camera_state.dart';
 import 'package:rh_collector/ui/widgets/cam_prev_widget.dart';
 
-// TODO check if screen turned
-// TODO text field decoration
 class CameraScreen extends StatefulWidget {
   CameraScreen({Key? key, this.meterName})
       : state = Get.find<CameraState>(),
         super(key: key);
-  CameraState state;
-  String? meterName;
+  final CameraState state;
+  final String? meterName;
 
   @override
   State<CameraScreen> createState() => _CameraScreenState();
@@ -51,7 +49,7 @@ class _CameraScreenState extends State<CameraScreen> {
               alignment: WrapAlignment.start,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                CamPrevWidget(),
+                const CamPrevWidget(),
                 FloatingActionButton(
                   child: const Icon(Icons.camera),
                   onPressed: () {
@@ -75,7 +73,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           onSubmitted: _setValue,
                           onChanged: _setValue,
                           decoration: InputDecoration(
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               suffix: IconButton(
                                   onPressed: () {
                                     Navigator.pop(context, _.reading.value);

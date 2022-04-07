@@ -50,9 +50,9 @@ class _MetersScreenState extends State<MetersScreen> {
           return Container();
         }
       }),
-      bottomNavigationBar: MetersBottomPanalWidget(),
+      bottomNavigationBar: const MetersBottomPanalWidget(),
       resizeToAvoidBottomInset: true,
-      drawer: DrawerMenuWidget(),
+      drawer: const DrawerMenuWidget(),
     );
   }
 }

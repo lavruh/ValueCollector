@@ -5,7 +5,7 @@ class MeterGroup {
   String name;
 
   MeterGroup({String? id, required this.name})
-      : this._id = id ?? UniqueKey().toString();
+      : _id = id ?? UniqueKey().toString();
 
   String get id => _id;
 

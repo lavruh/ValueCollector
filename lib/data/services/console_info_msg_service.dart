@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:rh_collector/data/services/info_msg_service.dart';
 
 class ConsoleInfoMsgService implements InfoMsgService {

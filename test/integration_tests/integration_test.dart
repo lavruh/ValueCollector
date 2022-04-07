@@ -8,8 +8,8 @@ import 'package:rh_collector/ui/widgets/drawer_menu_widget.dart';
 main() {
   appDataPath =
       "/home/lavruh/AndroidStudioProjects/RhCollector/test/integration_tests/testdata";
-  init_dependencies_test();
-  final app = CameraApp();
+  initDependenciesTest();
+  const app = CameraApp();
   testWidgets("init load", (WidgetTester tester) async {
     await tester.pumpWidget(app);
     await tester.pump();
@@ -18,28 +18,28 @@ main() {
     expect(find.byIcon(Icons.menu), findsOneWidget);
 
     await tester.dragFrom(
-        tester.getTopLeft(find.byType(MaterialApp)), Offset(300, 0));
+        tester.getTopLeft(find.byType(MaterialApp)), const Offset(300, 0));
 
     await tester.pumpAndSettle();
     expect(find.textContaining("Groups"), findsOneWidget);
     expect(find.textContaining("Routes"), findsOneWidget);
     expect(find.textContaining("Import"), findsOneWidget);
-  });
+  }, skip: true);
 
   testWidgets("drawer menu", (WidgetTester tester) async {
-    final menu = DrawerMenuWidget();
+    const menu = DrawerMenuWidget();
     await tester.pumpWidget(testableWidget(child: menu));
     await tester.pump();
 
     expect(find.textContaining("Groups"), findsOneWidget);
     expect(find.textContaining("Routes"), findsOneWidget);
     expect(find.textContaining("Import"), findsOneWidget);
-  });
+  }, skip: true);
 }
 
 Widget testableWidget({required Widget child}) {
   return MediaQuery(
-    data: MediaQueryData(),
+    data: const MediaQueryData(),
     child: GetMaterialApp(
       home: Scaffold(body: child),
     ),

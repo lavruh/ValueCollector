@@ -27,7 +27,7 @@ class MetersState extends GetxController {
     for (Map<String, dynamic> e in res) {
       Meter m = Meter.fromJson(e);
       Get.put<Meter>(m, tag: m.id, permanent: true);
-      meters.value.add(m);
+      meters.add(m);
     }
 
     update();
@@ -74,7 +74,7 @@ class MetersState extends GetxController {
       Meter m = Meter.fromJson(e);
       if (m.name.contains(RegExp(filter, caseSensitive: false))) {
         Get.put<Meter>(m, tag: m.id);
-        meters.value.add(m);
+        meters.add(m);
       }
     }
 

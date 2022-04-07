@@ -79,7 +79,6 @@ class DbServiceMock implements DbService {
     }
   }
 
-  @override
   selectTable(String tableName) {
     currentTable = tableName;
     db.putIfAbsent(currentTable, () => {});
@@ -91,10 +90,7 @@ class DbServiceMock implements DbService {
   }
 
   @override
-  openDb() {
-    // TODO: implement openDb
-    throw UnimplementedError();
-  }
+  openDb() {}
 
   String _setTable(String? table) {
     String _table = table ?? currentTable;

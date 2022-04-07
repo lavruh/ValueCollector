@@ -4,7 +4,7 @@ import 'package:get/state_manager.dart';
 import 'package:rh_collector/domain/states/camera_state.dart';
 
 class CamPrevWidget extends StatelessWidget {
-  CamPrevWidget({
+  const CamPrevWidget({
     Key? key,
   }) : super(key: key);
 

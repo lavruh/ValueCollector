@@ -8,7 +8,6 @@ import 'package:rh_collector/data/services/db_service.dart';
 import 'package:sembast/sembast_io.dart';
 
 class SembastDbService implements DbService {
-  @override
   String _dbName = "values_db";
   @override
   bool isLoaded = false;
@@ -22,6 +21,7 @@ class SembastDbService implements DbService {
     }
   }
 
+  @override
   Future<Database> openDb() async {
     if (_dbOpenCompleter == null) {
       _dbOpenCompleter = Completer();
@@ -87,7 +87,6 @@ class SembastDbService implements DbService {
     });
   }
 
-  @override
   selectTable(String tableName) {}
 
   @override
@@ -111,11 +110,6 @@ class SembastDbService implements DbService {
   }
 
   @override
-  set currentTable(String _currentTable) {
-    // selectTable(_currentTable);
-  }
-
-  @override
   clearDb({required String table}) async {
     StoreRef _store = intMapStoreFactory.store(table);
     await _dbOpenCompleter!.future;
@@ -123,8 +117,6 @@ class SembastDbService implements DbService {
   }
 
   Future<int> _getEntryKey(String id, {required String table}) async {
-    late int key;
-    StoreRef _store = intMapStoreFactory.store(table);
     List entries = await getEntries([
       ["id", id]
     ], table: table);

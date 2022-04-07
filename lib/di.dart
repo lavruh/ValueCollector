@@ -30,10 +30,10 @@ import 'package:rh_collector/domain/states/camera_state.dart';
 List<CameraDescription> cameras = [];
 String appDataPath = "/storage/emulated/0/ValueCollector";
 
-init_dependencies() async {
+initDependencies() async {
   Get.put<InfoMsgService>(SnackbarInfoMsgService());
   if (Directory(appDataPath).existsSync() == false) {
-    final d = Directory(appDataPath).create();
+    Directory(appDataPath).create();
   }
   Get.put<SharedPreferences>(await SharedPreferences.getInstance());
   final db = Get.put<DbService>(SembastDbService(dbName: "metersReadings"));
@@ -49,7 +49,7 @@ init_dependencies() async {
   Get.put<DataFromFileState>(DataFromFileState());
 }
 
-init_dependencies_test() {
+initDependenciesTest() {
   Get.put<InfoMsgService>(ConsoleInfoMsgService());
   Get.put<FsSelectionService>(FsSelectionServiceMock());
   Get.put<DataFromFileService>(DataFromFileMock());

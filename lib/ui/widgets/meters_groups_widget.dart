@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/meter_group.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
-import 'package:rh_collector/ui/widgets/editable_text_widget.dart';
-
-// TODO Add new group field
 
 class MetersGroupsWidget extends StatelessWidget {
   MetersGroupsWidget({Key? key}) : super(key: key);
@@ -76,10 +73,5 @@ class MetersGroupsWidget extends StatelessWidget {
 
   _addNewGroup() {
     _state.addGroup(MeterGroup(name: "name"));
-  }
-
-  _deleteSelectedGroup() {
-    String id = Get.find<MeterGroups>().selected.first;
-    _state.deleteGroup(id);
   }
 }

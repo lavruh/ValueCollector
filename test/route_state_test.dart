@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:get/get.dart';
 import 'package:rh_collector/data/services/console_info_msg_service.dart';
 import 'package:rh_collector/data/services/csv_route_service.dart';
@@ -15,10 +13,10 @@ import 'package:test/test.dart';
 
 main() {
   Get.put<InfoMsgService>(ConsoleInfoMsgService());
-  init_dependencies_test();
+  initDependenciesTest();
   final fs = Get.put<FsSelectionService>(FsSelectionServiceMock());
   final meterState = Get.find<MetersState>();
-  final service = Get.put<RouteService>(CsvRouteService());
+  Get.put<RouteService>(CsvRouteService());
   final state = Get.put<RouteState>(RouteState());
   test('load weekly route', () async {
     (fs as FsSelectionServiceMock).filePath =

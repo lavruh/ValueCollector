@@ -13,7 +13,7 @@ class MeterValueDeltaWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text("\u{0394}"),
+        const Text("\u{0394}"),
         Text(
           v.delta.toString(),
           style: TextStyle(color: v.color),

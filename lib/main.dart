@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -11,7 +10,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (await isPermissionsGranted()) {
     cameras = await availableCameras();
-    await init_dependencies();
+    await initDependencies();
     runApp(const CameraApp());
     final camera = Get.find<CameraState>();
     camera.disposeCamera();

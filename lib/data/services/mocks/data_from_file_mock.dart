@@ -1,4 +1,3 @@
-import 'package:intl/intl.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';

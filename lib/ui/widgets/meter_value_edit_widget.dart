@@ -3,16 +3,16 @@ import 'package:intl/intl.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 
 class MeterValueEditWidget extends StatefulWidget {
-  MeterValueEditWidget({
+  const MeterValueEditWidget({
     Key? key,
     required this.meterValue,
     this.deleteCallback,
     this.updateCallback,
   }) : super(key: key);
 
-  MeterValue meterValue;
-  Function? deleteCallback;
-  Function? updateCallback;
+  final MeterValue meterValue;
+  final Function? deleteCallback;
+  final Function? updateCallback;
 
   @override
   State<MeterValueEditWidget> createState() => _MeterValueEditWidgetState();

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 abstract class DataFromFileService {
   setFilePath(String filePath);
   openFile(String filePath);

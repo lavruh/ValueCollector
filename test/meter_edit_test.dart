@@ -8,7 +8,7 @@ import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:rh_collector/ui/screens/meter_edit_screen.dart';
 
 main() {
-  init_dependencies_test();
+  initDependenciesTest();
   Meter meter = Meter(name: "m1", groupId: "W");
   Widget editor = MeterEditScreen(meter: meter);
 
@@ -91,7 +91,7 @@ main() {
 
 Widget testableWidget({required Widget child}) {
   return MediaQuery(
-    data: MediaQueryData(),
+    data: const MediaQueryData(),
     child: GetMaterialApp(
       home: Scaffold(body: child),
     ),

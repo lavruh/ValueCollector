@@ -10,7 +10,7 @@ class PdfMetersService implements DataFromFileService {
   Map pdfData = {};
   Map newValues = {};
   double outputLeft = 0;
-  Rect _outputDateFieldPosition = Rect.fromLTWH(0, 0, 100, 50);
+  Rect _outputDateFieldPosition = const Rect.fromLTWH(0, 0, 100, 50);
   DateTime dateOfReadings = DateTime.now();
   bool meterDetected = false;
   List<String> meter = [];

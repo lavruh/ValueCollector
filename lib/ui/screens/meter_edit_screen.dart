@@ -12,7 +12,7 @@ class MeterEditScreen extends StatefulWidget {
     Get.replace<Meter>(_meter, tag: "meterEdit");
   }
 
-  Meter _meter;
+  final Meter _meter;
 
   @override
   State<MeterEditScreen> createState() => _MeterEditScreenState();

@@ -10,6 +10,7 @@ import 'package:image/image.dart';
 import 'package:rh_collector/di.dart';
 
 class CameraStateDevice extends GetxController implements CameraState {
+  @override
   CameraController? camCtrl =
       CameraController(cameras[0], ResolutionPreset.max);
   final settings = Get.find<SharedPreferences>();
@@ -117,6 +118,7 @@ class CameraStateDevice extends GetxController implements CameraState {
 
   @override
   void onInit() {
+    super.onInit();
     loadState();
   }
 }

@@ -9,7 +9,7 @@ class Meter extends GetxController {
   String _name;
   String? _unit;
   String groupId;
-  int _correction = 0;
+  int correction = 0;
 
   final values = <MeterValue>[].obs;
 
@@ -27,11 +27,6 @@ class Meter extends GetxController {
   String get id => _id;
   String get name => _name;
   String? get unit => _unit;
-  int get correction => _correction;
-
-  set correction(int correction) {
-    _correction = correction;
-  }
 
   set unit(String? unit) {
     _unit = unit;
@@ -58,7 +53,7 @@ class Meter extends GetxController {
         _id = map['id'] ?? UniqueKey().toString(),
         _unit = map['unit'],
         groupId = map["groupId"],
-        _correction = map["correction"] ?? 0 {
+        correction = map["correction"] ?? 0 {
     getValues();
   }
 
@@ -69,14 +64,14 @@ class Meter extends GetxController {
   getValues() async {
     values.clear();
     List res = await db.getEntries([], table: _id);
-    res.forEach((e) {
+    for (var e in res) {
       values.add(MeterValue.fromJson(e));
-    });
+    }
     update();
   }
 
   addValue(MeterValue v) async {
-    v.correction ??= _correction;
+    v.correction ??= correction;
     if (!values.contains(v)) {
       values.add(v);
       await db.updateEntry(v.toJson(), table: _id);

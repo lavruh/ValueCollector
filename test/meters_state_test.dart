@@ -32,18 +32,18 @@ main() {
     await state.addNewMeter(Meter(name: "another", groupId: "M"));
     await state.addNewMeter(Meter(name: "other2", groupId: "M"));
     await state.getMeters(["W"]);
-    expect(state.meters.value.length, 2);
+    expect(state.meters.length, 2);
     await state.getMeters(["M"]);
-    expect(state.meters.value.length, 2);
+    expect(state.meters.length, 2);
     await state.getMeters(["M", "W"]);
-    expect(state.meters.value.length, 4);
+    expect(state.meters.length, 4);
   });
 
   test('Add meter', () async {
     Meter m = Meter(groupId: 'MN', name: 'Engine PS');
     await state.updateMeter(m);
     await state.getMeters([m.groupId]);
-    expect(state.meters.value.length, 1);
+    expect(state.meters.length, 1);
   });
 
   test('Update meter', () async {
@@ -52,8 +52,8 @@ main() {
     m.unit = "mm";
     await state.updateMeter(m);
     await state.getMeters(["W"]);
-    expect(state.meters.value.singleWhere((element) => element.id == m.id).unit,
-        m.unit);
+    expect(
+        state.meters.singleWhere((element) => element.id == m.id).unit, m.unit);
   });
 
   test('Delete meter', () async {
@@ -61,7 +61,7 @@ main() {
     Meter m = state.meters.first;
     await state.deleteMeter(m.id);
     await state.getMeters(["W"]);
-    expect(state.meters.value.any((element) => element.id == m.id), false);
+    expect(state.meters.any((element) => element.id == m.id), false);
   });
 
   test('filter meters', () async {
@@ -72,9 +72,9 @@ main() {
     await state.addNewMeter(Meter(name: "some", groupId: "W"));
 
     await state.filterMetersByName(filter: "", groupId: ["W"]);
-    expect(state.meters.value.length, 4);
+    expect(state.meters.length, 4);
 
     await state.filterMetersByName(filter: "m", groupId: ["W"]);
-    expect(state.meters.value.length, 3);
+    expect(state.meters.length, 3);
   });
 }

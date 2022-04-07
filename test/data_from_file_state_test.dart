@@ -8,20 +8,10 @@ import 'package:rh_collector/domain/states/data_from_file_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:test/test.dart';
 
-// TODO How to handle Getx snack bars in tests
-
 main() async {
-  await init_dependencies_test();
+  await initDependenciesTest();
   Get.replace<DataFromFileService>(DataFromFileMock());
   final service = Get.put(DataFromFileState());
-  List<Map> inp = [
-    {
-      "id": "knkdsad",
-      "name": "somename",
-      "date": DateTime(2021, 11, 27),
-      "reading": "123456",
-    }
-  ];
 
   setUp(() async {
     await initTestData();

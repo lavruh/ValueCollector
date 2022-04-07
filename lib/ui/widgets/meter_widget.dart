@@ -9,15 +9,18 @@ import 'package:rh_collector/ui/widgets/meter_value_delta_widget.dart';
 import 'package:rh_collector/ui/widgets/meter_value_widget.dart';
 
 class MeterWidget extends StatelessWidget {
-  MeterWidget({Key? key, required String meterId, this.newReadingSetCallBack})
-      : _id = meterId;
+  const MeterWidget({
+    Key? key,
+    required String meterId,
+    this.newReadingSetCallBack,
+  })  : _id = meterId,
+        super(key: key);
   final String _id;
-  late Meter _meter;
-  Function? newReadingSetCallBack;
+  final Function? newReadingSetCallBack;
 
   @override
   Widget build(BuildContext context) {
-    _meter = Get.find<Meter>(tag: _id);
+    Meter _meter = Get.find<Meter>(tag: _id);
     return Card(
       elevation: 3,
       child: GetBuilder<Meter>(
@@ -78,6 +81,7 @@ class MeterWidget extends StatelessWidget {
   }
 
   _addReading(BuildContext context) async {
+    Meter _meter = Get.find<Meter>(tag: _id);
     String? reading = await Navigator.push(
         context,
         MaterialPageRoute(

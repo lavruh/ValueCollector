@@ -61,6 +61,7 @@ class MeterGroups extends GetxController {
     if (groups.containsKey(id)) {
       return groups[id];
     }
+    return null;
   }
 
   void _preventSelectedEmpty() {

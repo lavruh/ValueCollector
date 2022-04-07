@@ -47,8 +47,8 @@ main() async {
     int l = meters.meters.length;
     await service.getDataFromFile("filePath");
 
-    expect(meters.getMeter("newmeter"), newMeter);
-    expect(meters.getMeter("MAINENGPS").values.last.value, 123);
+    expect(Get.find<Meter>(tag: newMeter.id), newMeter);
+    expect(Get.find<Meter>(tag: "MAINENGPS").values.last.value, 123);
     expect(meters.meters.length, l + 1);
   });
 
@@ -68,7 +68,7 @@ main() async {
         m: Meter(id: "EMENG", name: "EM", groupId: "W"),
         v: MeterValue(DateTime(2021, 1, 1), 123));
     await service.getDataFromFile("");
-    expect(meters.getMeter("MAINENGPS").values.last.value, 123);
+    expect(Get.find<Meter>(tag: "MAINENGPS").values.last.value, 123);
     int idx = meters.meters.indexWhere((element) => element.id == "MAINENGPS");
     final m = Get.find<Meter>(tag: "MAINENGPS");
     expect(meters.meters[idx].values.length, 1);

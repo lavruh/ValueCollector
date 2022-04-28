@@ -19,8 +19,11 @@ class Meter extends GetxController {
     String? id,
     required String name,
     required this.groupId,
+    String? unit,
+    this.correction = 0,
   })  : _id = id ?? UniqueKey().toString(),
-        _name = name {
+        _name = name,
+        _unit = unit {
     getValues();
   }
 
@@ -52,10 +55,17 @@ class Meter extends GetxController {
       : _name = map['name'] ?? "",
         _id = map['id'] ?? UniqueKey().toString(),
         _unit = map['unit'],
-        groupId = map["groupId"],
+        groupId = map["groupId"] ?? "W",
         correction = map["correction"] ?? 0 {
     getValues();
   }
+
+  Meter.fromFileDto(Map<String, dynamic> map)
+      : _name = map['name'] ?? "",
+        _id = map['id'] ?? UniqueKey().toString(),
+        _unit = map['unit'],
+        groupId = map["groupId"] ?? "W",
+        correction = map["correction"] ?? 0;
 
   updateDb() async {
     await db.updateEntry(toJson(), table: "meters");

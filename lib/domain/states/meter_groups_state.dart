@@ -92,4 +92,12 @@ class MeterGroups extends GetxController {
   toggleMode() {
     editMode.value = !editMode.value;
   }
+
+  String getFirstSelectedGroupId() {
+    if (selected.isNotEmpty) {
+      return selected.first;
+    } else {
+      throw Exception("No meter group selected");
+    }
+  }
 }

@@ -1,7 +1,7 @@
 name: rh_collector
 description: A new Flutter project.
 publish_to: 'none' 
-version: 1.0.0+1
+version: 1.1.0+1
 
 environment:
   sdk: ">=2.15.0-116.0.dev <3.0.0"
@@ -21,6 +21,8 @@ dependencies:
   sembast: ^3.1.1+1
   permission_handler: ^9.0.2
   csv: ^5.0.1
+  mockito: ^5.1.0
+  build_runner: ^2.1.10
 
 dev_dependencies:
   flutter_test:

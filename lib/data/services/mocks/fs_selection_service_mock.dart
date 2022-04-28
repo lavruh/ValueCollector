@@ -4,7 +4,8 @@ class FsSelectionServiceMock implements FsSelectionService {
   String filePath = "";
 
   @override
-  Future<String> selectFile({List<String>? allowedExtensions}) async {
+  Future<String> selectFile(
+      {List<String>? allowedExtensions, String? dialogTitle}) async {
     return filePath;
   }
 }

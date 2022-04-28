@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:intl/intl.dart';
+import 'package:rh_collector/data/dtos/meter_dto.dart';
+import 'package:rh_collector/data/dtos/meter_value_dto.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
 
@@ -17,35 +19,42 @@ class PdfMetersService implements DataFromFileService {
   Rect? pos;
 
   @override
-  List<Map> getMeterValues(String meterId) {
-    List<Map> output = [];
+  List<MeterValueDto> getMeterValues(String meterId) {
+    List<MeterValueDto> output = [];
     if (pdfData.isNotEmpty) {
-      output.add(pdfData[meterId]);
+      output.add(
+        MeterValueDto(
+          date: pdfData[meterId]["date"],
+          value: pdfData[meterId]["reading"],
+        ),
+      );
     }
     return output;
   }
 
   @override
-  List getMeters() {
-    List result = [];
+  List<MeterDto> getMeters() {
+    List<MeterDto> result = [];
     if (pdfData.isNotEmpty) {
-      result = pdfData.values.toList();
+      result = pdfData.values
+          .map((e) => MeterDto(id: e['id'], name: e['name']))
+          .toList();
     }
     return result;
   }
 
   @override
-  openFile(String filePath) async {
-    await setFilePath(filePath);
+  openFile(File file) async {
+    await setFilePath(file);
     File pdf = File(fPath!);
     document = PdfDocument(inputBytes: pdf.readAsBytesSync());
     parsePDF();
   }
 
   @override
-  setFilePath(String filePath) async {
-    if (await File(filePath).exists()) {
-      fPath = filePath;
+  setFilePath(File file) async {
+    if (await file.exists()) {
+      fPath = file.path;
     } else {
       throw Exception("File does not exist");
     }
@@ -57,6 +66,11 @@ class PdfMetersService implements DataFromFileService {
     required String val,
   }) {
     newValues[meterId] = val;
+  }
+
+  @override
+  setMeterDataToExport({required MeterDto meterDto}) {
+    // "Not applicable for this format, select template file instead"
   }
 
   parsePDF() {
@@ -141,12 +155,12 @@ class PdfMetersService implements DataFromFileService {
   }
 
   @override
-  exportData({String? outputPath}) async {
-    if (fPath == null) {
-      throw Exception("No file to export selected");
+  exportData({required File output, File? template}) async {
+    if (template == null) {
+      throw Exception("No template file to export is selected");
     }
     document = null;
-    await openFile(fPath!);
+    await openFile(template);
     int p = -1;
     for (Map m in pdfData.values) {
       if (p != m["page"]) {
@@ -166,11 +180,7 @@ class PdfMetersService implements DataFromFileService {
         brush: PdfBrushes.black,
       );
     }
-    if (outputPath != null) {
-      File(outputPath).writeAsBytes(document!.save());
-    } else {
-      File(getExportPath()).writeAsBytes(document!.save());
-    }
+    output.writeAsBytes(document!.save());
   }
 
   String getExportPath() {

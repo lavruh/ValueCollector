@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:rh_collector/data/dtos/meter_dto.dart';
+import 'package:rh_collector/data/dtos/meter_value_dto.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
@@ -7,18 +11,18 @@ class DataFromFileMock implements DataFromFileService {
   Map newValues = {};
 
   @override
-  exportData({String? outputPath}) {}
+  exportData({required File output, File? template}) {}
 
   @override
-  setFilePath(String filePath) {}
+  setFilePath(File filePath) {}
 
   @override
-  List<Map> getMeterValues(String meterId) {
+  List<MeterValueDto> getMeterValues(String meterId) {
     List<Map> output = [];
     if (data.isNotEmpty) {
       output.add(data[meterId]);
     }
-    return output;
+    return [];
   }
 
   addFakeMeter({
@@ -38,10 +42,18 @@ class DataFromFileMock implements DataFromFileService {
   }
 
   @override
-  List getMeters() => data.values.toList();
+  List<MeterDto> getMeters() {
+    return data.values.map((e) => MeterDto.fromMap(e)).toList();
+  }
 
   @override
-  openFile(String filePath) {}
+  setMeterDataToExport({required MeterDto meterDto}) {
+    throw Exception(
+        "Not applicable for this format, select template file instead");
+  }
+
+  @override
+  openFile(File filePath) {}
 
   @override
   setMeterReading({

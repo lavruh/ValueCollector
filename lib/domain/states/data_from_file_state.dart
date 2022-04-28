@@ -1,25 +1,40 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:rh_collector/data/dtos/meter_dto.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
 import 'package:rh_collector/data/services/fs_selection_service.dart';
 import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/di.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
-import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
+import 'package:rh_collector/ui/widgets/export_options_dialog_widget.dart';
+
+enum AllowedFileTypes { csv, bokaPdf }
 
 class DataFromFileState extends GetxController {
   final fs = Get.find<FsSelectionService>();
-  final service = Get.find<DataFromFileService>();
+  DataFromFileService service = Get.find<DataFromFileService>(tag: "csv");
   final filePath = "".obs;
   final exportAlowed = false.obs;
   final msg = Get.find<InfoMsgService>();
+  final exportFileType = AllowedFileTypes.csv.obs;
+  String fileExtension = ".csv";
 
   initImportData() async {
     try {
-      filePath.value = await fs.selectFile(allowedExtensions: ["pdf"]);
-      getDataFromFile(filePath.value);
+      filePath.value = await fs.selectFile(allowedExtensions: ["pdf", "csv"]);
+      if (filePath.value.endsWith(".pdf")) {
+        service = Get.find<DataFromFileService>(tag: "bokaPdf");
+        getDataFromFile(filePath.value);
+      } else if (filePath.value.endsWith(".csv")) {
+        service = Get.find<DataFromFileService>(tag: "csv");
+        getDataFromFile(filePath.value);
+      } else {
+        msg.push(msg: "Selected file type is not supported❗");
+      }
     } on Exception catch (e) {
       msg.push(msg: "Error $e");
     }
@@ -27,7 +42,18 @@ class DataFromFileState extends GetxController {
 
   initExportData() async {
     try {
-      filePath.value = await fs.selectFile(allowedExtensions: ["pdf"]);
+      await Get.dialog(const ExportOptionsDialogWidget());
+      if (exportFileType.value == AllowedFileTypes.csv) {
+        service = Get.find<DataFromFileService>(tag: "csv");
+        fileExtension = ".csv";
+        filePath.value = "";
+      } else if (exportFileType.value == AllowedFileTypes.bokaPdf) {
+        service = Get.find<DataFromFileService>(tag: "bokaPdf");
+        fileExtension = ".pdf";
+        filePath.value = await fs.selectFile(
+            allowedExtensions: ["pdf"],
+            dialogTitle: "Select template to export");
+      }
       exportAlowed.value = true;
       exportToFile();
     } on Exception catch (e) {
@@ -36,42 +62,43 @@ class DataFromFileState extends GetxController {
   }
 
   getDataFromFile(String filePath) async {
-    MetersState metersState = Get.find<MetersState>();
-    List selectedGroupIds = Get.find<MeterGroups>().selected;
-    late String groupId;
-    if (selectedGroupIds.isNotEmpty) {
-      groupId = Get.find<MeterGroups>().selected.first;
-    } else {
-      msg.push(msg: "No meter group selected");
-      throw Exception("No meter group selected");
-    }
-    await service.openFile(filePath);
-    List dataFromFile = service.getMeters();
-    for (Map e in dataFromFile) {
-      late Meter m;
+    try {
+      String groupId = Get.find<MeterGroups>().getFirstSelectedGroupId();
       try {
-        m = Get.find(tag: e["id"]);
-      } catch (err) {
-        m = Meter(id: e["id"], name: e["name"], groupId: groupId);
-        metersState.addNewMeter(m);
+        await service.openFile(File(filePath));
+        MetersState metersState = Get.find<MetersState>();
+        List dataFromFile = service.getMeters();
+        for (MeterDto e in dataFromFile) {
+          Meter m = e.copyWith(groupId: groupId).toDomain();
+          try {
+            m = Get.find(tag: e.id);
+          } catch (err) {
+            metersState.addNewMeter(m);
+          }
+          final values = service.getMeterValues(m.id);
+          for (final v in values) {
+            m.addValue(v.toDomain());
+          }
+        }
+        metersState.update();
+        metersState.notifyChildrens();
+        exportAlowed.value = true;
+        msg.push(msg: "Import done");
+      } on Exception catch (e) {
+        msg.push(msg: "Import Error, fail open file: $e");
       }
-      m.addValue(MeterValue(e["date"], e["reading"], correct: 0));
+    } on Exception catch (e) {
+      msg.push(msg: "Import from file error : $e");
     }
-    metersState.update();
-    metersState.notifyChildrens();
-    exportAlowed.value = true;
-    msg.push(msg: "Import done");
   }
 
   exportToFile() async {
     MetersState metersState = Get.find<MetersState>();
-    String? output = appDataPath +
-        "/readings@" +
-        DateFormat("yyyy-MM-dd_ms").format(DateTime.now()) +
-        ".pdf";
+    String? output = generateFilePath();
     for (Meter m in metersState.meters) {
       try {
         int val = Get.find<Meter>(tag: m.id).getLastValueCorrected();
+        service.setMeterDataToExport(meterDto: MeterDto.fromDomain(m));
         service.setMeterReading(meterId: m.id, val: val.toString());
       } on Exception catch (e) {
         msg.push(msg: "Error $e");
@@ -79,11 +106,18 @@ class DataFromFileState extends GetxController {
       }
     }
     try {
-      await service.setFilePath(filePath.value);
-      await service.exportData(outputPath: output);
+      await service.exportData(
+          output: File(output), template: File(filePath.value));
     } on Exception catch (e) {
       msg.push(msg: "Error $e");
     }
     msg.push(msg: "Export done to file $output");
+  }
+
+  String generateFilePath() {
+    return appDataPath +
+        "/readings@" +
+        DateFormat("yyyy-MM-dd_ms").format(DateTime.now()) +
+        fileExtension;
   }
 }

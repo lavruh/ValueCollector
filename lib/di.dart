@@ -3,6 +3,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/data/services/console_info_msg_service.dart';
+import 'package:rh_collector/data/services/csv_meters_service.dart';
 import 'package:rh_collector/data/services/csv_route_service.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
 import 'package:rh_collector/data/services/db_service.dart';
@@ -39,7 +40,8 @@ initDependencies() async {
   final db = Get.put<DbService>(SembastDbService(dbName: "metersReadings"));
   await db.openDb();
   Get.put<FsSelectionService>(FilePickerSelectionService());
-  Get.put<DataFromFileService>(PdfMetersService());
+  Get.put<DataFromFileService>(PdfMetersService(), tag: "bokaPdf");
+  Get.put<DataFromFileService>(CsvMetersService(), tag: "csv");
   Get.put<RouteService>(CsvRouteService());
   Get.put<Recognizer>(Recognizer());
   Get.put<CameraState>(CameraStateDevice(), permanent: true);

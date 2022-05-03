@@ -23,6 +23,9 @@ dependencies:
   csv: ^5.0.1
   mockito: ^5.1.0
   build_runner: ^2.1.10
+  awesome_notifications: ^0.6.21
+  numberpicker: ^2.1.1
+  flutter_slidable: ^1.2.0
 
 dev_dependencies:
   flutter_test:

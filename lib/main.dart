@@ -5,10 +5,26 @@ import 'package:camera/camera.dart';
 import 'package:rh_collector/ui/screens/meters_screen.dart';
 import 'di.dart';
 import 'package:rh_collector/domain/states/camera_state.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (await isPermissionsGranted()) {
+    AwesomeNotifications()
+        .initialize('resource://drawable/res_notification_app_icon', [
+      NotificationChannel(
+          channelKey: 'basic_channel',
+          channelName: 'Basic Notifications',
+          defaultColor: Colors.grey,
+          channelDescription: 'basic_channel',
+          channelShowBadge: true,
+          enableLights: true,
+          ledColor: Colors.red,
+          ledOnMs: 500,
+          ledOffMs: 1000,
+          enableVibration: true,
+          importance: NotificationImportance.High)
+    ]);
     cameras = await availableCameras();
     await initDependencies();
     runApp(const CameraApp());
@@ -68,19 +84,22 @@ class _CameraAppState extends State<CameraApp>
   }
 
   final ThemeData _theme = ThemeData(
-      primarySwatch: Colors.grey,
-      primaryColor: Colors.grey,
-      elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.grey))),
-      visualDensity: VisualDensity.adaptivePlatformDensity,
-      fontFamily: "Georgia",
-      textTheme: const TextTheme(
-        headline1: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
-        headline2: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-        headline3: TextStyle(
-            fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
-        headline6: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
-        bodyText1: TextStyle(fontSize: 12.0),
-      ));
+    primarySwatch: Colors.grey,
+    primaryColor: Colors.grey,
+    elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.grey))),
+    visualDensity: VisualDensity.adaptivePlatformDensity,
+    fontFamily: "Georgia",
+    textTheme: const TextTheme(
+      headline1: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+      headline2: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+      headline3: TextStyle(
+          fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
+      headline6: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+      bodyText1: TextStyle(fontSize: 12.0),
+    ),
+    // inputDecorationTheme: InputDecorationTheme(
+    //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5))),
+  );
 }

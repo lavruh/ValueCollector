@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
+import 'package:rh_collector/ui/widgets/delete_confirm_dialog.dart';
 import 'package:rh_collector/ui/widgets/meter_value_edit_widget.dart';
 
 class MeterEditScreen extends StatefulWidget {
@@ -125,20 +126,7 @@ class _MeterEditScreenState extends State<MeterEditScreen> {
     return await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Delete Meter'),
-          content: const Text("Are you sure to want delete"),
-          actions: [
-            ElevatedButton(
-              child: const Text('Yes'),
-              onPressed: () => Navigator.of(context).pop(true),
-            ),
-            ElevatedButton(
-              child: const Text('No'),
-              onPressed: () => Navigator.of(context).pop(false),
-            )
-          ],
-        );
+        return const DeleteConfirmDialog();
       },
     );
   }

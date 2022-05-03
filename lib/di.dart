@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
@@ -22,6 +23,7 @@ import 'package:rh_collector/domain/states/camera_state_mock.dart';
 import 'package:rh_collector/domain/states/data_from_file_state.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
+import 'package:rh_collector/domain/states/reminders_state.dart';
 import 'package:rh_collector/domain/states/recognizer.dart';
 import 'package:rh_collector/domain/states/route_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,6 +47,7 @@ initDependencies() async {
   Get.put<RouteService>(CsvRouteService());
   Get.put<Recognizer>(Recognizer());
   Get.put<CameraState>(CameraStateDevice(), permanent: true);
+  Get.lazyPut(() => RemindersState());
   Get.put<MeterGroups>(MeterGroups());
   Get.put<MetersState>(MetersState());
   Get.put<RouteState>(RouteState());
@@ -67,6 +70,9 @@ Future<bool> isPermissionsGranted() async {
   // if (await Permission.manageExternalStorage.status.isDenied) {
   //   await Permission.manageExternalStorage.request();
   // }
+  if (await AwesomeNotifications().isNotificationAllowed() == false) {
+    AwesomeNotifications().requestPermissionToSendNotifications();
+  }
   if (await Permission.storage.status.isDenied) {
     await Permission.storage.request();
   }

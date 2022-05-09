@@ -54,14 +54,23 @@ class _MeterEditScreenState extends State<MeterEditScreen> {
                         children: [
                           Text("Name:",
                               style: Theme.of(context).textTheme.headline5),
-                          _input(nameCtrl),
+                          EditorTextInputFieldWidget(
+                            ctrl: nameCtrl,
+                            key: const Key('NameInput'),
+                          ),
                           Text("Unit:",
                               style: Theme.of(context).textTheme.headline5),
-                          _input(unitCtrl),
+                          EditorTextInputFieldWidget(
+                            ctrl: unitCtrl,
+                            key: const Key('UnitInput'),
+                          ),
                           Text("Correction:",
                               style: Theme.of(context).textTheme.headline5),
-                          _input(correctionCtrl,
-                              keyboardType: TextInputType.number),
+                          EditorTextInputFieldWidget(
+                            ctrl: correctionCtrl,
+                            keyboardType: TextInputType.number,
+                            key: const Key('CorrectionInput'),
+                          ),
                         ],
                       ),
                       ElevatedButton(
@@ -130,8 +139,19 @@ class _MeterEditScreenState extends State<MeterEditScreen> {
       },
     );
   }
+}
 
-  Widget _input(TextEditingController ctrl, {TextInputType? keyboardType}) {
+class EditorTextInputFieldWidget extends StatelessWidget {
+  const EditorTextInputFieldWidget({
+    Key? key,
+    required this.ctrl,
+    this.keyboardType,
+  }) : super(key: key);
+  final TextEditingController ctrl;
+  final TextInputType? keyboardType;
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
         width: MediaQuery.of(context).size.width,
         child: TextField(

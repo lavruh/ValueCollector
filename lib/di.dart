@@ -3,6 +3,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:rh_collector/data/services/console_info_msg_service.dart';
 import 'package:rh_collector/data/services/csv_meters_service.dart';
 import 'package:rh_collector/data/services/csv_route_service.dart';
@@ -65,25 +66,38 @@ initDependenciesTest() {
 }
 
 Future<bool> isPermissionsGranted() async {
-  bool fl = false;
-  // Request of this permission on old devices leads to crash
-  // if (await Permission.manageExternalStorage.status.isDenied) {
-  //   await Permission.manageExternalStorage.request();
-  // }
-  if (await AwesomeNotifications().isNotificationAllowed() == false) {
-    AwesomeNotifications().requestPermissionToSendNotifications();
+  bool fl = true;
+  int v = await getAndroidVersion() ?? 5;
+  if (v >= 12) {
+    // Request of this permission on old devices leads to crash
+    if (fl && await Permission.manageExternalStorage.status.isDenied) {
+      fl = await Permission.manageExternalStorage.request().isGranted;
+    }
+  } else {
+    if (fl && await Permission.storage.status.isDenied) {
+      fl = await Permission.storage.request().isGranted;
+    }
   }
-  if (await Permission.storage.status.isDenied) {
-    await Permission.storage.request();
+  if (fl && await AwesomeNotifications().isNotificationAllowed() == false) {
+    fl = await AwesomeNotifications().requestPermissionToSendNotifications();
   }
-  if (await Permission.camera.status.isDenied) {
-    await Permission.camera.request();
+  if (fl && await Permission.camera.status.isDenied) {
+    fl = await Permission.camera.request().isGranted;
   }
-  if (await Permission.storage.status.isGranted &
-      await Permission.camera.status.isGranted) {
-    fl = true;
+  if (fl && await Permission.microphone.status.isDenied) {
+    fl = await Permission.microphone.request().isGranted;
   }
   return fl;
+}
+
+Future<int?> getAndroidVersion() async {
+  if (Platform.isAndroid) {
+    final deviceInfo = DeviceInfoPlugin();
+    final androidInfo = await deviceInfo.androidInfo;
+    final androidVersion = androidInfo.version.release ?? '5';
+    return int.parse(androidVersion.split('.')[0]);
+  }
+  return null;
 }
 
 initTestData() {

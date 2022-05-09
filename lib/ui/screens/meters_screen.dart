@@ -52,7 +52,9 @@ class _MetersScreenState extends State<MetersScreen> {
       }),
       bottomNavigationBar: const MetersBottomPanalWidget(),
       resizeToAvoidBottomInset: true,
-      drawer: const DrawerMenuWidget(),
+      drawer: const DrawerMenuWidget(
+        key: Key('menu'),
+      ),
     );
   }
 }

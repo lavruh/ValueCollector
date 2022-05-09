@@ -32,6 +32,7 @@ class _MetersBottomPanalWidgetState extends State<MetersBottomPanalWidget> {
             FractionallySizedBox(
               widthFactor: 0.8,
               child: TextField(
+                  key: const Key('SearchField'),
                   controller: filterInputTextController,
                   decoration: InputDecoration(
                       suffixIcon: IconButton(

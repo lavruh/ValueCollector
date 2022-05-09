@@ -91,7 +91,9 @@ class MeterWidget extends StatelessWidget {
     if (reading != null) {
       Get.find<Meter>(tag: _id)
           .addValue(MeterValue(DateTime.now(), int.tryParse(reading) ?? 0));
-      newReadingSetCallBack!();
+      if (newReadingSetCallBack != null) {
+        newReadingSetCallBack!();
+      }
     }
   }
 }

@@ -4,33 +4,17 @@ import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/widgets/delete_confirm_dialog.dart';
-import 'package:rh_collector/ui/widgets/meter_value_edit_widget.dart';
+import 'package:rh_collector/ui/widgets/meter_editor/editor_text_input_field_widget.dart';
+import 'package:rh_collector/ui/widgets/meter_editor/meter_values_widget.dart';
 
-class MeterEditScreen extends StatefulWidget {
+class MeterEditScreen extends StatelessWidget {
   MeterEditScreen({Key? key, required Meter meter})
-      : _meter = meter,
+      : _meter = meter.copyWith(),
         super(key: key) {
     Get.replace<Meter>(_meter, tag: "meterEdit");
   }
 
   final Meter _meter;
-
-  @override
-  State<MeterEditScreen> createState() => _MeterEditScreenState();
-}
-
-class _MeterEditScreenState extends State<MeterEditScreen> {
-  TextEditingController nameCtrl = TextEditingController();
-  TextEditingController unitCtrl = TextEditingController();
-  TextEditingController correctionCtrl = TextEditingController();
-
-  @override
-  void initState() {
-    nameCtrl.text = widget._meter.name;
-    unitCtrl.text = widget._meter.unit ?? "";
-    correctionCtrl.text = widget._meter.correction.toString();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,122 +28,78 @@ class _MeterEditScreenState extends State<MeterEditScreen> {
               child: SingleChildScrollView(
                 child: Card(
                   elevation: 3,
-                  child: Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: 3,
-                    runSpacing: 3,
-                    children: [
-                      Wrap(
-                        direction: Axis.vertical,
-                        children: [
-                          Text("Name:",
-                              style: Theme.of(context).textTheme.headline5),
-                          EditorTextInputFieldWidget(
-                            ctrl: nameCtrl,
-                            key: const Key('NameInput'),
-                          ),
-                          Text("Unit:",
-                              style: Theme.of(context).textTheme.headline5),
-                          EditorTextInputFieldWidget(
-                            ctrl: unitCtrl,
-                            key: const Key('UnitInput'),
-                          ),
-                          Text("Correction:",
-                              style: Theme.of(context).textTheme.headline5),
-                          EditorTextInputFieldWidget(
-                            ctrl: correctionCtrl,
-                            keyboardType: TextInputType.number,
-                            key: const Key('CorrectionInput'),
-                          ),
-                        ],
-                      ),
-                      ElevatedButton(
-                        onPressed: _submit,
-                        child: const Icon(Icons.check),
-                      ),
-                      ElevatedButton(
-                        onPressed: _delete,
-                        child: const Icon(Icons.delete_forever),
-                      ),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      children: [
+                        Wrap(
+                          direction: Axis.vertical,
+                          children: [
+                            EditorTextInputFieldWidget(
+                              lable: 'Name',
+                              initValue: _meter.name,
+                              setValue: (val) {
+                                _meter.name = val;
+                              },
+                              key: const Key('NameInput'),
+                            ),
+                            EditorTextInputFieldWidget(
+                              lable: 'Unit',
+                              initValue: _meter.unit ?? "",
+                              setValue: (val) {
+                                _meter.unit = val;
+                              },
+                              key: const Key('UnitInput'),
+                            ),
+                            EditorTextInputFieldWidget(
+                              lable: 'Correction',
+                              initValue: _meter.correction.toString(),
+                              setValue: (val) {
+                                _meter.correction = int.parse(val);
+                              },
+                              keyboardType: TextInputType.number,
+                              key: const Key('CorrectionInput'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-            Flexible(
-              child: Card(
-                  elevation: 3,
-                  child: GetBuilder<Meter>(
-                      tag: "meterEdit",
-                      builder: (_) {
-                        return ListView(
-                          reverse: true,
-                          children: _.values
-                              .map((element) => MeterValueEditWidget(
-                                    meterValue: element,
-                                    deleteCallback: _.deleteValue,
-                                    updateCallback: _.updateValue,
-                                  ))
-                              .toList(),
-                        );
-                      })),
+            const Flexible(
+              flex: 2,
+              child: MeterValuesWidget(),
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            widget._meter.addValue(MeterValue(DateTime.now(), 0));
-          },
-          child: const Icon(Icons.add),
+        appBar: AppBar(
+          actions: [
+            IconButton(onPressed: _addNewValue, icon: const Icon(Icons.add)),
+            IconButton(onPressed: _submit, icon: const Icon(Icons.check)),
+            IconButton(
+                onPressed: _delete, icon: const Icon(Icons.delete_forever)),
+          ],
         ),
       ),
     );
   }
 
   _submit() {
-    widget._meter.name = nameCtrl.text;
-    widget._meter.unit = unitCtrl.text;
-    widget._meter.correction = int.tryParse(correctionCtrl.text) ?? 0;
-    widget._meter.updateDb();
-    Navigator.pop(context);
+    Get.find<MetersState>().updateMeter(_meter);
+    Get.back();
   }
 
   _delete() async {
-    if (await _deleteConfirmDialog()) {
-      Get.find<MetersState>().deleteMeter(widget._meter.id);
-      Navigator.pop(context);
+    if (await Get.dialog(const DeleteConfirmDialog())) {
+      Get.find<MetersState>().deleteMeter(_meter.id);
+      Get.back();
     }
   }
 
-  Future<bool> _deleteConfirmDialog() async {
-    return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return const DeleteConfirmDialog();
-      },
-    );
-  }
-}
-
-class EditorTextInputFieldWidget extends StatelessWidget {
-  const EditorTextInputFieldWidget({
-    Key? key,
-    required this.ctrl,
-    this.keyboardType,
-  }) : super(key: key);
-  final TextEditingController ctrl;
-  final TextInputType? keyboardType;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-        width: MediaQuery.of(context).size.width,
-        child: TextField(
-          controller: ctrl,
-          showCursor: true,
-          keyboardType: keyboardType,
-          style: Theme.of(context).textTheme.headline5,
-          textAlign: TextAlign.center,
-        ));
+  _addNewValue() {
+    _meter.addValue(MeterValue(DateTime.now(), 0));
   }
 }

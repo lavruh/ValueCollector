@@ -34,6 +34,12 @@ class MetersState extends GetxController {
   }
 
   updateMeter(Meter m) async {
+    int index = meters.indexWhere((element) => element.id == m.id);
+    if (index == -1) {
+      throw Exception("Meter with ${m.id} does not exists");
+    }
+    meters[index] = m;
+    Get.replace<Meter>(m, tag: m.id);
     await m.updateDb();
     update();
   }

@@ -41,7 +41,7 @@ main() {
 
   test('Add meter', () async {
     Meter m = Meter(groupId: 'MN', name: 'Engine PS');
-    await state.updateMeter(m);
+    await state.addNewMeter(m);
     await state.getMeters([m.groupId]);
     expect(state.meters.length, 1);
   });

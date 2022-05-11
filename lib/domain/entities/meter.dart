@@ -90,7 +90,13 @@ class Meter extends GetxController {
   }
 
   updateValue(MeterValue v) async {
+    int index = values.indexWhere((element) => element.id == v.id);
+    if (index == -1) {
+      throw Exception("Update failure - Meter value does not exist");
+    }
+    values[index] = v;
     await db.updateEntry(v.toJson(), table: _id);
+    update();
   }
 
   deleteValue(MeterValue v) async {
@@ -128,5 +134,21 @@ class Meter extends GetxController {
   @override
   String toString() {
     return 'Meter(_id: $_id, name: $name, unit: $unit, groupId: $groupId)';
+  }
+
+  Meter copyWith({
+    String? id,
+    String? name,
+    String? unit,
+    String? groupId,
+    int? correction,
+  }) {
+    return Meter(
+      id: id ?? _id,
+      name: name ?? _name,
+      unit: unit ?? _unit,
+      groupId: groupId ?? this.groupId,
+      correction: correction ?? this.correction,
+    );
   }
 }

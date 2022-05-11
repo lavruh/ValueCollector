@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 
-class MeterValueEditWidget extends StatefulWidget {
+class MeterValueEditWidget extends StatelessWidget {
   const MeterValueEditWidget({
     Key? key,
     required this.meterValue,
@@ -12,56 +14,74 @@ class MeterValueEditWidget extends StatefulWidget {
 
   final MeterValue meterValue;
   final Function? deleteCallback;
-  final Function? updateCallback;
-
-  @override
-  State<MeterValueEditWidget> createState() => _MeterValueEditWidgetState();
-}
-
-class _MeterValueEditWidgetState extends State<MeterValueEditWidget> {
-  TextEditingController ctrl = TextEditingController();
-
-  @override
-  void initState() {
-    ctrl.text = widget.meterValue.value.toString();
-    super.initState();
-  }
+  final Function(MeterValue v)? updateCallback;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(3.0),
-        child: Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Text(
-              DateFormat("yyyy-MM-dd").format(widget.meterValue.date),
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
-            FractionallySizedBox(
-              widthFactor: 0.3,
-              child: TextField(
-                controller: ctrl,
-                keyboardType: TextInputType.number,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.subtitle1,
-                onSubmitted: (String v) {
-                  widget.meterValue.value = int.tryParse(ctrl.text) ?? 0;
-                  widget.updateCallback!(widget.meterValue);
+    return Slidable(
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Container(),
+              InkWell(
+                child: Text(
+                  DateFormat("yyyy-MM-dd").format(meterValue.date),
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+                onTap: () async {
+                  final date = await Get.dialog<DateTime>(DatePickerDialog(
+                    initialDate: meterValue.date,
+                    firstDate: DateTime(DateTime.now().year - 2),
+                    lastDate: DateTime(DateTime.now().year + 2),
+                  ));
+                  if (date != null) {
+                    meterValue.date = date;
+                    updateCallback!(meterValue);
+                  }
                 },
               ),
-            ),
-            Text(widget.meterValue.correctedValue.toString()),
-            IconButton(
-                onPressed: () {
-                  widget.deleteCallback!(widget.meterValue);
-                },
-                icon: const Icon(Icons.delete_forever))
-          ],
+              FractionallySizedBox(
+                widthFactor: 0.3,
+                child: TextField(
+                  controller:
+                      TextEditingController(text: meterValue.value.toString()),
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  decoration: const InputDecoration(labelText: "Raw value"),
+                  onSubmitted: (String v) {
+                    meterValue.value = int.tryParse(v) ?? 0;
+                    updateCallback!(meterValue);
+                  },
+                ),
+              ),
+              FractionallySizedBox(
+                widthFactor: 0.3,
+                child: TextField(
+                  enabled: false,
+                  controller: TextEditingController(
+                      text: meterValue.correctedValue.toString()),
+                  textAlign: TextAlign.center,
+                  decoration:
+                      const InputDecoration(labelText: "Corrected value"),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
+      endActionPane: ActionPane(motion: const ScrollMotion(), children: [
+        SlidableAction(
+          icon: Icons.delete_forever,
+          backgroundColor: Colors.red,
+          onPressed: (BuildContext context) {
+            deleteCallback!(meterValue);
+          },
+        ),
+      ]),
     );
   }
 }

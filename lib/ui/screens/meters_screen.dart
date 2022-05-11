@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/widgets/drawer_menu_widget.dart';
@@ -43,7 +44,12 @@ class _MetersScreenState extends State<MetersScreen> {
           return ListView.builder(
             itemCount: _.meters.length,
             itemBuilder: (BuildContext context, int i) {
-              return MeterWidget(meterId: _.meters[i].id);
+              return MeterWidget(
+                meterId: _.meters[i].id,
+                newReadingSetCallBack: () {
+                  _.updateMeter(Get.find<Meter>(tag: _.meters[i].id));
+                },
+              );
             },
           );
         } else {

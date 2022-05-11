@@ -58,6 +58,7 @@ Future<void> meterEditorTest(WidgetTester tester) async {
   expect(find.textContaining(dateString), findsOneWidget);
   const valFromCam = 123456;
   await moveToCamScreenAndSetVal(tester: tester, value: valFromCam.toString());
+  await tester.pump(const Duration(seconds: 1));
   expect(find.textContaining(valFromCam.toString()), findsNWidgets(2));
   expect(find.textContaining(dateString), findsNWidgets(2));
   await tester.tap(find.textContaining(meterName));
@@ -81,44 +82,50 @@ Future<void> meterEditorTest(WidgetTester tester) async {
   await tester.pump(const Duration(seconds: 5));
   expect(
       find.descendant(
-          of: find.byType(MeterValueEditWidget).last,
+          of: find.byType(MeterValueEditWidget).first,
           matching: find.text(valFromCam2.toString())),
       findsOneWidget);
   expect(
       find.descendant(
-          of: find.byType(MeterValueEditWidget).last,
+          of: find.byType(MeterValueEditWidget).first,
           matching: find.text((valFromCam2 + meterCorrection).toString())),
       findsOneWidget);
   expect(find.textContaining(dateString), findsNWidgets(3));
   expect(
       find.descendant(
-          of: find.byType(MeterValueEditWidget).first,
-          matching: find.text('0')),
+          of: find.byType(MeterValueEditWidget).last, matching: find.text('0')),
       findsNWidgets(2));
   expect(
       find.descendant(
           of: find.byType(MeterValueEditWidget).at(1),
           matching: find.text(valFromCam.toString())),
       findsNWidgets(2));
+
+  await tester.drag(
+      find.byType(MeterValueEditWidget).at(1), const Offset(-300, 0));
+  await tester.pump(const Duration(seconds: 1));
+  await tester.pump(const Duration(seconds: 5));
+
   await tester.tap(find.descendant(
       of: find.byType(MeterValueEditWidget).at(1),
       matching: find.byIcon(Icons.delete_forever)));
+
   await tester.pump(const Duration(seconds: 1));
+
   expect(
       find.descendant(
-          of: find.byType(MeterValueEditWidget).last,
+          of: find.byType(MeterValueEditWidget).first,
           matching: find.text(valFromCam2.toString())),
       findsOneWidget);
   expect(
       find.descendant(
-          of: find.byType(MeterValueEditWidget).last,
+          of: find.byType(MeterValueEditWidget).first,
           matching: find.text((valFromCam2 + meterCorrection).toString())),
       findsOneWidget);
   expect(find.textContaining(dateString), findsNWidgets(2));
   expect(
       find.descendant(
-          of: find.byType(MeterValueEditWidget).first,
-          matching: find.text('0')),
+          of: find.byType(MeterValueEditWidget).last, matching: find.text('0')),
       findsNWidgets(2));
   await tester.pump(const Duration(seconds: 5));
 }

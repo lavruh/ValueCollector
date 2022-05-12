@@ -6,8 +6,8 @@ import 'package:rh_collector/domain/entities/meter_value.dart';
 
 class Meter extends GetxController {
   final String _id;
-  String _name;
-  String? _unit;
+  String name;
+  String? unit;
   String groupId;
   int correction = 0;
 
@@ -17,27 +17,15 @@ class Meter extends GetxController {
 
   Meter({
     String? id,
-    required String name,
+    required this.name,
     required this.groupId,
-    String? unit,
+    this.unit,
     this.correction = 0,
-  })  : _id = id ?? UniqueKey().toString(),
-        _name = name,
-        _unit = unit {
+  }) : _id = id ?? UniqueKey().toString() {
     getValues();
   }
 
   String get id => _id;
-  String get name => _name;
-  String? get unit => _unit;
-
-  set unit(String? unit) {
-    _unit = unit;
-  }
-
-  set name(String name) {
-    _name = name;
-  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -50,16 +38,16 @@ class Meter extends GetxController {
   }
 
   Meter.fromJson(Map<String, dynamic> map)
-      : _name = map['name'] ?? "",
+      : name = map['name'] ?? "",
         _id = map['id'] ?? UniqueKey().toString(),
-        _unit = map['unit'],
+        unit = map['unit'],
         groupId = map["groupId"] ?? "W",
         correction = map["correction"] ?? 0;
 
   Meter.fromFileDto(Map<String, dynamic> map)
-      : _name = map['name'] ?? "",
+      : name = map['name'] ?? "",
         _id = map['id'] ?? UniqueKey().toString(),
-        _unit = map['unit'],
+        unit = map['unit'],
         groupId = map["groupId"] ?? "W",
         correction = map["correction"] ?? 0;
 
@@ -103,7 +91,7 @@ class Meter extends GetxController {
     if (values.isNotEmpty) {
       return values.last.correctedValue;
     } else {
-      throw Exception("No values in meter $_id - $_name");
+      throw Exception("No values in meter $_id - $name");
     }
   }
 
@@ -137,8 +125,8 @@ class Meter extends GetxController {
   }) {
     return Meter(
       id: id ?? _id,
-      name: name ?? _name,
-      unit: unit ?? _unit,
+      name: name ?? this.name,
+      unit: unit ?? this.unit,
       groupId: groupId ?? this.groupId,
       correction: correction ?? this.correction,
     );

@@ -18,7 +18,6 @@ class DataFromFileState extends GetxController {
   final fs = Get.find<FsSelectionService>();
   DataFromFileService service = Get.find<DataFromFileService>(tag: "csv");
   final filePath = "".obs;
-  final exportAlowed = false.obs;
   final msg = Get.find<InfoMsgService>();
   final exportFileType = AllowedFileTypes.csv.obs;
   String fileExtension = ".csv";
@@ -54,7 +53,6 @@ class DataFromFileState extends GetxController {
             allowedExtensions: ["pdf"],
             dialogTitle: "Select template to export");
       }
-      exportAlowed.value = true;
       exportToFile();
     } on Exception catch (e) {
       msg.push(msg: "Error $e");
@@ -71,7 +69,7 @@ class DataFromFileState extends GetxController {
         for (MeterDto e in dataFromFile) {
           Meter m = e.copyWith(groupId: groupId).toDomain();
           try {
-            m = Get.find(tag: e.id);
+            m = metersState.getMeter(e.id);
           } catch (err) {
             metersState.addNewMeter(m);
           }
@@ -80,9 +78,7 @@ class DataFromFileState extends GetxController {
             m.addValue(v.toDomain());
           }
         }
-        metersState.update();
-        metersState.notifyChildrens();
-        exportAlowed.value = true;
+        Get.find<MetersState>().update();
         msg.push(msg: "Import done");
       } on Exception catch (e) {
         msg.push(msg: "Import Error, fail open file: $e");
@@ -97,7 +93,7 @@ class DataFromFileState extends GetxController {
     String? output = generateFilePath();
     for (Meter m in metersState.meters) {
       try {
-        int val = Get.find<Meter>(tag: m.id).getLastValueCorrected();
+        int val = m.getLastValueCorrected();
         service.setMeterDataToExport(meterDto: MeterDto.fromDomain(m));
         service.setMeterReading(meterId: m.id, val: val.toString());
       } on Exception catch (e) {

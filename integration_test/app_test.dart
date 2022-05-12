@@ -1,6 +1,9 @@
+@Skip("Runs on device, takes few minutes")
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/data/services/db_service.dart';
+import 'package:rh_collector/domain/states/meter_groups_state.dart';
+import 'package:rh_collector/domain/states/meters_state.dart';
 
 import 'groups_menu.dart';
 import 'import_search.dart';
@@ -22,6 +25,8 @@ void main() async {
     await Get.find<DbService>().clearDb(table: "MAINENGSB");
     await Get.find<DbService>().clearDb(table: "MAINENGPS");
     await Get.find<DbService>().clearDb(table: "JETPUHPSB");
+    Get.find<MeterGroups>().selected.value = ['W'];
+    Get.find<MetersState>().meters.clear();
   });
   testWidgets("""Overview Screen test""", overviewScreenTest);
 

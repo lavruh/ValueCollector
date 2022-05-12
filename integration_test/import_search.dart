@@ -1,7 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:rh_collector/data/services/mocks/fs_selection_service_mock.dart';
 import 'package:rh_collector/di.dart';
+import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/ui/screens/meters_screen.dart';
 
 import 'utils.dart';
@@ -17,7 +19,7 @@ Future<void> importDataAndSearchTest(WidgetTester tester) async {
   (fsSelect as FsSelectionServiceMock).filePath =
       appDataPath + "/meters_test.csv";
   await tester.pumpWidget(testableWidget(const MetersScreen()));
-  await tester.pump();
+  await tester.pump(const Duration(seconds: 1));
   expect(find.text('(Weekly)'), findsOneWidget);
   await tester.dragFrom(
       tester.getTopLeft(find.byType(MaterialApp)), const Offset(300, 0));
@@ -36,9 +38,11 @@ Future<void> importDataAndSearchTest(WidgetTester tester) async {
   await tester.pump();
   await tester.tap(find.text('Weekly'));
   await tester.pump();
+  Get.find<MeterGroups>().selected.value = ['M'];
   await tester.tapAt(const Offset(400, 0));
-  await tester.pump();
+  await tester.pump(const Duration(seconds: 1));
 
+  await tester.pump(const Duration(seconds: 10));
   expect(find.text('(Monthly)'), findsOneWidget);
   (fsSelect as FsSelectionServiceMock).filePath =
       appDataPath + "/RBW-ChkRnHrs-M.pdf";

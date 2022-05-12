@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/domain/states/route_state.dart';
 import 'package:rh_collector/ui/widgets/meter_widget.dart';
 
 class RouteScreen extends StatelessWidget {
-  const RouteScreen({Key? key}) : super(key: key);
+  RouteScreen({Key? key}) : super(key: key);
+  final metersState = Get.find<MetersState>();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class RouteScreen extends StatelessWidget {
                   itemCount: _.route.length,
                   itemBuilder: (BuildContext context, int i) {
                     return MeterWidget(
-                      meterId: _.route[i],
+                      meter: metersState.getMeter(_.route[i]),
                       newReadingSetCallBack: () {
                         _.readingDoneGoNext(doneMeterIndex: i);
                       },
@@ -53,7 +55,7 @@ class RouteScreen extends StatelessWidget {
                   itemCount: _.doneMeters.length,
                   itemBuilder: (BuildContext context, int i) {
                     return MeterWidget(
-                      meterId: _.doneMeters[i],
+                      meter: metersState.getMeter(_.doneMeters[i]),
                     );
                   },
                 );

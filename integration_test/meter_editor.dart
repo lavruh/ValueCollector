@@ -21,6 +21,7 @@ Future<void> meterEditorTest(WidgetTester tester) async {
   await tester.pump();
   await tester.tap(find.byIcon(Icons.add));
   await tester.pump();
+  await tester.pump(const Duration(seconds: 5));
   expect(find.textContaining('new_meter'), findsOneWidget);
   await tester.tap(find.textContaining('new_meter'));
   await tester.pump();

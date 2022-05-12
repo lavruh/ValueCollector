@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:rh_collector/data/services/db_service.dart';
+import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 
 import 'meter_groups_state.dart';
@@ -7,18 +8,15 @@ import 'meter_groups_state.dart';
 class MetersState extends GetxController {
   final meters = <Meter>[].obs;
   final db = Get.find<DbService>();
+  final msg = Get.find<InfoMsgService>();
+  final meterGroups = Get.find<MeterGroups>();
 
-  getMeter(String id) async {
+  Meter getMeter(String id) {
     int idx = meters.indexWhere((element) => element.id == id);
     if (idx != -1) {
-      Meter m = meters[idx];
-      Get.put<Meter>(m, tag: m.id, permanent: true);
-    } else {
-      await getMeters([]);
-      if (meters.indexWhere((element) => element.id == id) == -1) {
-        throw Exception("No Meter with id[$id] found");
-      }
+      return meters[idx];
     }
+    throw Exception("No meters with id $id found");
   }
 
   getMeters(List<String> groupId) async {
@@ -26,20 +24,18 @@ class MetersState extends GetxController {
     List res = await db.getEntries(_createRequest(groupId), table: "meters");
     for (Map<String, dynamic> e in res) {
       Meter m = Meter.fromJson(e);
-      Get.put<Meter>(m, tag: m.id, permanent: true);
+      await m.getValues();
       meters.add(m);
     }
-
     update();
   }
 
   updateMeter(Meter m) async {
     int index = meters.indexWhere((element) => element.id == m.id);
     if (index == -1) {
-      throw Exception("Meter with ${m.id} does not exists");
+      msg.push(msg: "Meter with ${m.id} does not exists");
     }
     meters[index] = m;
-    Get.replace<Meter>(m, tag: m.id);
     await m.updateDb();
     update();
   }
@@ -51,11 +47,10 @@ class MetersState extends GetxController {
     } else {
       _m = Meter(
         name: "new_meter",
-        groupId: Get.find<MeterGroups>().selected.first,
+        groupId: meterGroups.getFirstSelectedGroupId(),
       );
     }
     meters.add(_m);
-    Get.put<Meter>(_m, tag: _m.id);
     updateMeter(_m);
   }
 
@@ -79,11 +74,10 @@ class MetersState extends GetxController {
     for (Map<String, dynamic> e in res) {
       Meter m = Meter.fromJson(e);
       if (m.name.contains(RegExp(filter, caseSensitive: false))) {
-        Get.put<Meter>(m, tag: m.id);
+        await m.getValues();
         meters.add(m);
       }
     }
-
     update();
   }
 

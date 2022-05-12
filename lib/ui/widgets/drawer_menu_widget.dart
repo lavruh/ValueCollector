@@ -36,8 +36,9 @@ class DrawerMenuWidget extends StatelessWidget {
               style: textTheme,
             ),
             onTap: () async {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const RouteScreen()));
+              await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => RouteScreen()));
+              Get.find<MetersState>().update();
             },
           ),
           ListTile(
@@ -61,21 +62,17 @@ class DrawerMenuWidget extends StatelessWidget {
               Get.find<DataFromFileState>().initImportData();
             },
           ),
-          GetX<DataFromFileState>(builder: (_) {
-            return ListTile(
-              leading: const Icon(Icons.logout_outlined),
-              title: Text(
-                "Export to file",
-                style: textTheme,
-              ),
-              subtitle: _.exportAlowed.value
-                  ? Text("Export to $appDataPath")
-                  : const Text("Select export template file"),
-              onTap: () async {
-                _.initExportData();
-              },
-            );
-          }),
+          ListTile(
+            leading: const Icon(Icons.logout_outlined),
+            title: Text(
+              "Export to file",
+              style: textTheme,
+            ),
+            subtitle: Text("Export to $appDataPath"),
+            onTap: () async {
+              Get.find<DataFromFileState>().initExportData();
+            },
+          ),
         ],
       ),
     );

@@ -52,14 +52,9 @@ Future<void> routesScreenTest(WidgetTester tester) async {
 
   await tester.tap(find.textContaining('ToDo'));
   await tester.pump(const Duration(seconds: 1));
-  await tester.tap(find.byIcon(Icons.add_a_photo_outlined).first);
-  await tester.pump(const Duration(seconds: 3));
+  await tester.tap(find.byTooltip('Back'));
+  await tester.pump(const Duration(seconds: 1));
   expect(find.textContaining('123456'), findsOneWidget);
-  // await tester.tapAt(const Offset(20, 20));
-  // await tester.tap(find.byTooltip('Back'));
-  // await tester.pump(const Duration(seconds: 5));
-  // expect(find.textContaining('ToDo(10)'), findsOneWidget);
-  // expect(find.textContaining('Done(1)'), findsOneWidget);
 
   await tester.pump(const Duration(seconds: 5));
 }

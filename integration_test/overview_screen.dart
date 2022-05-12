@@ -27,7 +27,7 @@ Future<void> overviewScreenTest(WidgetTester tester) async {
   expect(find.textContaining('Groups'), findsOneWidget);
   expect(find.textContaining('Notifications'), findsOneWidget);
   expect(find.textContaining('Import'), findsOneWidget);
-  expect(find.textContaining('Export'), findsOneWidget);
+  expect(find.textContaining('Export to file'), findsOneWidget);
   await tester.tap(find.textContaining('Groups'));
   await tester.pumpAndSettle();
   expect(find.textContaining('Groups :'), findsOneWidget);

@@ -1,35 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/widgets/drawer_menu_widget.dart';
 import 'package:rh_collector/ui/widgets/meter_widget.dart';
 import 'package:rh_collector/ui/widgets/meters_bottom_panel_widget.dart';
 
-class MetersScreen extends StatefulWidget {
+class MetersScreen extends StatelessWidget {
   const MetersScreen({Key? key}) : super(key: key);
 
   @override
-  _MetersScreenState createState() => _MetersScreenState();
-}
-
-class _MetersScreenState extends State<MetersScreen> {
-  final _meterGroups = Get.find<MeterGroups>();
-
-  @override
-  void initState() {
-    Get.find<MetersState>().getMeters(_meterGroups.selected);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    Get.find<MetersState>().getMeters(Get.find<MeterGroups>().selected);
     return Scaffold(
       appBar: AppBar(
         title: GetX<MeterGroups>(builder: (_) {
-          return Text(
-              "${_meterGroups.selected.map((e) => _meterGroups.getName(e))}");
+          return Text("${_.selected.map((e) => _.getName(e))}");
         }),
         actions: [
           IconButton(
@@ -45,9 +31,9 @@ class _MetersScreenState extends State<MetersScreen> {
             itemCount: _.meters.length,
             itemBuilder: (BuildContext context, int i) {
               return MeterWidget(
-                meterId: _.meters[i].id,
+                meter: _.meters[i],
                 newReadingSetCallBack: () {
-                  _.updateMeter(Get.find<Meter>(tag: _.meters[i].id));
+                  _.updateMeter(_.meters[i]);
                 },
               );
             },

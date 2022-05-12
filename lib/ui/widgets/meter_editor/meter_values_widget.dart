@@ -8,7 +8,7 @@ class MeterValuesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<Meter>(
+    return GetX<Meter>(
         tag: "meterEdit",
         builder: (_) {
           return Padding(

@@ -21,7 +21,7 @@ class RouteState extends GetxController {
     extractRouteName(path);
     for (String id in ids) {
       try {
-        await meters.getMeter(id);
+        meters.getMeter(id);
         route.add(id);
       } catch (e) {
         msg.push(msg: e.toString(), source: "RouteState");

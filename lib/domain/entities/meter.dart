@@ -33,12 +33,10 @@ class Meter extends GetxController {
 
   set unit(String? unit) {
     _unit = unit;
-    update();
   }
 
   set name(String name) {
     _name = name;
-    update();
   }
 
   Map<String, dynamic> toJson() {
@@ -56,9 +54,7 @@ class Meter extends GetxController {
         _id = map['id'] ?? UniqueKey().toString(),
         _unit = map['unit'],
         groupId = map["groupId"] ?? "W",
-        correction = map["correction"] ?? 0 {
-    getValues();
-  }
+        correction = map["correction"] ?? 0;
 
   Meter.fromFileDto(Map<String, dynamic> map)
       : _name = map['name'] ?? "",
@@ -71,13 +67,12 @@ class Meter extends GetxController {
     await db.updateEntry(toJson(), table: "meters");
   }
 
-  getValues() async {
+  Future<void> getValues() async {
     values.clear();
     List res = await db.getEntries([], table: _id);
     for (var e in res) {
       values.add(MeterValue.fromJson(e));
     }
-    update();
   }
 
   addValue(MeterValue v) async {
@@ -86,7 +81,6 @@ class Meter extends GetxController {
       values.add(v);
       await db.updateEntry(v.toJson(), table: _id);
     }
-    update();
   }
 
   updateValue(MeterValue v) async {
@@ -96,7 +90,6 @@ class Meter extends GetxController {
     }
     values[index] = v;
     await db.updateEntry(v.toJson(), table: _id);
-    update();
   }
 
   deleteValue(MeterValue v) async {
@@ -104,7 +97,6 @@ class Meter extends GetxController {
       values.removeWhere((element) => element.id == v.id);
       await db.removeEntry(v.id, table: _id);
     }
-    update();
   }
 
   int getLastValueCorrected() {

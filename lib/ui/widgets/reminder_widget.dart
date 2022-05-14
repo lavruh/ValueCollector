@@ -4,6 +4,7 @@ import 'package:rh_collector/ui/widgets/reminder/actions_panel_widget.dart';
 import 'package:rh_collector/ui/widgets/reminder/date_select_widget.dart';
 import 'package:rh_collector/ui/widgets/reminder/time_select_widget.dart';
 import 'package:rh_collector/ui/widgets/reminder/weekday_selector_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReminderWidget extends StatelessWidget {
   const ReminderWidget({
@@ -28,7 +29,8 @@ class ReminderWidget extends StatelessWidget {
         elevation: 5,
         child: ListTile(
           title: TextField(
-            decoration: const InputDecoration(label: Text("Name")),
+            decoration: InputDecoration(
+                label: Text(AppLocalizations.of(context)!.name)),
             controller: TextEditingController(text: reminder.text),
             onSubmitted: _updateText,
           ),
@@ -43,19 +45,19 @@ class ReminderWidget extends StatelessWidget {
                       callback: _updateMonth,
                       maxValue: 12,
                       minValue: 1,
-                      placeholder: 'M',
+                      placeholder: AppLocalizations.of(context)!.monthLetter,
                       value: reminder.schedule.month,
                     ),
                     DateSelectWidget(
                         value: reminder.schedule.day,
                         maxValue: 31,
                         minValue: 1,
-                        placeholder: 'D',
+                        placeholder: AppLocalizations.of(context)!.dayLetter,
                         callback: _updateDay),
                     const Icon(Icons.alarm),
                     TimeSelectWidget(
                         updateTime: updateTime, schedule: reminder.schedule),
-                    const Text("Repeat"),
+                    Text(AppLocalizations.of(context)!.repeat),
                     Checkbox(
                         value: reminder.schedule.repeat,
                         onChanged: _updateRepeat),

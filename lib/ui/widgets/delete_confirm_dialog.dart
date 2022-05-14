@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DeleteConfirmDialog extends StatelessWidget {
   const DeleteConfirmDialog({Key? key}) : super(key: key);
@@ -6,15 +7,15 @@ class DeleteConfirmDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Delete'),
-      content: const Text("Are you sure to want delete"),
+      title: Text(AppLocalizations.of(context)!.delete),
+      content: Text(AppLocalizations.of(context)!.deleteMsg),
       actions: [
         ElevatedButton(
-          child: const Text('Yes'),
+          child: Text(AppLocalizations.of(context)!.yes),
           onPressed: () => Navigator.of(context).pop(true),
         ),
         ElevatedButton(
-          child: const Text('No'),
+          child: Text(AppLocalizations.of(context)!.no),
           onPressed: () => Navigator.of(context).pop(false),
         )
       ],

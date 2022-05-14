@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/reminder.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TimeSelectWidget extends StatelessWidget {
   TimeSelectWidget({Key? key, required this.updateTime, required this.schedule})
@@ -23,7 +24,8 @@ class TimeSelectWidget extends StatelessWidget {
           }
         },
         side: const BorderSide(width: 0),
-        label: Text(
-            schedule.time != null ? schedule.time!.format(context) : "h:m"));
+        label: Text(schedule.time != null
+            ? schedule.time!.format(context)
+            : AppLocalizations.of(context)!.hourMinnute));
   }
 }

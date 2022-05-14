@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/meter_group.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MetersGroupsWidget extends StatelessWidget {
   MetersGroupsWidget({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class MetersGroupsWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Groups :",
+                AppLocalizations.of(context)!.meterGroups,
                 style: Theme.of(context).textTheme.headline5,
               ),
               Row(

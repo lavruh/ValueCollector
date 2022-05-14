@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/states/reminders_state.dart';
 import 'package:rh_collector/ui/widgets/reminder_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RemindersScreen extends StatelessWidget {
   const RemindersScreen({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class RemindersScreen extends StatelessWidget {
     final state = Get.find<RemindersState>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Notifications"),
+        title: Text(AppLocalizations.of(context)!.reminders),
         actions: [
           IconButton(
               onPressed: () => state.createEmptyReminder(),

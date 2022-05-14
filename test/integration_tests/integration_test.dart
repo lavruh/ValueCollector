@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
+import 'package:rh_collector/app.dart';
 import 'package:rh_collector/di.dart';
-import 'package:rh_collector/main.dart';
 import 'package:rh_collector/ui/widgets/drawer_menu_widget.dart';
 
 main() {
   appDataPath =
       "/home/lavruh/AndroidStudioProjects/RhCollector/test/integration_tests/testdata";
   initDependenciesTest();
-  const app = CameraApp();
+  const app = App();
   testWidgets("init load", (WidgetTester tester) async {
     await tester.pumpWidget(app);
     await tester.pump();

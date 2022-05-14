@@ -6,6 +6,7 @@ import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/widgets/delete_confirm_dialog.dart';
 import 'package:rh_collector/ui/widgets/meter_editor/editor_text_input_field_widget.dart';
 import 'package:rh_collector/ui/widgets/meter_editor/meter_values_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MeterEditScreen extends StatelessWidget {
   MeterEditScreen({Key? key, required Meter meter})
@@ -37,7 +38,7 @@ class MeterEditScreen extends StatelessWidget {
                           direction: Axis.vertical,
                           children: [
                             EditorTextInputFieldWidget(
-                              lable: 'Name',
+                              lable: AppLocalizations.of(context)?.name,
                               initValue: _meter.name,
                               setValue: (val) {
                                 _meter.name = val;
@@ -45,7 +46,7 @@ class MeterEditScreen extends StatelessWidget {
                               key: const Key('NameInput'),
                             ),
                             EditorTextInputFieldWidget(
-                              lable: 'Unit',
+                              lable: AppLocalizations.of(context)?.unit,
                               initValue: _meter.unit ?? "",
                               setValue: (val) {
                                 _meter.unit = val;
@@ -53,7 +54,7 @@ class MeterEditScreen extends StatelessWidget {
                               key: const Key('UnitInput'),
                             ),
                             EditorTextInputFieldWidget(
-                              lable: 'Correction',
+                              lable: AppLocalizations.of(context)?.correction,
                               initValue: _meter.correction.toString(),
                               setValue: (val) {
                                 _meter.correction = int.parse(val);

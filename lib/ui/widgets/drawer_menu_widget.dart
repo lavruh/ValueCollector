@@ -6,6 +6,7 @@ import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/screens/reminders_screen.dart';
 import 'package:rh_collector/ui/screens/route_screen.dart';
 import 'package:rh_collector/ui/widgets/meters_groups_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DrawerMenuWidget extends StatelessWidget {
   const DrawerMenuWidget({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class DrawerMenuWidget extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.checklist_outlined),
             title: Text(
-              "Meters Groups",
+              AppLocalizations.of(context)!.meterGroups,
               style: textTheme,
             ),
             onTap: () async {
@@ -32,7 +33,7 @@ class DrawerMenuWidget extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.timeline_outlined),
             title: Text(
-              "Routes",
+              AppLocalizations.of(context)!.routes,
               style: textTheme,
             ),
             onTap: () async {
@@ -44,7 +45,7 @@ class DrawerMenuWidget extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.notifications),
             title: Text(
-              "Notifications",
+              AppLocalizations.of(context)!.reminders,
               style: textTheme,
             ),
             onTap: () => Get.to(() => const RemindersScreen()),
@@ -52,7 +53,7 @@ class DrawerMenuWidget extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.login_outlined),
             title: Text(
-              "Import from file",
+              AppLocalizations.of(context)!.import,
               style: textTheme,
             ),
             subtitle: GetX<DataFromFileState>(builder: (_) {
@@ -65,10 +66,11 @@ class DrawerMenuWidget extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.logout_outlined),
             title: Text(
-              "Export to file",
+              AppLocalizations.of(context)!.export,
               style: textTheme,
             ),
-            subtitle: Text("Export to $appDataPath"),
+            subtitle: Text(
+                AppLocalizations.of(context)!.exportedTo + " $appDataPath"),
             onTap: () async {
               Get.find<DataFromFileState>().initExportData();
             },

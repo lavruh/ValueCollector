@@ -11,7 +11,7 @@ class RouteState extends GetxController {
   final meters = Get.find<MetersState>();
   final route = <String>[].obs;
   final doneMeters = <String>[].obs;
-  final routeName = "Open route file".obs;
+  final routeName = "".obs;
 
   loadRoute() async {
     route.clear();

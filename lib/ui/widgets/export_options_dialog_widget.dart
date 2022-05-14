@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/states/data_from_file_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ExportOptionsDialogWidget extends StatelessWidget {
   const ExportOptionsDialogWidget({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class ExportOptionsDialogWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Export options",
+                AppLocalizations.of(context)!.exportOptions,
                 style: Theme.of(context).textTheme.displayLarge,
               ),
               GetX<DataFromFileState>(builder: (_) {
@@ -25,7 +26,7 @@ class ExportOptionsDialogWidget extends StatelessWidget {
                   shrinkWrap: true,
                   children: [
                     RadioListTile(
-                        title: const Text("Last values as CSV"),
+                        title: Text(AppLocalizations.of(context)!.lastInCsv),
                         value: AllowedFileTypes.csv,
                         groupValue: _.exportFileType.value,
                         toggleable: true,
@@ -33,7 +34,7 @@ class ExportOptionsDialogWidget extends StatelessWidget {
                           _.exportFileType.value = AllowedFileTypes.csv;
                         }),
                     RadioListTile(
-                        title: const Text("Boka running hours report"),
+                        title: Text(AppLocalizations.of(context)!.bokaPdf),
                         value: AllowedFileTypes.bokaPdf,
                         groupValue: _.exportFileType.value,
                         toggleable: true,

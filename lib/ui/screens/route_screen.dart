@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/domain/states/route_state.dart';
 import 'package:rh_collector/ui/widgets/meter_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RouteScreen extends StatelessWidget {
   RouteScreen({Key? key}) : super(key: key);
@@ -15,7 +16,10 @@ class RouteScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: GetX<RouteState>(builder: (_) {
-            return Text(_.routeName.value);
+            final title = _.routeName.value.length > 1
+                ? _.routeName.value
+                : AppLocalizations.of(context)!.openRouteFile;
+            return Text(title);
           }),
           actions: [
             IconButton(
@@ -24,10 +28,14 @@ class RouteScreen extends StatelessWidget {
           bottom: TabBar(
             tabs: [
               GetX<RouteState>(builder: (_) {
-                return Tab(text: "ToDo(${_.route.length})");
+                return Tab(
+                    text: AppLocalizations.of(context)!.todo +
+                        "(${_.route.length})");
               }),
               GetX<RouteState>(builder: (_) {
-                return Tab(text: "Done(${_.doneMeters.length})");
+                return Tab(
+                    text: AppLocalizations.of(context)!.done +
+                        "(${_.doneMeters.length})");
               })
             ],
           ),

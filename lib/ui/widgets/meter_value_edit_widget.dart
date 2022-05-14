@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MeterValueEditWidget extends StatelessWidget {
   const MeterValueEditWidget({
@@ -51,7 +52,8 @@ class MeterValueEditWidget extends StatelessWidget {
                       TextEditingController(text: meterValue.value.toString()),
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
-                  decoration: const InputDecoration(labelText: "Raw value"),
+                  decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)?.rawValue),
                   onSubmitted: (String v) {
                     meterValue.value = int.tryParse(v) ?? 0;
                     updateCallback!(meterValue);
@@ -65,8 +67,8 @@ class MeterValueEditWidget extends StatelessWidget {
                   controller: TextEditingController(
                       text: meterValue.correctedValue.toString()),
                   textAlign: TextAlign.center,
-                  decoration:
-                      const InputDecoration(labelText: "Corrected value"),
+                  decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)?.correctedValue),
                 ),
               ),
             ],

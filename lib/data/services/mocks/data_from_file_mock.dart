@@ -8,6 +8,7 @@ import 'package:rh_collector/domain/entities/meter_value.dart';
 
 class DataFromFileMock implements DataFromFileService {
   Map data = {};
+  Map<String, dynamic> values = {};
   Map newValues = {};
 
   @override
@@ -18,10 +19,14 @@ class DataFromFileMock implements DataFromFileService {
 
   @override
   List<MeterValueDto> getMeterValues(String meterId) {
-    List<Map> output = [];
-    if (data.isNotEmpty) {
-      output.add(data[meterId]);
+    // List<Map> output = [];
+    // if (data.isNotEmpty) {
+    //   output.add(data[meterId]);
+    // }
+    if (values.keys.contains(meterId)) {
+      return [MeterValueDto.fromMap(values[meterId])];
     }
+
     return [];
   }
 
@@ -29,16 +34,8 @@ class DataFromFileMock implements DataFromFileService {
     required Meter m,
     required MeterValue v,
   }) {
-    data.putIfAbsent(
-        m.id,
-        () => {
-              "id": m.id,
-              "name": m.name,
-              "date": v.date,
-              "reading": v.value,
-              "rect": "",
-              "page": 0,
-            });
+    data.putIfAbsent(m.id, () => MeterDto.fromDomain(m).toMap());
+    values.putIfAbsent(m.id, () => MeterValueDto.fromDomain(v).toMap());
   }
 
   @override
@@ -48,8 +45,8 @@ class DataFromFileMock implements DataFromFileService {
 
   @override
   setMeterDataToExport({required MeterDto meterDto}) {
-    throw Exception(
-        "Not applicable for this format, select template file instead");
+    // throw Exception(
+    //     "Not applicable for this format, select template file instead");
   }
 
   @override

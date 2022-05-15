@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rh_collector/data/services/console_info_msg_service.dart';
 import 'package:rh_collector/data/services/db_service.dart';
+import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/data/services/mocks/db_service_mock.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
+import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:test/test.dart';
 
@@ -25,8 +28,11 @@ main() {
       "groupId": "W",
     }
   ];
+
+  Get.put<InfoMsgService>(ConsoleInfoMsgService());
   Get.put<DbService>(
       DbServiceMock.testData(values: values, tableName: "meters"));
+  Get.put(MeterGroups());
   MetersState state = Get.put<MetersState>(MetersState());
   test("get meters", () async {
     await state.addNewMeter(Meter(name: "another", groupId: "M"));

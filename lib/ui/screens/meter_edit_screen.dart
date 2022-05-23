@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
+import 'package:rh_collector/ui/screens/meter_values_calculations_screen.dart';
 import 'package:rh_collector/ui/widgets/delete_confirm_dialog.dart';
 import 'package:rh_collector/ui/widgets/meter_editor/editor_text_input_field_widget.dart';
 import 'package:rh_collector/ui/widgets/meter_editor/meter_values_widget.dart';
@@ -78,6 +79,9 @@ class MeterEditScreen extends StatelessWidget {
         ),
         appBar: AppBar(
           actions: [
+            IconButton(
+                onPressed: _goToCalculationsScreen,
+                icon: const Icon(Icons.calculate)),
             IconButton(onPressed: _addNewValue, icon: const Icon(Icons.add)),
             IconButton(onPressed: _submit, icon: const Icon(Icons.check)),
             IconButton(
@@ -86,6 +90,10 @@ class MeterEditScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _goToCalculationsScreen() {
+    Get.to(() => const MeterValuesCalculationsScreen());
   }
 
   _submit() {

@@ -23,5 +23,10 @@
     "no": "No",
     "exportOptions": "Export options",
     "lastInCsv": "Last values as CSV",
-    "bokaPdf": "Boka running hours report"
+    "bokaPdf": "Boka running hours report",
+    "meterRates": "Meter rates",
+    "limit": "Limit",
+    "price": "Price",
+    "pleaseEnterText": "Please enter some text",
+    "incorrectLimit": "Value should be positive integer"
 }

@@ -23,5 +23,10 @@
     "no": "Ні",
     "exportOptions": "Опції експорту",
     "lastInCsv": "Останні показники в  CSV",
-    "bokaPdf": "Boka running hours report"
+    "bokaPdf": "Boka running hours report",
+    "meterRates" : "Тарифи",
+    "limit": "Ліміт",
+    "price": "Ціна",
+    "pleaseEnterText": "Введіть значення",
+    "incorrectLimit": "Значення має бути позитивним цілим"
 }

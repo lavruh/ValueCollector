@@ -15,8 +15,8 @@ class MeterValueDeltaWidget extends StatelessWidget {
       children: [
         const Text("\u{0394}"),
         Text(
-          v.delta.toString(),
-          style: TextStyle(color: v.color),
+          v.value.toString(),
+          style: TextStyle(color: v.isValid ? Colors.black : Colors.redAccent),
         ),
       ],
     );

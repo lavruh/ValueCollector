@@ -2,11 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:rh_collector/di.dart';
 import 'package:rh_collector/domain/entities/meter_rate.dart';
-import 'package:rh_collector/domain/states/values_calculations_state.dart';
 
 class MeterRateDto {
   final String id;
-  final int meterType;
+  final String meterType;
   final int timeRangeStart;
   final int timeRangeEnd;
   final Map<String, double> rateLimits;
@@ -21,7 +20,7 @@ class MeterRateDto {
   factory MeterRateDto.formDomain(MeterRate rate) {
     return MeterRateDto(
       id: rate.id,
-      meterType: rate.meterType.index,
+      meterType: rate.meterType,
       timeRangeStart: rate.timeRange.start.millisecondsSinceEpoch,
       timeRangeEnd: rate.timeRange.end.millisecondsSinceEpoch,
       rateLimits: rate.rateLimits
@@ -32,7 +31,7 @@ class MeterRateDto {
   MeterRate toDomain() {
     return MeterRate(
         id: id,
-        meterType: MeterType.values[meterType],
+        meterType: meterType,
         timeRange: DateTimeRange(
             start: DateTime.fromMillisecondsSinceEpoch(timeRangeStart),
             end: DateTime.fromMillisecondsSinceEpoch(timeRangeEnd)),
@@ -53,7 +52,7 @@ class MeterRateDto {
   factory MeterRateDto.fromMap(Map<String, dynamic> map) {
     return MeterRateDto(
       id: map['id'] ?? generateId(),
-      meterType: map['meterType'] ?? 0,
+      meterType: map['meterType'] ?? "rh",
       timeRangeStart:
           map['timeRangeStart'] ?? DateTime.now().millisecondsSinceEpoch,
       timeRangeEnd:

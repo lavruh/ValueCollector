@@ -23,6 +23,7 @@ import 'package:rh_collector/domain/states/camera_state_device.dart';
 import 'package:rh_collector/domain/states/camera_state_mock.dart';
 import 'package:rh_collector/domain/states/data_from_file_state.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
+import 'package:rh_collector/domain/states/meter_types_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/domain/states/rates_state.dart';
 import 'package:rh_collector/domain/states/reminders_state.dart';
@@ -50,6 +51,7 @@ initDependencies() async {
   Get.put<RouteService>(CsvRouteService());
   Get.put<Recognizer>(Recognizer());
   Get.put<CameraState>(CameraStateDevice(), permanent: true);
+  Get.put(MeterTypesState());
   Get.put(RatesState());
   Get.lazyPut(() => RemindersState());
   Get.put<MeterGroups>(MeterGroups());

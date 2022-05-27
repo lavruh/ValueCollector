@@ -7,7 +7,7 @@ import 'package:rh_collector/data/dtos/meter_rate_dto.dart';
 import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/domain/entities/meter_rate.dart';
-import 'package:rh_collector/domain/states/values_calculations_state.dart';
+import 'package:rh_collector/domain/entities/meter_type.dart';
 
 class RatesState extends GetxController {
   final rates = <MeterRate>[].obs;
@@ -25,7 +25,7 @@ class RatesState extends GetxController {
     required MeterType meterType,
   }) {
     return rates.where((rate) {
-      if (meterType == rate.meterType &&
+      if (meterType.id == rate.meterType &&
           max(dateRange.start.millisecondsSinceEpoch,
                   rate.timeRange.start.millisecondsSinceEpoch) <=
               min(dateRange.end.millisecondsSinceEpoch,

@@ -4,12 +4,20 @@ import 'package:get/get.dart';
 import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/data/services/mocks/db_service_mock.dart';
 import 'package:rh_collector/domain/entities/meter_rate.dart';
+import 'package:rh_collector/domain/entities/meter_type.dart';
 import 'package:rh_collector/domain/states/rates_state.dart';
-import 'package:rh_collector/domain/states/values_calculations_state.dart';
+
+final typeColdWater = MeterType(name: 'coldwater', id: 'coldwater');
+final typeElec = MeterType(name: 'elec', id: 'elec');
+final typeHotWater = MeterType(name: 'hot', id: 'hot');
+final typeGas = MeterType(name: 'gas', id: 'gas');
 
 void main() {
   const table = 'MeterRates';
   final db = Get.put<DbService>(DbServiceMock());
+  final typeColdWater = MeterType(name: 'coldwater', id: 'coldwater');
+  final typeElec = MeterType(name: 'elec', id: 'elec');
+  final typeHotWater = MeterType(name: 'hot', id: 'hot');
   RatesState state = RatesState();
 
   tearDown(() {
@@ -19,7 +27,7 @@ void main() {
 
   test('add rate', () async {
     final rate = MeterRate(
-        meterType: MeterType.coldwater,
+        meterType: typeColdWater.id,
         timeRange: DateTimeRange(
             start: DateTime(2022, 1, 1), end: DateTime(2022, 1, 31)),
         rateLimits: {
@@ -46,7 +54,7 @@ void main() {
     List<MeterRate> res = state.getRates(
         dateRange: DateTimeRange(
             start: DateTime(2022, 1, 1), end: DateTime(2022, 2, 5)),
-        meterType: MeterType.coldwater);
+        meterType: typeColdWater);
     expect(res.length, 2);
     expect(res, contains(testData[0]));
     expect(res, contains(testData[1]));
@@ -54,13 +62,13 @@ void main() {
     res = state.getRates(
         dateRange: DateTimeRange(
             start: DateTime(2022, 1, 5), end: DateTime(2022, 1, 15)),
-        meterType: MeterType.coldwater);
+        meterType: typeColdWater);
 
     expect(res.length, 1);
   });
 
   test('remove rate', () async {
-    final rate = testData.first.copyWith(meterType: MeterType.elec);
+    final rate = testData.first.copyWith(meterType: typeElec.id);
     await state.addRate(rate: rate);
     expect(state.rates.length, 1);
     await state.removeRate(rate: rate);
@@ -73,7 +81,7 @@ void main() {
     List<MeterRate> res = state.getRates(
         dateRange: DateTimeRange(
             start: DateTime(2022, 1, 1), end: DateTime(2022, 2, 5)),
-        meterType: MeterType.coldwater);
+        meterType: typeColdWater);
 
     expect(res.length, 0);
   });
@@ -88,7 +96,7 @@ void main() {
     MeterRate res = state.getLatestRate(
         dateRange: DateTimeRange(
             start: DateTime(2022, 1, 1), end: DateTime(2022, 6, 5)),
-        meterType: MeterType.coldwater);
+        meterType: typeColdWater);
 
     expect(res.timeRange, dateRange);
   });
@@ -97,32 +105,32 @@ void main() {
     for (MeterRate r in testData) {
       await state.addRate(rate: r);
     }
-    MeterRate newRate = testData[0].copyWith(meterType: MeterType.hotwater);
+    MeterRate newRate = testData[0].copyWith(meterType: typeHotWater.id);
     await state.updateRate(rate: newRate);
     final res = await db.getEntries([], table: table);
     expect(res.first['id'], newRate.id);
-    expect(res.first['meterType'], newRate.meterType.index);
+    expect(res.first['meterType'], newRate.meterType);
   });
 }
 
 List<MeterRate> testData = [
   MeterRate(
-      meterType: MeterType.coldwater,
+      meterType: typeColdWater.id,
       timeRange: DateTimeRange(
           start: DateTime(2022, 1, 1), end: DateTime(2022, 1, 31)),
       rateLimits: {10: 0.5, 20: 1, 30: 3}),
   MeterRate(
-      meterType: MeterType.coldwater,
+      meterType: typeColdWater.id,
       timeRange: DateTimeRange(
           start: DateTime(2022, 2, 1), end: DateTime(2022, 2, 28)),
       rateLimits: {10: 1, 20: 2, 30: 3}),
   MeterRate(
-      meterType: MeterType.coldwater,
+      meterType: typeColdWater.id,
       timeRange: DateTimeRange(
           start: DateTime(2022, 3, 1), end: DateTime(2022, 5, 31)),
       rateLimits: {10: 1, 20: 2, 30: 3}),
   MeterRate(
-      meterType: MeterType.gas,
+      meterType: typeGas.id,
       timeRange: DateTimeRange(
           start: DateTime(2022, 2, 1), end: DateTime(2022, 2, 28)),
       rateLimits: {10: 1, 20: 2, 30: 3}),

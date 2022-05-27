@@ -11,7 +11,7 @@ Future<void> groupsMenuTest(WidgetTester tester) async {
   expect(readyToRun, true);
   await tester.pumpWidget(testableWidget(MetersGroupsWidget()));
   await tester.pump();
-  expect(find.textContaining('Groups :'), findsOneWidget);
+  expect(find.textContaining('Groups'), findsOneWidget);
   expect(find.textContaining('Weekly'), findsOneWidget);
   expect(find.textContaining('Monthly'), findsOneWidget);
   expect(find.byIcon(Icons.add), findsOneWidget);

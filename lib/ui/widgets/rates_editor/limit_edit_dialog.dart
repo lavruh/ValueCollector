@@ -31,6 +31,7 @@ class _LimitEditDialogState extends State<LimitEditDialog> {
         child: Wrap(
           children: [
             TextFormField(
+              key: const Key('inputLimit'),
               validator: _limitValidator,
               controller: limitController,
               keyboardType: TextInputType.number,
@@ -38,6 +39,7 @@ class _LimitEditDialogState extends State<LimitEditDialog> {
                   labelText: AppLocalizations.of(context)?.limit),
             ),
             TextFormField(
+              key: const Key('inputPrice'),
               validator: _isEmptyValidator,
               controller: priceController,
               keyboardType: TextInputType.number,

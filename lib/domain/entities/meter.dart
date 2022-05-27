@@ -61,6 +61,8 @@ class Meter extends GetxController {
     for (var e in res) {
       values.add(MeterValue.fromJson(e));
     }
+    values.sort(((a, b) =>
+        a.date.millisecondsSinceEpoch - b.date.millisecondsSinceEpoch));
   }
 
   addValue(MeterValue v) async {

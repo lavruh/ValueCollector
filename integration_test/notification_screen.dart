@@ -18,10 +18,10 @@ Future<void> notificationScreenTest(WidgetTester tester) async {
   await tester.dragFrom(
       tester.getTopLeft(find.byType(MaterialApp)), const Offset(300, 0));
   await tester.pumpAndSettle();
-  expect(find.textContaining('Notifications'), findsOneWidget);
-  await tester.tap(find.textContaining('Notifications'));
+  expect(find.textContaining('Reminders'), findsOneWidget);
+  await tester.tap(find.textContaining('Reminders'));
   await tester.pump(const Duration(seconds: 1));
-  expect(find.textContaining('Notifications'), findsOneWidget);
+  expect(find.textContaining('Reminders'), findsOneWidget);
   expect(find.byIcon(Icons.add), findsOneWidget);
   await tester.tap(find.byIcon(Icons.add));
   await tester.pump(const Duration(seconds: 1));
@@ -84,8 +84,7 @@ Future<void> notificationScreenTest(WidgetTester tester) async {
   await tester.pump(const Duration(seconds: 1));
   await tester.tap(find.byTooltip('Back'));
   await tester.pump(const Duration(seconds: 1));
-  expect(find.textContaining('Notifications'), findsOneWidget);
-  await tester.tap(find.textContaining('Notifications'));
+  await tester.tap(find.textContaining('Reminders'));
   await tester.pump(const Duration(seconds: 1));
   expect(find.text(reminderName), findsOneWidget);
   expect(find.text('Mon'), findsOneWidget);

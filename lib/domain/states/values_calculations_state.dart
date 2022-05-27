@@ -3,25 +3,34 @@ import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/domain/entities/calculation_result.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_calculation.dart';
-
-enum MeterType { rh, coldwater, hotwater, gas, elec }
+import 'package:rh_collector/domain/entities/meter_value.dart';
+import 'package:rh_collector/domain/states/meter_types_state.dart';
 
 class ValuesCalculationsState extends GetxController {
   final calculationResults = <CalculationResult>[].obs;
-  final meterType = MeterType.rh.obs;
-  final calculationStrategiesId = ["Difference", "Production cost"];
+  final meterType = 'rh'.obs;
+
   final selectedCalculationStrategie = 0.obs;
-  late IMeterCalculationStrategy _strategy;
+  IMeterCalculationStrategy strategy = MeterValueDeltaCalculation();
+  final calculationStrategies = [
+    MeterValueDeltaCalculation(),
+    MeterProductionCostCalculation()
+  ];
+
   final infoMsg = Get.find<InfoMsgService>();
+  final meterTypesState = Get.find<MeterTypesState>();
 
   calculate() async {
     calculationResults.clear();
     final meter = Get.find<Meter>(tag: 'meterEdit');
-    for (int i = 1; i < meter.values.length; i++) {
+    List<MeterValue> data = meter.values.toList();
+    data.sort(((a, b) =>
+        a.date.millisecondsSinceEpoch - b.date.millisecondsSinceEpoch));
+    for (int i = 1; i < data.length; i++) {
       try {
-        calculationResults.add(_strategy.compute(
-          meter.values[i - 1],
-          meter.values[i],
+        calculationResults.add(strategy.compute(
+          data[i - 1],
+          data[i],
         ));
       } on MeterCalculationException catch (e) {
         infoMsg.push(msg: e.toString());
@@ -30,22 +39,24 @@ class ValuesCalculationsState extends GetxController {
     }
   }
 
-  changeMeterType(MeterType type) {
+  changeMeterType(String type) {
     meterType.value = type;
     setCalculationStrategie(selectedCalculationStrategie.value);
   }
 
   setCalculationStrategie(int val) {
     selectedCalculationStrategie.value = val;
+
     if (val == 1) {
-      if (meterType.value == MeterType.rh) {
+      if (meterType.value == "rh") {
         infoMsg.push(
             msg: 'Please select different meter type for this calculation');
         return;
       }
-      _strategy = MeterProductionCostCalculation(type: meterType.value);
+      strategy = MeterProductionCostCalculation(
+          type: meterTypesState.getMeterTypeById(meterType.value));
     } else {
-      _strategy = MeterValueDeltaCalculation();
+      strategy = MeterValueDeltaCalculation();
     }
     calculate();
   }

@@ -3,9 +3,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:rh_collector/domain/entities/meter_rate.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:rh_collector/domain/states/values_calculations_state.dart';
+import 'package:rh_collector/ui/widgets/meter_type_select_widget.dart';
 import 'package:rh_collector/ui/widgets/rates_editor/limit_edit_dialog.dart';
-import 'package:rh_collector/ui/widgets/value_select_widget.dart';
 
 class MeterRateWidget extends StatelessWidget {
   const MeterRateWidget(
@@ -22,10 +21,8 @@ class MeterRateWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              ValueSelectWidget(
-                  items: const ["rh", "coldwater", "hotwater", "gas", "elec"],
-                  callback: _changeMeterType,
-                  initValue: meterRate.meterType.index),
+              MeterTypeSelectWidget(
+                  initValueId: meterRate.meterType, callback: _changeMeterType),
               ActionChip(
                   label: Text(DateFormat("y-MM-dd")
                           .format(meterRate.timeRange.start) +
@@ -58,8 +55,8 @@ class MeterRateWidget extends StatelessWidget {
     }
   }
 
-  _changeMeterType(int val) {
-    updateCallback(meterRate.copyWith(meterType: MeterType.values[val]));
+  _changeMeterType(String val) {
+    updateCallback(meterRate.copyWith(meterType: val));
   }
 
   _changeRateLimits(Map<int, double> val) {

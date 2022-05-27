@@ -1,12 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:rh_collector/di.dart';
-import 'package:rh_collector/domain/states/values_calculations_state.dart';
 
 class MeterRate {
   final String id;
-  final MeterType meterType;
+  final String meterType;
   final DateTimeRange timeRange;
   final Map<int, double> rateLimits;
   MeterRate({
@@ -18,13 +16,13 @@ class MeterRate {
 
   MeterRate.empty()
       : id = generateId(),
-        meterType = MeterType.rh,
+        meterType = "rh",
         timeRange = DateTimeRange(start: DateTime.now(), end: DateTime.now()),
         rateLimits = {0: 1};
 
   MeterRate copyWith({
     String? id,
-    MeterType? meterType,
+    String? meterType,
     DateTimeRange? timeRange,
     Map<int, double>? rateLimits,
   }) {

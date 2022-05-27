@@ -24,9 +24,14 @@
     "exportOptions": "Опції експорту",
     "lastInCsv": "Останні показники в  CSV",
     "bokaPdf": "Boka running hours report",
-    "meterRates" : "Тарифи",
+    "meterRates": "Тарифи",
     "limit": "Ліміт",
     "price": "Ціна",
     "pleaseEnterText": "Введіть значення",
-    "incorrectLimit": "Значення має бути позитивним цілим"
+    "incorrectLimit": "Значення має бути позитивним цілим",
+    "meterTypes": "Типи лічільників",
+    "diffCalc": "Різниця значень",
+    "diffCalcDescr": "Обчислюе різницю значень виразів. значення сортуються за датою",
+    "prodCostCalc1": "Витрати з лімітами",
+    "prodCostDescr1": "Обчислюе сумму витрат за кожним лімітом"
 }

@@ -4,6 +4,7 @@ import 'package:rh_collector/di.dart';
 import 'package:rh_collector/domain/states/data_from_file_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/screens/meter_rates_edit_screen.dart';
+import 'package:rh_collector/ui/screens/meter_type_edit_screen.dart';
 import 'package:rh_collector/ui/screens/reminders_screen.dart';
 import 'package:rh_collector/ui/screens/route_screen.dart';
 import 'package:rh_collector/ui/widgets/meters_groups_widget.dart';
@@ -51,6 +52,16 @@ class DrawerMenuWidget extends StatelessWidget {
             ),
             onTap: () {
               Get.to(() => const MeterRatesEditScreen());
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.electric_meter),
+            title: Text(
+              AppLocalizations.of(context)!.meterTypes,
+              style: textTheme,
+            ),
+            onTap: () {
+              Get.to(() => const MeterTypeEditScreen());
             },
           ),
           ListTile(

@@ -14,7 +14,7 @@
     "todo": "Todo",
     "done": "Done",
     "dayLetter": "D",
-    "monthLetter": "D",
+    "monthLetter": "M",
     "hourMinnute": "h:m",
     "repeat": "Repeat",
     "delete": "Delete",
@@ -28,5 +28,10 @@
     "limit": "Limit",
     "price": "Price",
     "pleaseEnterText": "Please enter some text",
-    "incorrectLimit": "Value should be positive integer"
+    "incorrectLimit": "Value should be positive integer",
+    "meterTypes": "Meter types",
+    "diffCalc": "Value difference",
+    "diffCalcDescr": "Calculates value differences, values sorted by date",
+    "prodCostCalc1": "Meter production costs",
+    "prodCostDescr1": "Calculates meter production cost, sum of each limit price"
 }

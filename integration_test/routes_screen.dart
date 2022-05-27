@@ -28,7 +28,7 @@ Future<void> routesScreenTest(WidgetTester tester) async {
   await tester.pump(const Duration(seconds: 1));
 
   expect(find.textContaining('Open route file'), findsOneWidget);
-  expect(find.textContaining('ToDo(0)'), findsOneWidget);
+  expect(find.textContaining('Todo(0)'), findsOneWidget);
   expect(find.textContaining('Done(0)'), findsOneWidget);
   expect(find.byIcon(Icons.get_app_outlined), findsOneWidget);
   expect(Get.find<MetersState>().meters.length, greaterThan(0));
@@ -39,18 +39,18 @@ Future<void> routesScreenTest(WidgetTester tester) async {
 
   expect(find.textContaining('aux'), findsOneWidget);
   expect(find.textContaining('weekly_route'), findsOneWidget);
-  expect(find.textContaining('ToDo(11)'), findsOneWidget);
+  expect(find.textContaining('Todo(11)'), findsOneWidget);
   expect(find.textContaining('Done(0)'), findsOneWidget);
   expect(find.byIcon(Icons.add_a_photo_outlined), findsWidgets);
   await moveToCamScreenAndSetVal(tester: tester, value: '123456');
-  expect(find.textContaining('ToDo(10)'), findsOneWidget);
+  expect(find.textContaining('Todo(10)'), findsOneWidget);
   expect(find.textContaining('Done(1)'), findsOneWidget);
 
   await tester.tap(find.textContaining('Done(1)'));
   await tester.pump(const Duration(seconds: 1));
   expect(find.textContaining('123456'), findsOneWidget);
 
-  await tester.tap(find.textContaining('ToDo'));
+  await tester.tap(find.textContaining('Todo'));
   await tester.pump(const Duration(seconds: 1));
   await tester.tap(find.byTooltip('Back'));
   await tester.pump(const Duration(seconds: 1));

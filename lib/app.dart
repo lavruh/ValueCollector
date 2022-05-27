@@ -43,8 +43,8 @@ class _CameraAppState extends State<App>
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: const [
-        Locale('en', ''), // English, no country code
-        Locale('uk', ''), // Spanish, no country code
+        Locale('en', ''),
+        Locale('uk', ''),
       ],
     );
   }
@@ -65,7 +65,5 @@ class _CameraAppState extends State<App>
       headline6: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
       bodyText1: TextStyle(fontSize: 12.0),
     ),
-    // inputDecorationTheme: InputDecorationTheme(
-    //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5))),
   );
 }

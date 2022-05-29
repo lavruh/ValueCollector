@@ -8,7 +8,6 @@ import 'package:rh_collector/domain/states/meter_types_state.dart';
 
 class ValuesCalculationsState extends GetxController {
   final calculationResults = <CalculationResult>[].obs;
-  final meterType = 'rh'.obs;
 
   final selectedCalculationStrategie = 0.obs;
   IMeterCalculationStrategy strategy = MeterValueDeltaCalculation();
@@ -39,22 +38,23 @@ class ValuesCalculationsState extends GetxController {
     }
   }
 
-  changeMeterType(String type) {
-    meterType.value = type;
-    setCalculationStrategie(selectedCalculationStrategie.value);
-  }
+  // changeMeterType(String type) {
+  //   meterType.value = type;
+  //   setCalculationStrategie(selectedCalculationStrategie.value);
+  // }
 
   setCalculationStrategie(int val) {
     selectedCalculationStrategie.value = val;
-
+    final meter = Get.find<Meter>(tag: 'meterEdit');
+    final meterType = meter.typeId;
     if (val == 1) {
-      if (meterType.value == "rh") {
+      if (meterType == "rh") {
         infoMsg.push(
             msg: 'Please select different meter type for this calculation');
         return;
       }
       strategy = MeterProductionCostCalculation(
-          type: meterTypesState.getMeterTypeById(meterType.value));
+          type: meterTypesState.getMeterTypeById(meterType));
     } else {
       strategy = MeterValueDeltaCalculation();
     }

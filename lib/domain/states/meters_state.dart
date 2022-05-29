@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:rh_collector/data/dtos/meter_dto.dart';
 import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
@@ -23,7 +24,7 @@ class MetersState extends GetxController {
     meters.clear();
     List res = await db.getEntries(_createRequest(groupId), table: "meters");
     for (Map<String, dynamic> e in res) {
-      Meter m = Meter.fromJson(e);
+      Meter m = MeterDto.fromMap(e).toDomain();
       await m.getValues();
       meters.add(m);
     }
@@ -72,7 +73,7 @@ class MetersState extends GetxController {
     List<List> req = _createRequest(groupId);
     List res = await db.getEntries(req, table: "meters");
     for (Map<String, dynamic> e in res) {
-      Meter m = Meter.fromJson(e);
+      Meter m = MeterDto.fromMap(e).toDomain();
       if (m.name.contains(RegExp(filter, caseSensitive: false))) {
         await m.getValues();
         meters.add(m);

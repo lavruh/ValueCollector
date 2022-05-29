@@ -8,6 +8,7 @@ import 'package:rh_collector/ui/widgets/delete_confirm_dialog.dart';
 import 'package:rh_collector/ui/widgets/meter_editor/editor_text_input_field_widget.dart';
 import 'package:rh_collector/ui/widgets/meter_editor/meter_values_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/ui/widgets/meter_type_select_widget.dart';
 
 class MeterEditScreen extends StatelessWidget {
   MeterEditScreen({Key? key, required Meter meter})
@@ -36,7 +37,8 @@ class MeterEditScreen extends StatelessWidget {
                       alignment: WrapAlignment.center,
                       children: [
                         Wrap(
-                          direction: Axis.vertical,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 15,
                           children: [
                             EditorTextInputFieldWidget(
                               lable: AppLocalizations.of(context)?.name,
@@ -63,6 +65,15 @@ class MeterEditScreen extends StatelessWidget {
                               keyboardType: TextInputType.number,
                               key: const Key('CorrectionInput'),
                             ),
+                            GetX<Meter>(
+                                tag: "meterEdit",
+                                builder: (state) {
+                                  return MeterTypeSelectWidget(
+                                      initValueId: state.typeId,
+                                      callback: (val) {
+                                        state.typeId = val;
+                                      });
+                                }),
                           ],
                         ),
                       ],
@@ -72,7 +83,7 @@ class MeterEditScreen extends StatelessWidget {
               ),
             ),
             const Flexible(
-              flex: 2,
+              flex: 3,
               child: MeterValuesWidget(),
             ),
           ],

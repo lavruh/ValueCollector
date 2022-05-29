@@ -41,7 +41,7 @@ void main() {
     testMeter.addValue(MeterValue(DateTime(2022, 1, 3), 14));
     testMeter.addValue(MeterValue(DateTime(2022, 1, 4), 14));
 
-    service.meterType.value = typeRh.id;
+    testMeter.typeId = typeRh.id;
     Get.put<Meter>(testMeter, tag: 'meterEdit');
     service.setCalculationStrategie(0);
     await service.calculate();
@@ -68,7 +68,7 @@ void main() {
           rateLimits: {20: 1}),
     );
 
-    service.meterType.value = typeColdWater.id;
+    testMeter.typeId = typeColdWater.id;
     Get.put<Meter>(testMeter, tag: 'meterEdit');
     service.setCalculationStrategie(1);
     await service.calculate();
@@ -95,7 +95,7 @@ void main() {
           rateLimits: {10: 0.5, 20: 1, 30: 3}),
     );
 
-    service.meterType.value = typeColdWater.id;
+    testMeter.typeId = typeColdWater.id;
     Get.put<Meter>(testMeter, tag: 'meterEdit');
     service.setCalculationStrategie(1);
     await service.calculate();

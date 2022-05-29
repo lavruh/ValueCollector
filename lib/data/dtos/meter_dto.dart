@@ -8,6 +8,7 @@ class MeterDto {
   String _name;
   String? _unit;
   String _groupId;
+  String _typeId;
   int _correction = 0;
 
   String get id => _id;
@@ -18,11 +19,13 @@ class MeterDto {
     String? name,
     String? unit,
     String? groupId,
+    String? typeId,
     int correction = 0,
   })  : _id = id ?? UniqueKey().toString(),
         _name = name ?? "",
         _unit = unit,
         _groupId = groupId ?? "W",
+        _typeId = typeId ?? "rh",
         _correction = correction;
 
   Map<String, dynamic> toMap() {
@@ -31,6 +34,7 @@ class MeterDto {
       'name': _name,
       'unit': _unit,
       'groupId': _groupId,
+      'typeId': _typeId,
       'correction': _correction,
     };
   }
@@ -41,6 +45,7 @@ class MeterDto {
       name: map['name'],
       unit: map['unit'],
       groupId: map['groupId'],
+      typeId: map['typeId'],
       correction: map['correction'] ?? 0,
     );
   }
@@ -51,6 +56,7 @@ class MeterDto {
       name: _name,
       unit: _unit,
       groupId: _groupId,
+      typeId: _typeId,
       correction: _correction,
     );
   }
@@ -61,6 +67,7 @@ class MeterDto {
       name: m.name,
       unit: m.unit,
       groupId: m.groupId,
+      typeId: m.typeId,
       correction: m.correction,
     );
   }
@@ -75,6 +82,7 @@ class MeterDto {
     String? name,
     String? unit,
     String? groupId,
+    String? typeId,
     int? correction,
   }) {
     return MeterDto(
@@ -82,6 +90,7 @@ class MeterDto {
       name: name ?? _name,
       unit: unit ?? _unit,
       groupId: groupId ?? _groupId,
+      typeId: typeId ?? _typeId,
       correction: correction ?? _correction,
     );
   }

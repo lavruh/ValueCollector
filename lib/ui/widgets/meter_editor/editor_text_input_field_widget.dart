@@ -16,7 +16,7 @@ class EditorTextInputFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        width: MediaQuery.of(context).size.width * 0.9,
+        width: MediaQuery.of(context).size.width * 0.4,
         child: TextField(
           controller: TextEditingController(text: initValue),
           showCursor: true,

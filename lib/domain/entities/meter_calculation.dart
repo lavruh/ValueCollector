@@ -10,6 +10,7 @@ import 'package:rh_collector/domain/states/rates_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 abstract class IMeterCalculationStrategy {
+  void setMeterType(MeterType type);
   String getLocalizedName(BuildContext context);
   String getLocalizedDescriprion(BuildContext context);
   CalculationResult compute(MeterValue valueStart, MeterValue valueEnd);
@@ -30,6 +31,9 @@ class MeterValueDeltaCalculation implements IMeterCalculationStrategy {
   String getLocalizedName(BuildContext context) {
     return AppLocalizations.of(context)!.diffCalc;
   }
+
+  @override
+  void setMeterType(MeterType type) {}
 }
 
 class MeterProductionCostCalculation implements IMeterCalculationStrategy {
@@ -56,21 +60,23 @@ class MeterProductionCostCalculation implements IMeterCalculationStrategy {
     if (delta.value <= 0) {
       return MeterProductionCost(timeRange: delta.dateRange, value: 0);
     }
-    double resultValue = 0;
+    final resultValue =
+        MeterProductionCost(timeRange: delta.timeRange, value: 0);
     double tmpVal = delta.value.toDouble();
     for (int limit in rate.rateLimits.keys) {
       final multiplier = rate.rateLimits[limit];
       if (tmpVal < limit) {
-        resultValue += tmpVal * multiplier!;
+        resultValue.value += tmpVal * multiplier!;
         tmpVal = 0;
         break;
       } else {
-        resultValue += limit * multiplier!;
+        resultValue.value += limit * multiplier!;
         tmpVal -= limit;
       }
+      resultValue.reachedLimit = limit.toDouble();
     }
-    resultValue += tmpVal * rate.rateLimits.values.last;
-    return MeterProductionCost(timeRange: delta.timeRange, value: resultValue);
+    resultValue.value += tmpVal * rate.rateLimits.values.last;
+    return resultValue;
   }
 
   @override
@@ -81,6 +87,67 @@ class MeterProductionCostCalculation implements IMeterCalculationStrategy {
   @override
   String getLocalizedName(BuildContext context) {
     return AppLocalizations.of(context)!.prodCostCalc1;
+  }
+
+  @override
+  void setMeterType(MeterType val) {
+    type = val;
+  }
+}
+
+class MeterProductionCostMaxLimitCalculation
+    implements IMeterCalculationStrategy {
+  final ratesState = Get.find<RatesState>();
+  MeterType? type;
+  MeterProductionCostMaxLimitCalculation({
+    this.type,
+  });
+
+  @override
+  MeterProductionCost compute(MeterValue valueStart, MeterValue valueEnd) {
+    if (type == null) {
+      throw MeterCalculationException("Meter type [$type] is not correct");
+    }
+    final delta = MeterValueDeltaCalculation().compute(valueStart, valueEnd);
+    late MeterRate rate;
+    try {
+      rate = ratesState.getLatestRate(
+          dateRange: delta.dateRange, meterType: type!);
+    } on MeterRatesException catch (e) {
+      throw MeterCalculationException("$e");
+    }
+
+    if (delta.value <= 0) {
+      return MeterProductionCost(timeRange: delta.dateRange, value: 0);
+    }
+    MeterProductionCost resultValue =
+        MeterProductionCost(timeRange: delta.timeRange, value: 0);
+    double tmpVal = delta.value.toDouble();
+    for (int limit in rate.rateLimits.keys) {
+      final multiplier = rate.rateLimits[limit];
+      resultValue.value += tmpVal * multiplier!;
+      if (tmpVal >= limit) {
+        resultValue.reachedLimit = limit.toDouble();
+        final overlimit = resultValue.value - limit.toDouble();
+        resultValue.overLimit = overlimit > 0 ? overlimit : 0;
+      }
+    }
+    return resultValue;
+  }
+
+  @override
+  String getLocalizedDescriprion(BuildContext context) {
+    return AppLocalizations.of(context)!.prodCostMaxLimDescr;
+  }
+
+  @override
+  String getLocalizedName(BuildContext context) {
+    return AppLocalizations.of(context)!.prodCostMaxLimCalc;
+  }
+
+  @override
+  void setMeterType(MeterType val) {
+    type = val;
   }
 }
 

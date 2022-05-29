@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rh_collector/domain/entities/calculation_result.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
+import 'package:rh_collector/domain/helpers/daterange_extension.dart';
 
 class MeterValueDelta extends CalculationResult {
   bool _isValid = false;
@@ -20,6 +21,10 @@ class MeterValueDelta extends CalculationResult {
 
   bool get isValid => _isValid;
   DateTimeRange get dateRange => timeRange;
+  double get avaregePerDay {
+    final r = value / timeRange.durationInDays;
+    return !r.isNaN ? r : 0;
+  }
 
   _validate() {
     if (value < 0 || value > timeRange.duration.inHours) {

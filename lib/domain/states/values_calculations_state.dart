@@ -13,7 +13,8 @@ class ValuesCalculationsState extends GetxController {
   IMeterCalculationStrategy strategy = MeterValueDeltaCalculation();
   final calculationStrategies = [
     MeterValueDeltaCalculation(),
-    MeterProductionCostCalculation()
+    MeterProductionCostCalculation(),
+    MeterProductionCostMaxLimitCalculation(),
   ];
 
   final infoMsg = Get.find<InfoMsgService>();
@@ -38,23 +39,18 @@ class ValuesCalculationsState extends GetxController {
     }
   }
 
-  // changeMeterType(String type) {
-  //   meterType.value = type;
-  //   setCalculationStrategie(selectedCalculationStrategie.value);
-  // }
-
   setCalculationStrategie(int val) {
     selectedCalculationStrategie.value = val;
     final meter = Get.find<Meter>(tag: 'meterEdit');
     final meterType = meter.typeId;
-    if (val == 1) {
+    if (val > 0) {
       if (meterType == "rh") {
         infoMsg.push(
             msg: 'Please select different meter type for this calculation');
         return;
       }
-      strategy = MeterProductionCostCalculation(
-          type: meterTypesState.getMeterTypeById(meterType));
+      strategy = calculationStrategies[val];
+      strategy.setMeterType(meterTypesState.getMeterTypeById(meterType));
     } else {
       strategy = MeterValueDeltaCalculation();
     }

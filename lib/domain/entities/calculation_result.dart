@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CalculationResult {
   DateTimeRange timeRange;
-  final double value;
+  double value;
   CalculationResult({
     required this.value,
     required this.timeRange,

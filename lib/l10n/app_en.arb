@@ -33,5 +33,10 @@
     "diffCalc": "Value difference",
     "diffCalcDescr": "Calculates value differences, values sorted by date",
     "prodCostCalc1": "Meter production costs",
-    "prodCostDescr1": "Calculates meter production cost, sum of each limit price"
+    "prodCostDescr1": "Calculates meter production cost, counter value divided in limit ranges, each part multiplies by refereced price",
+    "prodCostMaxLimCalc": "Meter production costs 2",
+    "prodCostMaxLimDescr": "Calculates meter production cost, counter value times price of reached limit",
+    "inDays": "in days",
+    "avaragePerDay": "Average per day",
+    "reachedLimit": "Reached limit is"
 }

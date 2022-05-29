@@ -6,4 +6,7 @@ class MeterProductionCost extends CalculationResult {
     required DateTimeRange timeRange,
     required double value,
   }) : super(value: value, timeRange: timeRange);
+
+  double reachedLimit = 0;
+  double overLimit = 0;
 }

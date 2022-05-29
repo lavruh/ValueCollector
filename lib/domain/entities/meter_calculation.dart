@@ -123,12 +123,19 @@ class MeterProductionCostMaxLimitCalculation
     MeterProductionCost resultValue =
         MeterProductionCost(timeRange: delta.timeRange, value: 0);
     double tmpVal = delta.value.toDouble();
-    for (int limit in rate.rateLimits.keys) {
-      final multiplier = rate.rateLimits[limit];
-      resultValue.value += tmpVal * multiplier!;
-      if (tmpVal >= limit) {
-        resultValue.reachedLimit = limit.toDouble();
-        final overlimit = resultValue.value - limit.toDouble();
+    final limits = rate.rateLimits.keys.toList();
+
+    for (int i = 1; i < limits.length; i++) {
+      if (tmpVal < limits[i]) {
+        resultValue.value = tmpVal * rate.rateLimits[limits[i - 1]]!;
+        resultValue.reachedLimit = limits[i - 1].toDouble();
+        final overlimit = resultValue.value - limits[i - 1].toDouble();
+        resultValue.overLimit = overlimit > 0 ? overlimit : 0;
+        break;
+      } else {
+        resultValue.value = tmpVal * rate.rateLimits[limits[i]]!;
+        resultValue.reachedLimit = limits[i].toDouble();
+        final overlimit = resultValue.value - limits[i].toDouble();
         resultValue.overLimit = overlimit > 0 ? overlimit : 0;
       }
     }

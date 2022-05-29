@@ -35,6 +35,7 @@ class MetersState extends GetxController {
     int index = meters.indexWhere((element) => element.id == m.id);
     if (index == -1) {
       msg.push(msg: "Meter with ${m.id} does not exists");
+      return;
     }
     meters[index] = m;
     await m.updateDb();

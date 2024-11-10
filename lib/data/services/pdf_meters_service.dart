@@ -180,12 +180,12 @@ class PdfMetersService implements DataFromFileService {
         brush: PdfBrushes.black,
       );
     }
-    output.writeAsBytes(document!.save());
+    output.writeAsBytes(await document!.save());
   }
 
   String getExportPath() {
     String out = fPath!.replaceFirst(r".pdf",
-        "_" + DateFormat("y-M-d_hh:mm").format(DateTime.now()) + ".pdf");
+        "_${DateFormat("y-M-d_hh:mm").format(DateTime.now())}.pdf");
     return out;
   }
 

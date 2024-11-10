@@ -8,7 +8,7 @@ import 'package:rh_collector/ui/widgets/calculation_result_widget.dart';
 import 'package:rh_collector/ui/widgets/calculation_select_widget.dart';
 
 class MeterValuesCalculationsScreen extends StatelessWidget {
-  const MeterValuesCalculationsScreen({Key? key}) : super(key: key);
+  const MeterValuesCalculationsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class MeterValuesCalculationsScreen extends StatelessWidget {
 }
 
 class ResultsChartWidget extends StatelessWidget {
-  const ResultsChartWidget({Key? key, required this.data}) : super(key: key);
+  const ResultsChartWidget({super.key, required this.data});
   final List<CalculationResult> data;
 
   @override
@@ -67,9 +67,6 @@ class ResultsChartWidget extends StatelessWidget {
         ),
         'value': Variable(accessor: (CalculationResult d) => d.value),
       },
-      elements: [
-        LineElement(shape: ShapeAttr(value: BasicLineShape())),
-      ],
       coord: RectCoord(color: const Color(0xffdddddd)),
       axes: [
         Defaults.horizontalAxis,
@@ -91,6 +88,7 @@ class ResultsChartWidget extends StatelessWidget {
         offset: const Offset(-20, -20),
       ),
       crosshair: CrosshairGuide(followPointer: [false, true]),
+      marks: [LineMark()],
     );
   }
 }

@@ -57,13 +57,5 @@ class _CameraAppState extends State<App>
             backgroundColor: MaterialStateProperty.all(Colors.grey))),
     visualDensity: VisualDensity.adaptivePlatformDensity,
     fontFamily: "Georgia",
-    textTheme: const TextTheme(
-      headline1: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-      headline2: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-      headline3: TextStyle(
-          fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
-      headline6: TextStyle(fontSize: 13.0, fontWeight: FontWeight.bold),
-      bodyText1: TextStyle(fontSize: 12.0),
-    ),
   );
 }

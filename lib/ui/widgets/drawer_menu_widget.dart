@@ -11,11 +11,11 @@ import 'package:rh_collector/ui/widgets/meters_groups_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DrawerMenuWidget extends StatelessWidget {
-  const DrawerMenuWidget({Key? key}) : super(key: key);
+  const DrawerMenuWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme.headline5;
+    // final textTheme = Theme.of(context).textTheme.headline5;
     return Drawer(
       child: ListView(
         children: [
@@ -23,7 +23,7 @@ class DrawerMenuWidget extends StatelessWidget {
             leading: const Icon(Icons.checklist_outlined),
             title: Text(
               AppLocalizations.of(context)!.meterGroups,
-              style: textTheme,
+              // style: textTheme,
             ),
             onTap: () async {
               await showDialog(
@@ -36,7 +36,7 @@ class DrawerMenuWidget extends StatelessWidget {
             leading: const Icon(Icons.timeline_outlined),
             title: Text(
               AppLocalizations.of(context)!.routes,
-              style: textTheme,
+              // style: textTheme,
             ),
             onTap: () async {
               await Navigator.push(context,
@@ -48,7 +48,7 @@ class DrawerMenuWidget extends StatelessWidget {
             leading: const Icon(Icons.request_page),
             title: Text(
               AppLocalizations.of(context)!.meterRates,
-              style: textTheme,
+              // style: textTheme,
             ),
             onTap: () {
               Get.to(() => const MeterRatesEditScreen());
@@ -58,7 +58,7 @@ class DrawerMenuWidget extends StatelessWidget {
             leading: const Icon(Icons.electric_meter),
             title: Text(
               AppLocalizations.of(context)!.meterTypes,
-              style: textTheme,
+              // style: textTheme,
             ),
             onTap: () {
               Get.to(() => const MeterTypeEditScreen());
@@ -68,7 +68,7 @@ class DrawerMenuWidget extends StatelessWidget {
             leading: const Icon(Icons.notifications),
             title: Text(
               AppLocalizations.of(context)!.reminders,
-              style: textTheme,
+              // style: textTheme,
             ),
             onTap: () => Get.to(() => const RemindersScreen()),
           ),
@@ -76,10 +76,10 @@ class DrawerMenuWidget extends StatelessWidget {
             leading: const Icon(Icons.login_outlined),
             title: Text(
               AppLocalizations.of(context)!.import,
-              style: textTheme,
+              // style: textTheme,
             ),
-            subtitle: GetX<DataFromFileState>(builder: (_) {
-              return Text(_.filePath.value.toString());
+            subtitle: GetX<DataFromFileState>(builder: (f) {
+              return Text(f.filePath.value.toString());
             }),
             onTap: () async {
               Get.find<DataFromFileState>().initImportData();
@@ -89,10 +89,10 @@ class DrawerMenuWidget extends StatelessWidget {
             leading: const Icon(Icons.logout_outlined),
             title: Text(
               AppLocalizations.of(context)!.export,
-              style: textTheme,
+              // style: textTheme,
             ),
             subtitle: Text(
-                AppLocalizations.of(context)!.exportedTo + " $appDataPath"),
+                "${AppLocalizations.of(context)!.exportedTo} $appDataPath"),
             onTap: () async {
               Get.find<DataFromFileState>().initExportData();
             },

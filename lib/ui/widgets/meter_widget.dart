@@ -9,11 +9,10 @@ import 'package:rh_collector/ui/widgets/meter_value_widget.dart';
 
 class MeterWidget extends StatelessWidget {
   const MeterWidget({
-    Key? key,
+    super.key,
     required Meter meter,
     this.newReadingSetCallBack,
-  })  : _meter = meter,
-        super(key: key);
+  })  : _meter = meter;
   final Meter _meter;
   final Function? newReadingSetCallBack;
 
@@ -34,7 +33,6 @@ class MeterWidget extends StatelessWidget {
                 child: Text(
                   _meter.name,
                   overflow: TextOverflow.clip,
-                  style: Theme.of(context).textTheme.headline2,
                 ),
               ),
             ),

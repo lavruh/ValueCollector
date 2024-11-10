@@ -20,7 +20,7 @@ class CameraStateDevice extends GetxController implements CameraState {
   final reading = "".obs;
   final rec = Get.find<Recognizer>();
 
-  File tmpFile = File(appDataPath + "/tmp.jpg");
+  File tmpFile = File("$appDataPath/tmp.jpg");
 
   @override
   toggleFlashMode() {
@@ -70,10 +70,10 @@ class CameraStateDevice extends GetxController implements CameraState {
     );
     Image pImg = copyCrop(
       src,
-      rect.topLeft.dx.toInt(),
-      rect.topLeft.dy.toInt(),
-      rect.width.toInt(),
-      rect.height.toInt(),
+      x: rect.topLeft.dx.toInt(),
+      y: rect.topLeft.dy.toInt(),
+      width: rect.width.toInt(),
+      height: rect.height.toInt(),
     );
     await tmpFile.writeAsBytes(encodeJpg(pImg));
   }

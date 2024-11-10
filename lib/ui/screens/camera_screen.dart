@@ -4,9 +4,8 @@ import 'package:rh_collector/domain/states/camera_state.dart';
 import 'package:rh_collector/ui/widgets/cam_prev_widget.dart';
 
 class CameraScreen extends StatefulWidget {
-  CameraScreen({Key? key, this.meterName})
-      : state = Get.find<CameraState>(),
-        super(key: key);
+  CameraScreen({super.key, this.meterName})
+      : state = Get.find<CameraState>();
   final CameraState state;
   final String? meterName;
 
@@ -67,7 +66,6 @@ class _CameraScreenState extends State<CameraScreen> {
                           controller: textCtrl,
                           showCursor: true,
                           keyboardType: TextInputType.number,
-                          style: Theme.of(context).textTheme.headline5,
                           textAlign: TextAlign.center,
                           onSubmitted: _setValue,
                           onChanged: _setValue,

@@ -26,7 +26,7 @@ class SembastDbService implements DbService {
     if (_dbOpenCompleter == null) {
       _dbOpenCompleter = Completer();
       try {
-        final String path = join(appDataPath, _dbName + ".db");
+        final String path = join(appDataPath, "$_dbName.db");
         final database = await databaseFactoryIo.openDatabase(path);
         _dbOpenCompleter!.complete(database);
         isLoaded = true;
@@ -69,7 +69,7 @@ class SembastDbService implements DbService {
     if (res.isNotEmpty) {
       List<Map<String, dynamic>> r = res.map((e) {
         Map<String, dynamic> m = {};
-        m.addAll(e.value);
+        m.addAll(e.value as Map<String, dynamic>);
         m.addAll({"dbKey": e.key});
         return m;
       }).toList();

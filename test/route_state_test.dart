@@ -9,18 +9,27 @@ import 'package:rh_collector/di.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/domain/states/route_state.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:file/memory.dart';
 
-main() {
+main() async {
   Get.put<InfoMsgService>(ConsoleInfoMsgService());
   initDependenciesTest();
-  final fs = Get.put<FsSelectionService>(FsSelectionServiceMock());
+  MemoryFileSystem fs = MemoryFileSystem();
+  final dir = fs.directory('test');
+  dir.createSync(recursive: true);
+  final testFile = fs.file('${dir.path}/weekly_route.csv');
+  testFile.createSync();
+
+
+  final selectionService = Get.put<FsSelectionService>(FsSelectionServiceMock());
   final meterState = Get.find<MetersState>();
-  Get.put<RouteService>(CsvRouteService());
+  Get.put<RouteService>(CsvRouteService.test(fs));
   final state = Get.put<RouteState>(RouteState());
+
   test('load weekly route', () async {
-    (fs as FsSelectionServiceMock).filePath =
-        "/home/lavruh/AndroidStudioProjects/RhCollector/test/examples/weekly_route.csv";
+    testFile.writeAsStringSync('BOWTH,Bowth,20');
+    (selectionService as FsSelectionServiceMock).filePath = testFile.path;
     meterState.addNewMeter(Meter(id: 'BOWTH', name: "BOWTH", groupId: "W"));
     await state.loadRoute();
     expect(state.route.length, 1);

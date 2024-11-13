@@ -15,7 +15,7 @@ const documentData = [
   ['MAINENGSB', 'sb me', 3, 4]
 ];
 
-@GenerateMocks([File])
+@GenerateNiceMocks([MockSpec<File>()])
 void main() {
   late CsvMetersService service;
   late MockFile testFile;
@@ -118,21 +118,15 @@ void main() {
     service.values.putIfAbsent("MAINENGPS", () => {DateTime(2022, 2, 24): 2});
     service.setMeterReading(meterId: "AUXGENENG", val: "777");
     service.setMeterReading(meterId: "MAINENGPS", val: "123456");
-    when(testFile.writeAsString(
-      any,
-      mode: anyNamed("mode"),
-      encoding: anyNamed("encoding"),
-      flush: anyNamed("flush"),
-    )).thenAnswer((_) async => testFile);
     await service.exportData(output: testFile);
-    final captured = verify(testFile.writeAsString(captureAny)).captured;
+    final captured = verify(testFile.writeAsString(captureAny, flush: true)).captured;
     expect(captured.length, 1);
     expect(captured[0], contains('id,name,2022-02-24,'));
     expect(
         captured[0],
         contains(
             'AUXGENENG,Auxilary Engine,1,777\r\nMAINENGPS,PS main engine,2,123456'));
-  }, skip: true);
+  });
 
   test("Set meter data (id and name) to export", () async {
     final testData = MeterDto(id: "someid", name: "metername");

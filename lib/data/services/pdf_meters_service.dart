@@ -1,5 +1,7 @@
-import 'dart:io';
 import 'dart:ui';
+import 'package:file/local.dart';
+import 'package:file/file.dart';
+import 'package:file/src/interface/file_system.dart';
 import 'package:intl/intl.dart';
 import 'package:rh_collector/data/dtos/meter_dto.dart';
 import 'package:rh_collector/data/dtos/meter_value_dto.dart';
@@ -7,6 +9,9 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
 
 class PdfMetersService implements DataFromFileService {
+  @override
+  final FileSystem fs;
+
   String? fPath;
   PdfDocument? document;
   Map pdfData = {};
@@ -17,6 +22,9 @@ class PdfMetersService implements DataFromFileService {
   bool meterDetected = false;
   List<String> meter = [];
   Rect? pos;
+
+  PdfMetersService() : fs = const LocalFileSystem();
+  PdfMetersService.test(FileSystem fileSystem) : fs = fileSystem;
 
   @override
   List<MeterValueDto> getMeterValues(String meterId) {
@@ -44,15 +52,16 @@ class PdfMetersService implements DataFromFileService {
   }
 
   @override
-  openFile(File file) async {
-    await setFilePath(file);
-    File pdf = File(fPath!);
+  openFile(String path) async {
+    await setFilePath(path);
+    File pdf = fs.file(fPath!);
     document = PdfDocument(inputBytes: pdf.readAsBytesSync());
     parsePDF();
   }
 
   @override
-  setFilePath(File file) async {
+  setFilePath(String path) async {
+    final file = fs.file(path);
     if (await file.exists()) {
       fPath = file.path;
     } else {
@@ -155,7 +164,7 @@ class PdfMetersService implements DataFromFileService {
   }
 
   @override
-  exportData({required File output, File? template}) async {
+  exportData({required String output, String? template}) async {
     if (template == null) {
       throw Exception("No template file to export is selected");
     }
@@ -180,12 +189,13 @@ class PdfMetersService implements DataFromFileService {
         brush: PdfBrushes.black,
       );
     }
-    output.writeAsBytes(await document!.save());
+    final outputFile = fs.file(output);
+    outputFile.writeAsBytes(await document!.save());
   }
 
   String getExportPath() {
-    String out = fPath!.replaceFirst(r".pdf",
-        "_${DateFormat("y-M-d_hh:mm").format(DateTime.now())}.pdf");
+    String out = fPath!.replaceFirst(
+        r".pdf", "_${DateFormat("y-M-d_hh:mm").format(DateTime.now())}.pdf");
     return out;
   }
 

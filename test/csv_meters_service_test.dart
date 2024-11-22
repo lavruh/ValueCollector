@@ -1,10 +1,9 @@
 import 'dart:io';
+import 'package:file/memory.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rh_collector/data/dtos/meter_dto.dart';
 import 'package:rh_collector/data/services/csv_meters_service.dart';
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'csv_meters_service_test.mocks.dart';
 
 const String inputFileData =
     "id,name,2022-07-13,2023-07-13\r\nAUXGENENG,aux,1,2\r\nMAINENGPS,ps me,2,3\r\nMAINENGSB,sb me,3,4\r\n";
@@ -18,42 +17,42 @@ const documentData = [
 @GenerateNiceMocks([MockSpec<File>()])
 void main() {
   late CsvMetersService service;
-  late MockFile testFile;
+  // late MockFile testFile;
+  final fs = MemoryFileSystem();
 
   setUp(() {
-    testFile = MockFile();
-    service = CsvMetersService();
+    // testFile = MockFile();
+    service = CsvMetersService.test(fs);
   });
 
   test('set file path', () async {
-    const testPath = "/some/path.csv";
-    when(testFile.exists()).thenAnswer((answ) async => true);
-    when(testFile.path).thenAnswer((answ) => testPath);
-    await service.setFilePath(testFile);
+    const testPath = "path.csv";
+    final testFile = fs.file(testPath);
+    testFile.createSync();
+    await service.setFilePath(testPath);
     expect(service.fPath, testPath);
   });
 
   test('set wrong file path', () async {
-    const testPath = "/some/path.pdf";
-    when(testFile.exists()).thenAnswer((answ) async => false);
-    when(testFile.path).thenAnswer((answ) => testPath);
-    expect(() async => await service.setFilePath(testFile), throwsException);
+    const testPath = "path.pdf";
+    final testFile = fs.file(testPath);
+    testFile.createSync();
+    expect(() async => await service.setFilePath(testPath), throwsException);
   });
 
   test('set wrong file extension', () async {
-    const testPath = "/some/path.pdf";
-    when(testFile.exists()).thenAnswer((answ) async => true);
-    when(testFile.path).thenAnswer((answ) => testPath);
-    expect(() async => await service.setFilePath(testFile), throwsException);
+    const testPath = "path.pdf";
+    final testFile = fs.file(testPath);
+    testFile.createSync();
+    expect(() async => await service.setFilePath(testPath), throwsException);
   });
 
   test('open file for parsing', () async {
-    const testPath = "/some/path.csv";
-    when(testFile.exists()).thenAnswer((answ) async => true);
-    when(testFile.path).thenAnswer((answ) => testPath);
-    when(testFile.readAsString())
-        .thenAnswer((realInvocation) async => inputFileData);
-    await service.openFile(testFile);
+    const testPath = "path.csv";
+    final testFile = fs.file(testPath);
+    testFile.createSync();
+    testFile.writeAsStringSync(inputFileData);
+    await service.openFile(testPath);
     expect(service.document.length, documentData.length);
     expect(service.document.first.length, documentData.first.length);
   });
@@ -112,18 +111,19 @@ void main() {
   });
 
   test("export data", () async {
+    final testFile = fs.file('testPath.csv');
+    testFile.createSync();
     service.meters.putIfAbsent("AUXGENENG", () => "Auxilary Engine");
     service.meters.putIfAbsent("MAINENGPS", () => "PS main engine");
     service.values.putIfAbsent("AUXGENENG", () => {DateTime(2022, 2, 24): 1});
     service.values.putIfAbsent("MAINENGPS", () => {DateTime(2022, 2, 24): 2});
     service.setMeterReading(meterId: "AUXGENENG", val: "777");
     service.setMeterReading(meterId: "MAINENGPS", val: "123456");
-    await service.exportData(output: testFile);
-    final captured = verify(testFile.writeAsString(captureAny, flush: true)).captured;
-    expect(captured.length, 1);
-    expect(captured[0], contains('id,name,2022-02-24,'));
+    await service.exportData(output: testFile.path);
+    final fileData = await testFile.readAsString();
+    expect(fileData, contains('id,name,2022-02-24,'));
     expect(
-        captured[0],
+        fileData,
         contains(
             'AUXGENENG,Auxilary Engine,1,777\r\nMAINENGPS,PS main engine,2,123456'));
   });

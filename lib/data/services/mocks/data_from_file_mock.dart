@@ -1,5 +1,5 @@
-import 'dart:io';
-
+import 'package:file/memory.dart';
+import 'package:file/src/interface/file_system.dart';
 import 'package:rh_collector/data/dtos/meter_dto.dart';
 import 'package:rh_collector/data/dtos/meter_value_dto.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
@@ -12,10 +12,10 @@ class DataFromFileMock implements DataFromFileService {
   Map newValues = {};
 
   @override
-  exportData({required File output, File? template}) {}
+  exportData({required String output, String? template}) {}
 
   @override
-  setFilePath(File filePath) {}
+  setFilePath(String filePath) {}
 
   @override
   List<MeterValueDto> getMeterValues(String meterId) {
@@ -50,7 +50,7 @@ class DataFromFileMock implements DataFromFileService {
   }
 
   @override
-  openFile(File filePath) {}
+  openFile(String filePath) {}
 
   @override
   setMeterReading({
@@ -63,4 +63,7 @@ class DataFromFileMock implements DataFromFileService {
       throw Exception("File does not contain meter id[$meterId]");
     }
   }
+
+  @override
+  FileSystem fs = MemoryFileSystem();
 }

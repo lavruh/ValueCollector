@@ -1,7 +1,7 @@
 import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/data/services/sembast_db_service.dart';
 import 'package:rh_collector/di.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 main() {
   appDataPath = "/home/lavruh/AndroidStudioProjects/RhCollector/test/db_tests";

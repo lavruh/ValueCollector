@@ -1,4 +1,5 @@
-import 'dart:io';
+import 'package:file/local.dart';
+import 'package:file/file.dart';
 import 'package:csv/csv.dart';
 import 'package:intl/intl.dart';
 import 'package:rh_collector/data/dtos/meter_dto.dart';
@@ -7,6 +8,11 @@ import 'package:rh_collector/data/dtos/meter_value_dto.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
 
 class CsvMetersService implements DataFromFileService {
+  @override
+  final FileSystem fs;
+  CsvMetersService() : fs = const LocalFileSystem();
+  CsvMetersService.test(FileSystem fileSystem) : fs = fileSystem;
+
   String? fPath;
   List<List> document = [];
   //{id, name}
@@ -15,7 +21,7 @@ class CsvMetersService implements DataFromFileService {
   Map<String, Map<DateTime, int>> values = {};
 
   @override
-  exportData({required File output, File? template}) async {
+  exportData({required String output, String? template}) async {
     List<List> data = [
       ['id', 'name']
     ];
@@ -33,7 +39,8 @@ class CsvMetersService implements DataFromFileService {
       data.add(meter);
     }
     final res = const ListToCsvConverter().convert(data);
-    await output.writeAsString(res, flush: true);
+    final outFile = fs.file(output);
+    await outFile.writeAsString(res, flush: true);
   }
 
   @override
@@ -59,9 +66,10 @@ class CsvMetersService implements DataFromFileService {
   }
 
   @override
-  openFile(File file) async {
+  openFile(String filePath) async {
     try {
-      setFilePath(file);
+      setFilePath(filePath);
+      final file = fs.file(filePath);
       final input = await file.readAsString();
       document = const CsvToListConverter().convert(input, fieldDelimiter: ',');
       parseData();
@@ -71,7 +79,8 @@ class CsvMetersService implements DataFromFileService {
   }
 
   @override
-  setFilePath(File file) async {
+  setFilePath(String filePath) async {
+    final file = fs.file(filePath);
     if (await file.exists()) {
       String path = file.path;
       if (path.endsWith('.csv')) {

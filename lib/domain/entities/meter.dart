@@ -42,8 +42,11 @@ class Meter extends GetxController {
   Future<void> getValues() async {
     values.clear();
     List res = await db.getEntries([], table: _id);
-    for (var e in res) {
-      values.add(MeterValue.fromJson(e));
+    for (final e in res) {
+      final value = MeterValue.fromJson(e);
+      if(!values.any((element) => element.id == value.id)) {
+        values.add(value);
+      }
     }
     values.sort(((a, b) =>
         a.date.millisecondsSinceEpoch - b.date.millisecondsSinceEpoch));

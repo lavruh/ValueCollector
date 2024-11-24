@@ -23,7 +23,7 @@ class MetersState extends GetxController {
   getMeters(List<String> groupId) async {
     meters.clear();
     List res = await db.getEntries(_createRequest(groupId), table: "meters");
-    for (Map<String, dynamic> e in res) {
+    for (final e in res) {
       Meter m = MeterDto.fromMap(e).toDomain();
       await m.getValues();
       meters.add(m);
@@ -42,18 +42,13 @@ class MetersState extends GetxController {
     update();
   }
 
-  addNewMeter(Meter? m) {
-    late Meter _m;
-    if (m != null) {
-      _m = m;
-    } else {
-      _m = Meter(
-        name: "new_meter",
-        groupId: meterGroups.getFirstSelectedGroupId(),
-      );
-    }
-    meters.add(_m);
-    updateMeter(_m);
+  addNewMeter(Meter? meter) {
+    Meter m = meter ?? Meter(
+      name: "new_meter",
+      groupId: meterGroups.getFirstSelectedGroupId(),
+    );
+    meters.add(m);
+    updateMeter(m);
   }
 
   deleteMeter(String id) async {
@@ -73,7 +68,7 @@ class MetersState extends GetxController {
     meters.clear();
     List<List> req = _createRequest(groupId);
     List res = await db.getEntries(req, table: "meters");
-    for (Map<String, dynamic> e in res) {
+    for (final e in res) {
       Meter m = MeterDto.fromMap(e).toDomain();
       if (m.name.contains(RegExp(filter, caseSensitive: false))) {
         await m.getValues();

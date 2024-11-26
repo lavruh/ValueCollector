@@ -37,20 +37,25 @@ class MeterValueEditWidget extends StatelessWidget {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Container(),
-              InkWell(
+              TextButton(
                 child: Text(
-                  DateFormat("yyyy-MM-dd").format(meterValue.date),
-                  // style: Theme.of(context).textTheme.subtitle1,
+                  DateFormat("yyyy-MM-dd\nHH:mm").format(meterValue.date),
                 ),
-                onTap: () async {
+                onPressed: () async {
                   final date = await Get.dialog<DateTime>(DatePickerDialog(
                     initialDate: meterValue.date,
                     firstDate: DateTime(DateTime.now().year - 2),
                     lastDate: DateTime(DateTime.now().year + 2),
                   ));
                   if (date != null) {
-                    meterValue.date = date;
-                    updateCallback!(meterValue);
+                    final initTime = TimeOfDay.fromDateTime(meterValue.date);
+                    final time = await Get.dialog<TimeOfDay>(
+                        TimePickerDialog(initialTime: initTime));
+                    if (time != null) {
+                      meterValue.date = DateTime(date.year, date.month,
+                          date.day, time.hour, time.minute);
+                      updateCallback!(meterValue);
+                    }
                   }
                 },
               ),

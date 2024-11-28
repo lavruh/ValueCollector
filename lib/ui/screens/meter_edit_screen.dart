@@ -8,12 +8,12 @@ import 'package:rh_collector/ui/widgets/delete_confirm_dialog.dart';
 import 'package:rh_collector/ui/widgets/meter_editor/editor_text_input_field_widget.dart';
 import 'package:rh_collector/ui/widgets/meter_editor/meter_values_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/ui/widgets/meter_group_select_widget.dart';
 import 'package:rh_collector/ui/widgets/meter_type_select_widget.dart';
 
 class MeterEditScreen extends StatelessWidget {
-  MeterEditScreen({Key? key, required Meter meter})
-      : _meter = meter.copyWith(),
-        super(key: key) {
+  MeterEditScreen({super.key, required Meter meter})
+      : _meter = meter.copyWith() {
     Get.replace<Meter>(_meter, tag: "meterEdit");
   }
 
@@ -56,6 +56,7 @@ class MeterEditScreen extends StatelessWidget {
                               },
                               key: const Key('UnitInput'),
                             ),
+                            const MeterGroupSelectWidget(),
                             EditorTextInputFieldWidget(
                               lable: AppLocalizations.of(context)?.correction,
                               initValue: _meter.correction.toString(),

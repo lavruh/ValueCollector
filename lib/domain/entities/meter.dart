@@ -9,7 +9,7 @@ class Meter extends GetxController {
   final String _id;
   String name;
   String? unit;
-  String groupId;
+  final _group = "W".obs;
   int correction = 0;
   final _type = "rh".obs;
   final values = <MeterValue>[].obs;
@@ -19,17 +19,23 @@ class Meter extends GetxController {
   Meter({
     String? id,
     required this.name,
-    required this.groupId,
+    required String groupId,
     this.unit,
     String? typeId,
     this.correction = 0,
   }) : _id = id ?? UniqueKey().toString() {
+    _group.value = groupId;
     _type.value = typeId ?? "rh";
     getValues();
   }
 
   String get id => _id;
   String get typeId => _type.value;
+  String get groupId => _group.value;
+
+  set groupId(String val) {
+    _group.value = val;
+  }
 
   set typeId(String val) {
     _type.value = val;

@@ -38,4 +38,10 @@ class RouteState extends GetxController {
     routeName.value =
         path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
   }
+
+
+  postponeReading({required int postponeMeterIndex}) {
+    String id = route.removeAt(postponeMeterIndex);
+    route.add(id);
+  }
 }

@@ -12,9 +12,11 @@ class MeterWidget extends StatelessWidget {
     super.key,
     required Meter meter,
     this.newReadingSetCallBack,
-  })  : _meter = meter;
+    this.suffix,
+  }) : _meter = meter;
   final Meter _meter;
   final Function? newReadingSetCallBack;
+  final Widget? suffix;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +49,7 @@ class MeterWidget extends StatelessWidget {
                     v2: _meter.values.last,
                   ))
                 : const SizedBox.shrink(),
-            _meter.values.length > 1
+            _meter.values.length > 1 && suffix == null
                 ? MeterValueWidget(v: _meter.values.reversed.toList()[1])
                 : const SizedBox.shrink(),
             _meter.values.isNotEmpty
@@ -58,6 +60,7 @@ class MeterWidget extends StatelessWidget {
                   _addReading(context);
                 },
                 icon: const Icon(Icons.add_a_photo_outlined)),
+            if (suffix != null) suffix!,
           ],
         ));
   }

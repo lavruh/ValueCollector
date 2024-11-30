@@ -19,12 +19,16 @@ import 'package:rh_collector/data/services/sembast_db_service.dart';
 import 'package:rh_collector/domain/states/camera_state_device.dart';
 import 'package:rh_collector/domain/states/data_from_file_state.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
+import 'package:rh_collector/domain/states/meter_types_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
+import 'package:rh_collector/domain/states/rates_state.dart';
 import 'package:rh_collector/domain/states/reminders_state.dart';
 import 'package:rh_collector/domain/states/recognizer.dart';
 import 'package:rh_collector/domain/states/route_state.dart';
+import 'package:rh_collector/domain/states/values_calculations_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:rh_collector/domain/states/camera_state.dart';
 
 late DbService db;
@@ -41,21 +45,20 @@ Widget testableWidget(Widget w) {
             backgroundColor: MaterialStateProperty.all(Colors.grey))),
     visualDensity: VisualDensity.adaptivePlatformDensity,
     fontFamily: "Georgia",
-    textTheme: const TextTheme(
-      headline1: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
-      headline2: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-      headline3: TextStyle(
-          fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
-      headline6: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
-      bodyText1: TextStyle(fontSize: 12.0),
-    ),
-    // inputDecorationTheme: InputDecorationTheme(
-    //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5))),
   );
 
   return GetMaterialApp(
     theme: _theme,
     home: w,
+    localizationsDelegates: const [
+      AppLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+    ],
+    supportedLocales: const [
+      Locale('en', ''), // English, no country code
+      Locale('uk', ''), // Spanish, no country code
+    ],
   );
 }
 
@@ -78,7 +81,6 @@ Future<bool> initTestApp() async {
           importance: NotificationImportance.High)
     ]);
     cameras = await availableCameras();
-    // await initDependencies();
     await appTestDependencies();
     return true;
   }
@@ -94,16 +96,20 @@ appTestDependencies() async {
   db = Get.put<DbService>(SembastDbService(dbName: "metersReadings"));
   await db.openDb();
   fsSelect = Get.put<FsSelectionService>(FsSelectionServiceMock());
+
   Get.put<DataFromFileService>(PdfMetersService(), tag: "bokaPdf");
   Get.put<DataFromFileService>(CsvMetersService(), tag: "csv");
   Get.put<RouteService>(CsvRouteService());
   Get.put<Recognizer>(Recognizer());
   Get.put<CameraState>(CameraStateDevice(), permanent: true);
+  Get.put(MeterTypesState());
+  Get.put(RatesState());
   Get.lazyPut(() => RemindersState());
   Get.put<MeterGroups>(MeterGroups());
   Get.put<MetersState>(MetersState());
   Get.put<RouteState>(RouteState());
   Get.put<DataFromFileState>(DataFromFileState());
+  Get.put(ValuesCalculationsState());
 }
 
 checkDate({

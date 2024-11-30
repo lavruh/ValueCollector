@@ -1,47 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:rh_collector/domain/entities/calculation_result.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
+import 'package:rh_collector/domain/helpers/daterange_extension.dart';
 
-class MeterValueDelta {
-  late int _delta;
-  late Color _color;
-  late DateTimeRange _dateRange;
+class MeterValueDelta extends CalculationResult {
+  bool _isValid = false;
   MeterValueDelta({
     required MeterValue v1,
     required MeterValue v2,
-  }) {
-    _delta = v2.correctedValue - v1.correctedValue;
-    try {
-      _dateRange = DateTimeRange(start: v1.date, end: v2.date);
-    } catch (e) {
-      _dateRange = DateTimeRange(start: v1.date, end: v1.date);
-    }
-    _color = Colors.black;
-    if (_delta < 0) {
-      _color = Colors.redAccent;
-    }
-    if (_delta > _dateRange.duration.inHours) {
-      _color = Colors.redAccent;
-    }
+  }) : super(
+            value: (v2.correctedValue - v1.correctedValue).toDouble(),
+            timeRange: DateTimeRange(
+                start: v1.date,
+                end: v2.date.millisecondsSinceEpoch >
+                        v1.date.millisecondsSinceEpoch
+                    ? v2.date
+                    : v1.date)) {
+    _validate();
   }
 
-  int get delta => _delta;
-  Color get color => _color;
-  DateTimeRange get dateRange => _dateRange;
+  bool get isValid => _isValid;
+  DateTimeRange get dateRange => timeRange;
+  double get avaregePerDay {
+    final r = value / timeRange.durationInDays;
+    return !r.isNaN ? r : 0;
+  }
 
-  @override
-  String toString() =>
-      'MeterValueDelta(_delta: $_delta, _color: $_color, _dateRange: $_dateRange)';
+  _validate() {
+    if (value < 0 || value > timeRange.duration.inHours) {
+      _isValid = false;
+    } else {
+      _isValid = true;
+    }
+  }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
     return other is MeterValueDelta &&
-        other._delta == _delta &&
-        other._color == _color &&
-        other._dateRange == _dateRange;
+        other.value == value &&
+        other.timeRange == timeRange;
   }
 
   @override
-  int get hashCode => _delta.hashCode ^ _color.hashCode ^ _dateRange.hashCode;
+  int get hashCode => value.hashCode ^ timeRange.hashCode;
 }

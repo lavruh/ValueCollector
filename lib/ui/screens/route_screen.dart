@@ -6,7 +6,7 @@ import 'package:rh_collector/ui/widgets/meter_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RouteScreen extends StatelessWidget {
-  RouteScreen({Key? key}) : super(key: key);
+  RouteScreen({super.key});
   final metersState = Get.find<MetersState>();
 
   @override
@@ -15,9 +15,9 @@ class RouteScreen extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: GetX<RouteState>(builder: (_) {
-            final title = _.routeName.value.length > 1
-                ? _.routeName.value
+          title: GetX<RouteState>(builder: (state) {
+            final title = state.routeName.value.length > 1
+                ? state.routeName.value
                 : AppLocalizations.of(context)!.openRouteFile;
             return Text(title);
           }),
@@ -27,15 +27,15 @@ class RouteScreen extends StatelessWidget {
           ],
           bottom: TabBar(
             tabs: [
-              GetX<RouteState>(builder: (_) {
+              GetX<RouteState>(builder: (state) {
                 return Tab(
-                    text: AppLocalizations.of(context)!.todo +
-                        "(${_.route.length})");
+                    text:
+                        "${AppLocalizations.of(context)!.todo}(${state.route.length})");
               }),
-              GetX<RouteState>(builder: (_) {
+              GetX<RouteState>(builder: (state) {
                 return Tab(
-                    text: AppLocalizations.of(context)!.done +
-                        "(${_.doneMeters.length})");
+                    text:
+                        "${AppLocalizations.of(context)!.done}(${state.doneMeters.length})");
               })
             ],
           ),
@@ -43,27 +43,33 @@ class RouteScreen extends StatelessWidget {
         body: TabBarView(
           children: [
             GetX<RouteState>(
-              builder: (_) {
+              builder: (state) {
                 return ListView.builder(
-                  itemCount: _.route.length,
+                  itemCount: state.route.length,
                   itemBuilder: (BuildContext context, int i) {
                     return MeterWidget(
-                      meter: metersState.getMeter(_.route[i]),
+                      meter: metersState.getMeter(state.route[i]),
                       newReadingSetCallBack: () {
-                        _.readingDoneGoNext(doneMeterIndex: i);
+                        state.readingDoneGoNext(doneMeterIndex: i);
                       },
+                      suffix: IconButton(
+                        tooltip: "Postpone",
+                        onPressed: () =>
+                            state.postponeReading(postponeMeterIndex: i),
+                        icon: const Icon(Icons.move_down),
+                      ),
                     );
                   },
                 );
               },
             ),
             GetX<RouteState>(
-              builder: (_) {
+              builder: (state) {
                 return ListView.builder(
-                  itemCount: _.doneMeters.length,
+                  itemCount: state.doneMeters.length,
                   itemBuilder: (BuildContext context, int i) {
                     return MeterWidget(
-                      meter: metersState.getMeter(_.doneMeters[i]),
+                      meter: metersState.getMeter(state.doneMeters[i]),
                     );
                   },
                 );

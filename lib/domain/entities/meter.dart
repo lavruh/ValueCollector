@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'package:rh_collector/data/dtos/meter_dto.dart';
 import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 
@@ -8,9 +9,9 @@ class Meter extends GetxController {
   final String _id;
   String name;
   String? unit;
-  String groupId;
+  final _group = "W".obs;
   int correction = 0;
-
+  final _type = "rh".obs;
   final values = <MeterValue>[].obs;
 
   final db = Get.find<DbService>();
@@ -18,49 +19,43 @@ class Meter extends GetxController {
   Meter({
     String? id,
     required this.name,
-    required this.groupId,
+    required String groupId,
     this.unit,
+    String? typeId,
     this.correction = 0,
   }) : _id = id ?? UniqueKey().toString() {
+    _group.value = groupId;
+    _type.value = typeId ?? "rh";
     getValues();
   }
 
   String get id => _id;
+  String get typeId => _type.value;
+  String get groupId => _group.value;
 
-  Map<String, dynamic> toJson() {
-    return {
-      "id": _id,
-      "name": name,
-      "unit": unit,
-      "groupId": groupId,
-      "correction": correction,
-    };
+  set groupId(String val) {
+    _group.value = val;
   }
 
-  Meter.fromJson(Map<String, dynamic> map)
-      : name = map['name'] ?? "",
-        _id = map['id'] ?? UniqueKey().toString(),
-        unit = map['unit'],
-        groupId = map["groupId"] ?? "W",
-        correction = map["correction"] ?? 0;
-
-  Meter.fromFileDto(Map<String, dynamic> map)
-      : name = map['name'] ?? "",
-        _id = map['id'] ?? UniqueKey().toString(),
-        unit = map['unit'],
-        groupId = map["groupId"] ?? "W",
-        correction = map["correction"] ?? 0;
+  set typeId(String val) {
+    _type.value = val;
+  }
 
   updateDb() async {
-    await db.updateEntry(toJson(), table: "meters");
+    await db.updateEntry(MeterDto.fromDomain(this).toMap(), table: "meters");
   }
 
   Future<void> getValues() async {
     values.clear();
     List res = await db.getEntries([], table: _id);
-    for (var e in res) {
-      values.add(MeterValue.fromJson(e));
+    for (final e in res) {
+      final value = MeterValue.fromJson(e);
+      if(!values.any((element) => element.id == value.id)) {
+        values.add(value);
+      }
     }
+    values.sort(((a, b) =>
+        a.date.millisecondsSinceEpoch - b.date.millisecondsSinceEpoch));
   }
 
   addValue(MeterValue v) async {
@@ -121,6 +116,7 @@ class Meter extends GetxController {
     String? name,
     String? unit,
     String? groupId,
+    String? typeId,
     int? correction,
   }) {
     return Meter(
@@ -128,6 +124,7 @@ class Meter extends GetxController {
       name: name ?? this.name,
       unit: unit ?? this.unit,
       groupId: groupId ?? this.groupId,
+      typeId: typeId ?? _type.value,
       correction: correction ?? this.correction,
     );
   }

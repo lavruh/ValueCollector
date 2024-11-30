@@ -4,9 +4,9 @@ import 'package:rh_collector/domain/entities/meter_value.dart';
 
 class MeterValueWidget extends StatelessWidget {
   const MeterValueWidget({
-    Key? key,
+    super.key,
     required this.v,
-  }) : super(key: key);
+  });
 
   final MeterValue v;
 
@@ -15,6 +15,7 @@ class MeterValueWidget extends StatelessWidget {
     return Column(
       children: [
         Text(DateFormat("y-MM-dd").format(v.date)),
+        Text(DateFormat("HH:mm").format(v.date)),
         Text(v.correctedValue.toString()),
       ],
     );

@@ -43,8 +43,8 @@ class _CameraAppState extends State<App>
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: const [
-        Locale('en', ''), // English, no country code
-        Locale('uk', ''), // Spanish, no country code
+        Locale('en', ''),
+        Locale('uk', ''),
       ],
     );
   }
@@ -57,15 +57,5 @@ class _CameraAppState extends State<App>
             backgroundColor: MaterialStateProperty.all(Colors.grey))),
     visualDensity: VisualDensity.adaptivePlatformDensity,
     fontFamily: "Georgia",
-    textTheme: const TextTheme(
-      headline1: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
-      headline2: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-      headline3: TextStyle(
-          fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
-      headline6: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
-      bodyText1: TextStyle(fontSize: 12.0),
-    ),
-    // inputDecorationTheme: InputDecorationTheme(
-    //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5))),
   );
 }

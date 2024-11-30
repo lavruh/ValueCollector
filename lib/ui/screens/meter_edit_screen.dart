@@ -3,15 +3,17 @@ import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
+import 'package:rh_collector/ui/screens/meter_values_calculations_screen.dart';
 import 'package:rh_collector/ui/widgets/delete_confirm_dialog.dart';
 import 'package:rh_collector/ui/widgets/meter_editor/editor_text_input_field_widget.dart';
 import 'package:rh_collector/ui/widgets/meter_editor/meter_values_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/ui/widgets/meter_group_select_widget.dart';
+import 'package:rh_collector/ui/widgets/meter_type_select_widget.dart';
 
 class MeterEditScreen extends StatelessWidget {
-  MeterEditScreen({Key? key, required Meter meter})
-      : _meter = meter.copyWith(),
-        super(key: key) {
+  MeterEditScreen({super.key, required Meter meter})
+      : _meter = meter.copyWith() {
     Get.replace<Meter>(_meter, tag: "meterEdit");
   }
 
@@ -35,7 +37,8 @@ class MeterEditScreen extends StatelessWidget {
                       alignment: WrapAlignment.center,
                       children: [
                         Wrap(
-                          direction: Axis.vertical,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 15,
                           children: [
                             EditorTextInputFieldWidget(
                               lable: AppLocalizations.of(context)?.name,
@@ -53,6 +56,7 @@ class MeterEditScreen extends StatelessWidget {
                               },
                               key: const Key('UnitInput'),
                             ),
+                            const MeterGroupSelectWidget(),
                             EditorTextInputFieldWidget(
                               lable: AppLocalizations.of(context)?.correction,
                               initValue: _meter.correction.toString(),
@@ -62,6 +66,15 @@ class MeterEditScreen extends StatelessWidget {
                               keyboardType: TextInputType.number,
                               key: const Key('CorrectionInput'),
                             ),
+                            GetX<Meter>(
+                                tag: "meterEdit",
+                                builder: (state) {
+                                  return MeterTypeSelectWidget(
+                                      initValueId: state.typeId,
+                                      callback: (val) {
+                                        state.typeId = val;
+                                      });
+                                }),
                           ],
                         ),
                       ],
@@ -71,13 +84,16 @@ class MeterEditScreen extends StatelessWidget {
               ),
             ),
             const Flexible(
-              flex: 2,
+              flex: 3,
               child: MeterValuesWidget(),
             ),
           ],
         ),
         appBar: AppBar(
           actions: [
+            IconButton(
+                onPressed: _goToCalculationsScreen,
+                icon: const Icon(Icons.calculate)),
             IconButton(onPressed: _addNewValue, icon: const Icon(Icons.add)),
             IconButton(onPressed: _submit, icon: const Icon(Icons.check)),
             IconButton(
@@ -86,6 +102,10 @@ class MeterEditScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _goToCalculationsScreen() {
+    Get.to(() => const MeterValuesCalculationsScreen());
   }
 
   _submit() {

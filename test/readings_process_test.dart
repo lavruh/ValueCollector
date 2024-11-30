@@ -1,5 +1,5 @@
 import 'package:rh_collector/domain/states/recognizer.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 main() {
   Recognizer t = Recognizer();

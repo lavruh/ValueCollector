@@ -3,7 +3,7 @@ import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/data/services/mocks/db_service_mock.dart';
 import 'package:rh_collector/domain/entities/meter_group.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 main() {
   final db = Get.put<DbService>(DbServiceMock());

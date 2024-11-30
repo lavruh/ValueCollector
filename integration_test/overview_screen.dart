@@ -25,12 +25,12 @@ Future<void> overviewScreenTest(WidgetTester tester) async {
   await tester.pumpAndSettle();
   expect(find.textContaining('Routes'), findsOneWidget);
   expect(find.textContaining('Groups'), findsOneWidget);
-  expect(find.textContaining('Notifications'), findsOneWidget);
+  expect(find.textContaining('Reminders'), findsOneWidget);
   expect(find.textContaining('Import'), findsOneWidget);
-  expect(find.textContaining('Export to file'), findsOneWidget);
+  expect(find.text('Export'), findsOneWidget);
   await tester.tap(find.textContaining('Groups'));
   await tester.pumpAndSettle();
-  expect(find.textContaining('Groups :'), findsOneWidget);
+  expect(find.textContaining('Groups'), findsNWidgets(2));
   final tileWeekly = find.ancestor(
     of: find.textContaining('Weekly'),
     matching: find.byType(ListTile),

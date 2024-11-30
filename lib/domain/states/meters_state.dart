@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:rh_collector/data/dtos/meter_dto.dart';
 import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
@@ -22,8 +23,8 @@ class MetersState extends GetxController {
   getMeters(List<String> groupId) async {
     meters.clear();
     List res = await db.getEntries(_createRequest(groupId), table: "meters");
-    for (Map<String, dynamic> e in res) {
-      Meter m = Meter.fromJson(e);
+    for (final e in res) {
+      Meter m = MeterDto.fromMap(e).toDomain();
       await m.getValues();
       meters.add(m);
     }
@@ -34,24 +35,20 @@ class MetersState extends GetxController {
     int index = meters.indexWhere((element) => element.id == m.id);
     if (index == -1) {
       msg.push(msg: "Meter with ${m.id} does not exists");
+      return;
     }
     meters[index] = m;
     await m.updateDb();
     update();
   }
 
-  addNewMeter(Meter? m) {
-    late Meter _m;
-    if (m != null) {
-      _m = m;
-    } else {
-      _m = Meter(
-        name: "new_meter",
-        groupId: meterGroups.getFirstSelectedGroupId(),
-      );
-    }
-    meters.add(_m);
-    updateMeter(_m);
+  addNewMeter(Meter? meter) {
+    Meter m = meter ?? Meter(
+      name: "new_meter",
+      groupId: meterGroups.getFirstSelectedGroupId(),
+    );
+    meters.add(m);
+    updateMeter(m);
   }
 
   deleteMeter(String id) async {
@@ -71,8 +68,8 @@ class MetersState extends GetxController {
     meters.clear();
     List<List> req = _createRequest(groupId);
     List res = await db.getEntries(req, table: "meters");
-    for (Map<String, dynamic> e in res) {
-      Meter m = Meter.fromJson(e);
+    for (final e in res) {
+      Meter m = MeterDto.fromMap(e).toDomain();
       if (m.name.contains(RegExp(filter, caseSensitive: false))) {
         await m.getValues();
         meters.add(m);

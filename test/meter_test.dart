@@ -3,7 +3,7 @@ import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/data/services/mocks/db_service_mock.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 main() {
   final values = [

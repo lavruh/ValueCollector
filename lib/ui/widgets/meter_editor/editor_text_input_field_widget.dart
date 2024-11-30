@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class EditorTextInputFieldWidget extends StatelessWidget {
   const EditorTextInputFieldWidget({
-    Key? key,
+    super.key,
     this.keyboardType,
     this.lable,
     required this.initValue,
     this.setValue,
-  }) : super(key: key);
+  });
   final TextInputType? keyboardType;
   final String? lable;
   final String initValue;
@@ -16,17 +16,14 @@ class EditorTextInputFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        width: MediaQuery.of(context).size.width * 0.9,
+        width: MediaQuery.of(context).size.width * 0.4,
         child: TextField(
           controller: TextEditingController(text: initValue),
           showCursor: true,
           keyboardType: keyboardType,
-          style: Theme.of(context).textTheme.headline5,
           textAlign: TextAlign.center,
           decoration: InputDecoration(
             labelText: lable,
-            // border:
-            //     OutlineInputBorder(borderRadius: BorderRadius.circular(8))
           ),
           onChanged: setValue,
         ));

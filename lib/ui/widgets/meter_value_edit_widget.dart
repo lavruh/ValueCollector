@@ -7,11 +7,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MeterValueEditWidget extends StatelessWidget {
   const MeterValueEditWidget({
-    Key? key,
+    super.key,
     required this.meterValue,
     this.deleteCallback,
     this.updateCallback,
-  }) : super(key: key);
+  });
 
   final MeterValue meterValue;
   final Function? deleteCallback;
@@ -20,6 +20,15 @@ class MeterValueEditWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Slidable(
+      endActionPane: ActionPane(motion: const ScrollMotion(), children: [
+        SlidableAction(
+          icon: Icons.delete_forever,
+          backgroundColor: Colors.red,
+          onPressed: (BuildContext context) {
+            deleteCallback!(meterValue);
+          },
+        ),
+      ]),
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -28,20 +37,25 @@ class MeterValueEditWidget extends StatelessWidget {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Container(),
-              InkWell(
+              TextButton(
                 child: Text(
-                  DateFormat("yyyy-MM-dd").format(meterValue.date),
-                  style: Theme.of(context).textTheme.subtitle1,
+                  DateFormat("yyyy-MM-dd\nHH:mm").format(meterValue.date),
                 ),
-                onTap: () async {
+                onPressed: () async {
                   final date = await Get.dialog<DateTime>(DatePickerDialog(
                     initialDate: meterValue.date,
                     firstDate: DateTime(DateTime.now().year - 2),
                     lastDate: DateTime(DateTime.now().year + 2),
                   ));
                   if (date != null) {
-                    meterValue.date = date;
-                    updateCallback!(meterValue);
+                    final initTime = TimeOfDay.fromDateTime(meterValue.date);
+                    final time = await Get.dialog<TimeOfDay>(
+                        TimePickerDialog(initialTime: initTime));
+                    if (time != null) {
+                      meterValue.date = DateTime(date.year, date.month,
+                          date.day, time.hour, time.minute);
+                      updateCallback!(meterValue);
+                    }
                   }
                 },
               ),
@@ -75,15 +89,6 @@ class MeterValueEditWidget extends StatelessWidget {
           ),
         ),
       ),
-      endActionPane: ActionPane(motion: const ScrollMotion(), children: [
-        SlidableAction(
-          icon: Icons.delete_forever,
-          backgroundColor: Colors.red,
-          onPressed: (BuildContext context) {
-            deleteCallback!(meterValue);
-          },
-        ),
-      ]),
     );
   }
 }

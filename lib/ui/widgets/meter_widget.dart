@@ -9,13 +9,14 @@ import 'package:rh_collector/ui/widgets/meter_value_widget.dart';
 
 class MeterWidget extends StatelessWidget {
   const MeterWidget({
-    Key? key,
+    super.key,
     required Meter meter,
     this.newReadingSetCallBack,
-  })  : _meter = meter,
-        super(key: key);
+    this.suffix,
+  }) : _meter = meter;
   final Meter _meter;
   final Function? newReadingSetCallBack;
+  final Widget? suffix;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,6 @@ class MeterWidget extends StatelessWidget {
                 child: Text(
                   _meter.name,
                   overflow: TextOverflow.clip,
-                  style: Theme.of(context).textTheme.headline2,
                 ),
               ),
             ),
@@ -49,7 +49,7 @@ class MeterWidget extends StatelessWidget {
                     v2: _meter.values.last,
                   ))
                 : const SizedBox.shrink(),
-            _meter.values.length > 1
+            _meter.values.length > 1 && suffix == null
                 ? MeterValueWidget(v: _meter.values.reversed.toList()[1])
                 : const SizedBox.shrink(),
             _meter.values.isNotEmpty
@@ -60,6 +60,7 @@ class MeterWidget extends StatelessWidget {
                   _addReading(context);
                 },
                 icon: const Icon(Icons.add_a_photo_outlined)),
+            if (suffix != null) suffix!,
           ],
         ));
   }

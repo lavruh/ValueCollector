@@ -1,32 +1,37 @@
-import 'dart:io';
-
 import 'package:rh_collector/data/dtos/meter_dto.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
 import 'package:rh_collector/data/services/pdf_meters_service.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
+import 'package:file/memory.dart';
+import 'pdf_meters_data.dart';
+import 'pdf_meters_data2.dart';
+import 'pdf_meters_data3.dart';
 
 main() {
-  const filePath =
-      "/home/lavruh/AndroidStudioProjects/RhCollector/test/examples/RBW-ChkRnHrs-W.pdf";
-  const filePathM =
-      "/home/lavruh/AndroidStudioProjects/RhCollector/test/examples/RBW-ChkRnHrs-M.pdf";
-  const file2Path =
-      "/home/lavruh/AndroidStudioProjects/RhCollector/test/examples/RBW-ChkRnHrs-W02.pdf";
+  const filePath = "RBW-ChkRnHrs-W.pdf";
+  const filePathM = "RBW-ChkRnHrs-M.pdf";
+  const file2Path = "RBW-ChkRnHrs-W02.pdf";
 
-  DataFromFileService serv = PdfMetersService();
+  final fs = MemoryFileSystem();
+  DataFromFileService serv = PdfMetersService.test(fs);
+  fs.file(filePath).writeAsBytes(file1data);
+  fs.file(filePathM).writeAsBytes(pdfDataM);
+  fs.file(file2Path).writeAsBytes(pdfDataW2);
+
+  final fileWeeklyReport = fs.file(filePath);
 
   tearDown(() {
     (serv as PdfMetersService).pdfData.clear();
   });
 
   test("open file", () async {
-    await serv.openFile(File(filePath));
+    await serv.openFile(fileWeeklyReport.path);
     expect((serv as PdfMetersService).pdfData, isNotEmpty);
   });
 
   test("parse weekly pdf", () async {
-    await serv.openFile(File(filePath));
+    await serv.openFile(fileWeeklyReport.path);
     Map res = (serv as PdfMetersService).pdfData;
 
     expect(res, isNotEmpty);
@@ -36,12 +41,12 @@ main() {
     expect(res['DREDPUENG2']['date'], DateTime(2021, 11, 27));
     expect(res['DREDPUENG2']['reading'], 20873);
 
-    await serv.openFile(File(file2Path));
+    await serv.openFile(file2Path);
     res = serv.pdfData;
     expect(res['MAINENGSB']['id'], 'MAINENGSB');
     expect(res['MAINENGSB']['name'], 'Main Engine, SB');
-    expect(res['MAINENGSB']['date'], DateTime(2021, 12, 18));
-    expect(res['MAINENGSB']['reading'], 149208);
+    expect(res['MAINENGSB']['date'], DateTime(2022, 1, 8));
+    expect(res['MAINENGSB']['reading'], 149404);
     expect(res['BOWTH']['page'], 0);
     expect(serv.outputLeft, greaterThanOrEqualTo(400));
 
@@ -54,7 +59,7 @@ main() {
   });
 
   test("parse monthly pdf", () async {
-    await serv.openFile(File(filePathM));
+    await serv.openFile(filePathM);
     Map res = (serv as PdfMetersService).pdfData;
     expect(res, isNotEmpty);
     expect(res['PMPLJGLP']['id'], 'PMPLJGLP');
@@ -96,14 +101,14 @@ main() {
   });
 
   test("get meters", () async {
-    await serv.openFile(File(filePath));
+    await serv.openFile(filePath);
     List<MeterDto> res = serv.getMeters();
     expect(res.length, 11);
     expect(res.indexWhere((element) => element.id == 'MAINENGSB') > -1, true);
   });
 
   test("set new value", () async {
-    await serv.openFile(File(filePath));
+    await serv.openFile(filePath);
     final data = serv.getMeters();
     String id = data.first.id;
     int newVal = 123;
@@ -113,43 +118,40 @@ main() {
   });
 
   test("export values", () async {
-    await serv.openFile(File(filePath));
+    await serv.openFile(filePath);
     final data = serv.getMeters();
     int counter = 1;
     for (MeterDto i in data) {
       serv.setMeterReading(meterId: i.id, val: counter.toString());
       counter++;
     }
-    String sufix = "_" + DateFormat("y-M-d_hh:mm").format(DateTime.now());
-    String newFilePath =
-        "/home/lavruh/AndroidStudioProjects/RhCollector/test/examples/RBW-ChkRnHrs-W$sufix.pdf";
+    String sufix = "_${DateFormat("y-M-d_hh:mm").format(DateTime.now())}";
+    String newFilePath = "RBW-ChkRnHrs-W$sufix.pdf";
 
-    await serv.exportData(output: File(newFilePath));
+    await serv.exportData(output: newFilePath, template: filePath);
 
-    expect(File(newFilePath).existsSync(), true);
-  }, skip: "creating files");
+    expect(fs.file(newFilePath).existsSync(), true);
+  });
 
   test("export monthly", () async {
-    await serv.openFile(File(filePath));
-    List data = serv.getMeters();
-    for (Map i in data) {
-      serv.setMeterReading(meterId: i["id"], val: i["reading"].toString());
+    await serv.openFile(filePathM);
+    final data = serv.getMeters();
+    for (final i in data) {
+      serv.setMeterReading(meterId: i.id, val: "123");
     }
-    String sufix = "_" + DateFormat("y-M-d_hh:mm").format(DateTime.now());
-    String newFilePath =
-        "/home/lavruh/AndroidStudioProjects/RhCollector/test/examples/RBW-ChkRnHrs-M$sufix.pdf";
+    String sufix = "_${DateFormat("y-M-d_hh:mm").format(DateTime.now())}";
+    String newFilePath = "RBW-ChkRnHrs-M$sufix.pdf";
 
-    await serv.exportData(output: File(newFilePath));
+    await serv.exportData(output: newFilePath, template: filePathM);
 
-    expect(File(newFilePath).existsSync(), true);
-  }, skip: "");
+    expect(fs.file(newFilePath).existsSync(), true);
+  });
 
   test("correct export file name", () {
-    String sufix = "_" + DateFormat("y-M-d_hh:mm").format(DateTime.now());
-    String newFilePath =
-        "/home/lavruh/AndroidStudioProjects/RhCollector/test/examples/RBW-ChkRnHrs-W$sufix.pdf";
+    String sufix = "_${DateFormat("y-M-d_hh:mm").format(DateTime.now())}";
+    String newFilePath = "RBW-ChkRnHrs-M$sufix.pdf";
 
-    serv.openFile(File(filePath));
+    serv.openFile(filePath);
     String r = (serv as PdfMetersService).getExportPath();
 
     expect(r, newFilePath);

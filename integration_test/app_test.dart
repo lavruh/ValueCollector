@@ -7,7 +7,9 @@ import 'package:rh_collector/domain/states/meters_state.dart';
 
 import 'groups_menu.dart';
 import 'import_search.dart';
+import 'meter_calculations.dart';
 import 'meter_editor.dart';
+import 'meter_types_and_rates.dart';
 import 'notification_screen.dart';
 import 'overview_screen.dart';
 import 'routes_screen.dart';
@@ -21,6 +23,8 @@ void main() async {
   tearDown(() async {
     await Get.find<DbService>().clearDb(table: "meters");
     await Get.find<DbService>().clearDb(table: "groups");
+    await Get.find<DbService>().clearDb(table: "MeterTypes");
+    await Get.find<DbService>().clearDb(table: "MeterRates");
     await Get.find<DbService>().clearDb(table: "AUXGENENG");
     await Get.find<DbService>().clearDb(table: "MAINENGSB");
     await Get.find<DbService>().clearDb(table: "MAINENGPS");
@@ -39,4 +43,8 @@ void main() async {
   testWidgets("Meter editor test", meterEditorTest);
 
   testWidgets('Import data and search', importDataAndSearchTest);
+
+  testWidgets('Types and rates screens', typesAndRatesScreen);
+
+  testWidgets('meter calculations', meterCalculations);
 }

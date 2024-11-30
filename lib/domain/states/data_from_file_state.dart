@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:rh_collector/data/dtos/meter_dto.dart';
@@ -63,7 +61,7 @@ class DataFromFileState extends GetxController {
     try {
       String groupId = Get.find<MeterGroups>().getFirstSelectedGroupId();
       try {
-        await service.openFile(File(filePath));
+        await service.openFile(filePath);
         MetersState metersState = Get.find<MetersState>();
         List dataFromFile = service.getMeters();
         for (MeterDto e in dataFromFile) {
@@ -102,8 +100,7 @@ class DataFromFileState extends GetxController {
       }
     }
     try {
-      await service.exportData(
-          output: File(output), template: File(filePath.value));
+      await service.exportData(output: output, template: filePath.value);
     } on Exception catch (e) {
       msg.push(msg: "Error $e");
     }

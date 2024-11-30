@@ -18,6 +18,8 @@ class MeterGroups extends GetxController {
     getGroups();
   }
 
+  List<MeterGroup> get getMeterGroups => groups.values.toList();
+
   bool isSelected(MeterGroup g) {
     return selected.contains(g.id);
   }

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/states/data_from_file_state.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/l10n/app_localizations.dart';
 
 class ExportOptionsDialogWidget extends StatelessWidget {
-  const ExportOptionsDialogWidget({Key? key}) : super(key: key);
+  const ExportOptionsDialogWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context);
+    if(local == null) return Center(child: CircularProgressIndicator());
     return FractionallySizedBox(
       heightFactor: 0.4,
       widthFactor: 0.8,
@@ -18,28 +20,28 @@ class ExportOptionsDialogWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                AppLocalizations.of(context)!.exportOptions,
+                local.exportOptions,
                 style: Theme.of(context).textTheme.displayLarge,
               ),
-              GetX<DataFromFileState>(builder: (_) {
+              GetX<DataFromFileState>(builder: (state) {
                 return ListView(
                   shrinkWrap: true,
                   children: [
                     RadioListTile(
-                        title: Text(AppLocalizations.of(context)!.lastInCsv),
+                        title: Text(local.lastInCsv),
                         value: AllowedFileTypes.csv,
-                        groupValue: _.exportFileType.value,
+                        groupValue: state.exportFileType.value,
                         toggleable: true,
                         onChanged: (AllowedFileTypes? value) {
-                          _.exportFileType.value = AllowedFileTypes.csv;
+                          state.exportFileType.value = AllowedFileTypes.csv;
                         }),
                     RadioListTile(
-                        title: Text(AppLocalizations.of(context)!.bokaPdf),
+                        title: Text(local.bokaPdf),
                         value: AllowedFileTypes.bokaPdf,
-                        groupValue: _.exportFileType.value,
+                        groupValue: state.exportFileType.value,
                         toggleable: true,
                         onChanged: (AllowedFileTypes? value) {
-                          _.exportFileType.value = AllowedFileTypes.bokaPdf;
+                          state.exportFileType.value = AllowedFileTypes.bokaPdf;
                         }),
                   ],
                 );

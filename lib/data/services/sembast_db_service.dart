@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:flutter/services.dart';
 import 'package:rh_collector/di.dart';
-import 'package:sembast/sembast.dart';
 
 import 'package:rh_collector/data/services/db_service.dart';
 import 'package:sembast/sembast_io.dart';
@@ -52,20 +51,20 @@ class SembastDbService implements DbService {
 
   @override
   addEntry(Map<String, dynamic> entry, {required String table}) async {
-    StoreRef _store = intMapStoreFactory.store(table);
+    StoreRef store = intMapStoreFactory.store(table);
     await _dbOpenCompleter!.future;
     await _db?.transaction((transaction) async {
-      await _store.add(transaction, entry);
+      await store.add(transaction, entry);
     });
   }
 
   @override
   Future<List<Map<String, dynamic>>> getEntries(List<List> request,
       {required String table}) async {
-    StoreRef _store = intMapStoreFactory.store(table);
+    StoreRef store = intMapStoreFactory.store(table);
     final Finder finder = mapRequestToFinder(request);
     await _dbOpenCompleter!.future;
-    var res = await _store.find(_db!, finder: finder);
+    var res = await store.find(_db!, finder: finder);
     if (res.isNotEmpty) {
       List<Map<String, dynamic>> r = res.map((e) {
         Map<String, dynamic> m = {};
@@ -80,10 +79,10 @@ class SembastDbService implements DbService {
 
   @override
   removeEntry(String id, {required String table}) async {
-    StoreRef _store = intMapStoreFactory.store(table);
+    StoreRef store = intMapStoreFactory.store(table);
     int key = await _getEntryKey(id, table: table);
     await _db?.transaction((transaction) async {
-      await _store.record(key).delete(transaction);
+      await store.record(key).delete(transaction);
     });
   }
 
@@ -91,7 +90,7 @@ class SembastDbService implements DbService {
 
   @override
   updateEntry(Map<String, dynamic> entry, {required String table}) async {
-    StoreRef _store = intMapStoreFactory.store(table);
+    StoreRef store = intMapStoreFactory.store(table);
     int? key = entry["dbKey"];
     if (key == null) {
       String id = entry["id"];
@@ -104,16 +103,16 @@ class SembastDbService implements DbService {
     if (key != null) {
       await _dbOpenCompleter?.future;
       await _db?.transaction((transaction) async {
-        await _store.record(key).update(transaction, entry);
+        await store.record(key).update(transaction, entry);
       });
     }
   }
 
   @override
   clearDb({required String table}) async {
-    StoreRef _store = intMapStoreFactory.store(table);
+    StoreRef store = intMapStoreFactory.store(table);
     await _dbOpenCompleter!.future;
-    await _store.delete(_db!);
+    await store.delete(_db!);
   }
 
   Future<int> _getEntryKey(String id, {required String table}) async {

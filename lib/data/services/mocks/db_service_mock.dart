@@ -11,19 +11,19 @@ class DbServiceMock implements DbService {
 
   @override
   addEntry(Map<String, dynamic> entry, {String? keyField, String? table}) {
-    String _table = _setTable(table);
-    db[_table].putIfAbsent(entry[keyField ?? "id"].toString(), () => entry);
+    String t = _setTable(table);
+    db[t].putIfAbsent(entry[keyField ?? "id"].toString(), () => entry);
   }
 
   @override
   Future<List<Map<String, dynamic>>> getEntries(List<List> request,
       {String? table}) async {
-    String _table = _setTable(table);
+    String t = _setTable(table);
     List<Map<String, dynamic>> result = [];
     if (request.isNotEmpty) {
       for (List r in request) {
         if (r.isNotEmpty) {
-          db[_table].forEach((key, value) {
+          db[t].forEach((key, value) {
             if (r[1] == "" && value[r[0]] != "") {
               result.add(value);
             } else if (value[r[0]].contains(r[1])) {
@@ -33,8 +33,8 @@ class DbServiceMock implements DbService {
         }
       }
     } else {
-      if (db.containsKey(_table)) {
-        db[_table].forEach((key, value) {
+      if (db.containsKey(t)) {
+        db[t].forEach((key, value) {
           result.add(value);
         });
       }
@@ -44,21 +44,21 @@ class DbServiceMock implements DbService {
 
   @override
   removeEntry(String id, {String? table}) {
-    String _table = _setTable(table);
-    Map t = db[_table];
-    t.remove(id);
+    String t = _setTable(table);
+    final map = db[t];
+    map.remove(id);
   }
 
   @override
   updateEntry(Map<String, dynamic> entry, {String? keyField, String? table}) {
     String f = keyField ?? "id";
     String key = entry[f].toString();
-    String _table = _setTable(table);
+    String t = _setTable(table);
 
-    if (db[_table].containsKey(key)) {
-      db[_table].update(key, (value) => entry);
+    if (db[t].containsKey(key)) {
+      db[t].update(key, (value) => entry);
     } else {
-      db[_table].putIfAbsent(key, () => entry);
+      db[t].putIfAbsent(key, () => entry);
     }
   }
 
@@ -93,8 +93,8 @@ class DbServiceMock implements DbService {
   openDb() {}
 
   String _setTable(String? table) {
-    String _table = table ?? currentTable;
-    db.putIfAbsent(_table, () => {});
-    return _table;
+    final t = table ?? currentTable;
+    db.putIfAbsent(t, () => {});
+    return t;
   }
 }

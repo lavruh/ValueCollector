@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/domain/states/route_state.dart';
 import 'package:rh_collector/ui/widgets/meter_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/l10n/app_localizations.dart';
 
 class RouteScreen extends StatelessWidget {
   RouteScreen({super.key});
@@ -11,6 +11,9 @@ class RouteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context);
+    if (local == null) return const Center(child: CircularProgressIndicator());
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -18,7 +21,7 @@ class RouteScreen extends StatelessWidget {
           title: GetX<RouteState>(builder: (state) {
             final title = state.routeName.value.length > 1
                 ? state.routeName.value
-                : AppLocalizations.of(context)!.openRouteFile;
+                : local.openRouteFile;
             return Text(title);
           }),
           actions: [
@@ -28,14 +31,10 @@ class RouteScreen extends StatelessWidget {
           bottom: TabBar(
             tabs: [
               GetX<RouteState>(builder: (state) {
-                return Tab(
-                    text:
-                        "${AppLocalizations.of(context)!.todo}(${state.route.length})");
+                return Tab(text: "${local.todo}(${state.route.length})");
               }),
               GetX<RouteState>(builder: (state) {
-                return Tab(
-                    text:
-                        "${AppLocalizations.of(context)!.done}(${state.doneMeters.length})");
+                return Tab(text: "${local.done}(${state.doneMeters.length})");
               })
             ],
           ),

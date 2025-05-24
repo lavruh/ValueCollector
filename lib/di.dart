@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:camera/camera.dart';
 import 'package:get/get.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:rh_collector/data/services/console_info_msg_service.dart';
@@ -19,22 +18,16 @@ import 'package:rh_collector/data/services/pdf_meters_service.dart';
 import 'package:rh_collector/data/services/route_service.dart';
 import 'package:rh_collector/data/services/sembast_db_service.dart';
 import 'package:rh_collector/data/services/snackbar_info_msg_service.dart';
-import 'package:rh_collector/domain/states/camera_state_device.dart';
-import 'package:rh_collector/domain/states/camera_state_mock.dart';
 import 'package:rh_collector/domain/states/data_from_file_state.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meter_types_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/domain/states/rates_state.dart';
 import 'package:rh_collector/domain/states/reminders_state.dart';
-import 'package:rh_collector/domain/states/recognizer.dart';
 import 'package:rh_collector/domain/states/route_state.dart';
 import 'package:rh_collector/domain/states/values_calculations_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:rh_collector/domain/states/camera_state.dart';
-
-List<CameraDescription> cameras = [];
 String appDataPath = "/storage/emulated/0/ValueCollector";
 
 initDependencies() async {
@@ -49,8 +42,6 @@ initDependencies() async {
   Get.put<DataFromFileService>(PdfMetersService(), tag: "bokaPdf");
   Get.put<DataFromFileService>(CsvMetersService(), tag: "csv");
   Get.put<RouteService>(CsvRouteService());
-  Get.put<Recognizer>(Recognizer());
-  Get.put<CameraState>(CameraStateDevice(), permanent: true);
   Get.put(MeterTypesState());
   Get.put(RatesState());
   Get.lazyPut(() => RemindersState());
@@ -66,7 +57,6 @@ initDependenciesTest() {
   Get.put<FsSelectionService>(FsSelectionServiceMock());
   Get.put<DataFromFileService>(DataFromFileMock());
   Get.put<DbService>(DbServiceMock(tableName: "meters"));
-  Get.put<CameraState>(CameraStateMock(), permanent: true);
   Get.put<MeterGroups>(MeterGroups());
   Get.put<MetersState>(MetersState());
 }
@@ -100,7 +90,7 @@ Future<int?> getAndroidVersion() async {
   if (Platform.isAndroid) {
     final deviceInfo = DeviceInfoPlugin();
     final androidInfo = await deviceInfo.androidInfo;
-    final androidVersion = androidInfo.version.release ?? '5';
+    final androidVersion = androidInfo.version.release;
     return int.parse(androidVersion.split('.')[0]);
   }
   return null;

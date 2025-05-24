@@ -8,14 +8,13 @@ import 'package:rh_collector/ui/screens/meter_type_edit_screen.dart';
 import 'package:rh_collector/ui/screens/reminders_screen.dart';
 import 'package:rh_collector/ui/screens/route_screen.dart';
 import 'package:rh_collector/ui/widgets/meters_groups_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/l10n/app_localizations.dart';
 
 class DrawerMenuWidget extends StatelessWidget {
   const DrawerMenuWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // final textTheme = Theme.of(context).textTheme.headline5;
     return Drawer(
       child: ListView(
         children: [

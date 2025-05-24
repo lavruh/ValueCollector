@@ -7,12 +7,12 @@ import 'package:rh_collector/domain/entities/meter_type.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:rh_collector/domain/entities/meter_value_delta.dart';
 import 'package:rh_collector/domain/states/rates_state.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/l10n/app_localizations.dart';
 
 abstract class IMeterCalculationStrategy {
   void setMeterType(MeterType type);
   String getLocalizedName(BuildContext context);
-  String getLocalizedDescriprion(BuildContext context);
+  String getLocalizedDescription(BuildContext context);
   CalculationResult compute(MeterValue valueStart, MeterValue valueEnd);
 }
 
@@ -23,7 +23,7 @@ class MeterValueDeltaCalculation implements IMeterCalculationStrategy {
   }
 
   @override
-  String getLocalizedDescriprion(BuildContext context) {
+  String getLocalizedDescription(BuildContext context) {
     return AppLocalizations.of(context)!.diffCalcDescr;
   }
 
@@ -80,7 +80,7 @@ class MeterProductionCostCalculation implements IMeterCalculationStrategy {
   }
 
   @override
-  String getLocalizedDescriprion(BuildContext context) {
+  String getLocalizedDescription(BuildContext context) {
     return AppLocalizations.of(context)!.prodCostDescr1;
   }
 
@@ -143,7 +143,7 @@ class MeterProductionCostMaxLimitCalculation
   }
 
   @override
-  String getLocalizedDescriprion(BuildContext context) {
+  String getLocalizedDescription(BuildContext context) {
     return AppLocalizations.of(context)!.prodCostMaxLimDescr;
   }
 

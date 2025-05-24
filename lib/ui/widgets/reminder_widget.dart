@@ -4,17 +4,17 @@ import 'package:rh_collector/ui/widgets/reminder/actions_panel_widget.dart';
 import 'package:rh_collector/ui/widgets/reminder/date_select_widget.dart';
 import 'package:rh_collector/ui/widgets/reminder/time_select_widget.dart';
 import 'package:rh_collector/ui/widgets/reminder/weekday_selector_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/l10n/app_localizations.dart';
 
 class ReminderWidget extends StatelessWidget {
   const ReminderWidget({
-    Key? key,
+    super.key,
     required this.reminder,
     required this.updateCallback,
     required this.saveCallback,
     required this.deleteCallback,
     required this.clearContent,
-  }) : super(key: key);
+  });
   final Reminder reminder;
   final void Function(Reminder r) updateCallback;
   final void Function() saveCallback;

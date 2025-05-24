@@ -4,13 +4,13 @@ import 'package:rh_collector/ui/widgets/reminder/date_select_dialog_widget.dart'
 
 class DateSelectWidget extends StatelessWidget {
   const DateSelectWidget({
-    Key? key,
+    super.key,
     required this.value,
     required this.maxValue,
     required this.minValue,
     required this.placeholder,
     required this.callback,
-  }) : super(key: key);
+  });
   final int? value;
   final int maxValue;
   final int minValue;

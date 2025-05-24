@@ -3,10 +3,10 @@ import 'package:intl/intl.dart';
 
 class WeekdaySelectorWidget extends StatelessWidget {
   const WeekdaySelectorWidget({
-    Key? key,
+    super.key,
     required this.resultSetter,
     this.selected,
-  }) : super(key: key);
+  });
   final void Function(int val) resultSetter;
   final int? selected;
 

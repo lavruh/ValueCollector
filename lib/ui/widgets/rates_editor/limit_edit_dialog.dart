@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/l10n/app_localizations.dart';
 
 class LimitEditDialog extends StatefulWidget {
-  const LimitEditDialog({Key? key, required this.limit, required this.price})
-      : super(key: key);
+  const LimitEditDialog({super.key, required this.limit, required this.price});
   final int limit;
   final double price;
 
@@ -25,6 +24,8 @@ class _LimitEditDialogState extends State<LimitEditDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context);
+    if(local == null) return Center(child: CircularProgressIndicator());
     return AlertDialog(
       content: Form(
         key: _formKey,
@@ -36,7 +37,7 @@ class _LimitEditDialogState extends State<LimitEditDialog> {
               controller: limitController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)?.limit),
+                  labelText: local.limit),
             ),
             TextFormField(
               key: const Key('inputPrice'),
@@ -44,14 +45,14 @@ class _LimitEditDialogState extends State<LimitEditDialog> {
               controller: priceController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)?.price),
+                  labelText: local.price),
             ),
           ],
         ),
       ),
       actions: [
         ElevatedButton(
-          child: Text(AppLocalizations.of(context)!.yes),
+          child: Text(local.yes),
           onPressed: () {
             if (_formKey.currentState!.validate()) {
               final int limit = int.parse(limitController.text);
@@ -61,7 +62,7 @@ class _LimitEditDialogState extends State<LimitEditDialog> {
           },
         ),
         ElevatedButton(
-          child: Text(AppLocalizations.of(context)!.no),
+          child: Text(local.no),
           onPressed: () => Navigator.of(context).pop(),
         )
       ],

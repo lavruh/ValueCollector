@@ -4,12 +4,12 @@ import 'package:numberpicker/numberpicker.dart';
 
 class DateSelectDialogWidget extends StatefulWidget {
   const DateSelectDialogWidget({
-    Key? key,
+    super.key,
     required this.value,
     required this.maxValue,
     required this.minValue,
     required this.callback,
-  }) : super(key: key);
+  });
 
   final int value;
   final int maxValue;

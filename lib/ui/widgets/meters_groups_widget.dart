@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/meter_group.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/l10n/app_localizations.dart';
 
 class MetersGroupsWidget extends StatelessWidget {
   MetersGroupsWidget({super.key});
-  final _state = Get.find<MeterGroups>();
+  final state = Get.find<MeterGroups>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,34 +27,34 @@ class MetersGroupsWidget extends StatelessWidget {
                   IconButton(
                       onPressed: _addNewGroup, icon: const Icon(Icons.add)),
                   IconButton(
-                      onPressed: _state.toggleMode,
+                      onPressed: state.toggleMode,
                       icon: const Icon(Icons.edit)),
                 ],
               ),
             ],
           ),
-          GetX<MeterGroups>(builder: (_) {
+          GetX<MeterGroups>(builder: (state) {
             final checkBoxes = <Widget>[];
 
-            for (MeterGroup itm in _.groups.values) {
-              if (_.editMode.value) {
+            for (MeterGroup itm in state.groups.values) {
+              if (state.editMode.value) {
                 checkBoxes.add(ListTile(
                   title: TextField(
                     controller: TextEditingController(text: itm.name),
                     onSubmitted: (s) =>
-                        _.updateGroup(MeterGroup(name: s, id: itm.id)),
+                        state.updateGroup(MeterGroup(name: s, id: itm.id)),
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
-                    onPressed: () => _.deleteGroup(itm.id),
+                    onPressed: () => state.deleteGroup(itm.id),
                   ),
                 ));
               } else {
                 checkBoxes.add(
                   CheckboxListTile(
-                    value: _.isSelected(itm),
+                    value: state.isSelected(itm),
                     onChanged: (bool? v) {
-                      _.toggleGroupSelect(itm);
+                      state.toggleGroupSelect(itm);
                     },
                     title: Text(itm.name),
                   ),
@@ -72,6 +72,6 @@ class MetersGroupsWidget extends StatelessWidget {
   }
 
   _addNewGroup() {
-    _state.addGroup(MeterGroup(name: "name"));
+    state.addGroup(MeterGroup(name: "name"));
   }
 }

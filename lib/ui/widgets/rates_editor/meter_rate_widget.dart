@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:rh_collector/domain/entities/meter_rate.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/l10n/app_localizations.dart';
 import 'package:rh_collector/ui/widgets/meter_type_select_widget.dart';
 import 'package:rh_collector/ui/widgets/rates_editor/limit_edit_dialog.dart';
 
 class MeterRateWidget extends StatelessWidget {
   const MeterRateWidget(
-      {Key? key, required this.meterRate, required this.updateCallback})
-      : super(key: key);
+      {super.key, required this.meterRate, required this.updateCallback});
   final MeterRate meterRate;
   final Function(MeterRate meter) updateCallback;
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context);
+    if (local == null) return Center(child: CircularProgressIndicator());
     return Card(
       child: Column(
         children: [
@@ -24,16 +25,12 @@ class MeterRateWidget extends StatelessWidget {
               MeterTypeSelectWidget(
                   initValueId: meterRate.meterType, callback: _changeMeterType),
               ActionChip(
-                  label: Text(DateFormat("y-MM-dd")
-                          .format(meterRate.timeRange.start) +
-                      " - " +
-                      DateFormat("y-MM-dd").format(meterRate.timeRange.end)),
+                  label: Text(
+                      "${DateFormat("y-MM-dd").format(meterRate.timeRange.start)} - ${DateFormat("y-MM-dd").format(meterRate.timeRange.end)}"),
                   onPressed: _changeDateRange),
             ],
           ),
-          Text(AppLocalizations.of(context)!.limit +
-              " - " +
-              AppLocalizations.of(context)!.price),
+          Text("${local.limit} - ${local.price}"),
           SingleChildScrollView(
             child: Wrap(
               children: _genLimitsWidgets(),

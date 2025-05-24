@@ -1,5 +1,4 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
@@ -16,20 +15,16 @@ import 'package:rh_collector/data/services/fs_selection_service.dart';
 import 'package:rh_collector/data/services/pdf_meters_service.dart';
 import 'package:rh_collector/data/services/route_service.dart';
 import 'package:rh_collector/data/services/sembast_db_service.dart';
-import 'package:rh_collector/domain/states/camera_state_device.dart';
 import 'package:rh_collector/domain/states/data_from_file_state.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meter_types_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/domain/states/rates_state.dart';
 import 'package:rh_collector/domain/states/reminders_state.dart';
-import 'package:rh_collector/domain/states/recognizer.dart';
 import 'package:rh_collector/domain/states/route_state.dart';
 import 'package:rh_collector/domain/states/values_calculations_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:rh_collector/domain/states/camera_state.dart';
 
 late DbService db;
 late FsSelectionService fsSelect;
@@ -37,21 +32,17 @@ late FsSelectionService fsSelect;
 bool readyToRun = false;
 
 Widget testableWidget(Widget w) {
-  final ThemeData _theme = ThemeData(
+  final ThemeData theme = ThemeData(
     primarySwatch: Colors.grey,
     primaryColor: Colors.grey,
-    elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Colors.grey))),
     visualDensity: VisualDensity.adaptivePlatformDensity,
     fontFamily: "Georgia",
   );
 
   return GetMaterialApp(
-    theme: _theme,
+    theme: theme,
     home: w,
     localizationsDelegates: const [
-      AppLocalizations.delegate,
       GlobalMaterialLocalizations.delegate,
       GlobalWidgetsLocalizations.delegate,
     ],
@@ -80,7 +71,6 @@ Future<bool> initTestApp() async {
           enableVibration: true,
           importance: NotificationImportance.High)
     ]);
-    cameras = await availableCameras();
     await appTestDependencies();
     return true;
   }
@@ -100,8 +90,6 @@ appTestDependencies() async {
   Get.put<DataFromFileService>(PdfMetersService(), tag: "bokaPdf");
   Get.put<DataFromFileService>(CsvMetersService(), tag: "csv");
   Get.put<RouteService>(CsvRouteService());
-  Get.put<Recognizer>(Recognizer());
-  Get.put<CameraState>(CameraStateDevice(), permanent: true);
   Get.put(MeterTypesState());
   Get.put(RatesState());
   Get.lazyPut(() => RemindersState());

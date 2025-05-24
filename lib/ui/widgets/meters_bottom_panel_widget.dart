@@ -4,15 +4,15 @@ import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/widgets/meters_groups_widget.dart';
 
-class MetersBottomPanalWidget extends StatefulWidget {
-  const MetersBottomPanalWidget({Key? key}) : super(key: key);
+class MetersBottomPanelWidget extends StatefulWidget {
+  const MetersBottomPanelWidget({super.key});
 
   @override
-  State<MetersBottomPanalWidget> createState() =>
-      _MetersBottomPanalWidgetState();
+  State<MetersBottomPanelWidget> createState() =>
+      _MetersBottomPanelWidgetState();
 }
 
-class _MetersBottomPanalWidgetState extends State<MetersBottomPanalWidget> {
+class _MetersBottomPanelWidgetState extends State<MetersBottomPanelWidget> {
   TextEditingController filterInputTextController = TextEditingController();
 
   @override

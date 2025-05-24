@@ -3,9 +3,9 @@ import 'package:rh_collector/domain/entities/meter_value_delta.dart';
 
 class MeterValueDeltaWidget extends StatelessWidget {
   const MeterValueDeltaWidget({
-    Key? key,
+    super.key,
     required this.v,
-  }) : super(key: key);
+  });
 
   final MeterValueDelta v;
 

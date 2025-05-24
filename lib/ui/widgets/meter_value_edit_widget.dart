@@ -3,7 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/l10n/app_localizations.dart';
 
 class MeterValueEditWidget extends StatelessWidget {
   const MeterValueEditWidget({

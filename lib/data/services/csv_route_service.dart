@@ -1,5 +1,4 @@
 import 'package:csv/csv.dart';
-import 'package:file/src/interface/file_system.dart';
 import 'package:file/local.dart';
 import 'package:file/file.dart';
 

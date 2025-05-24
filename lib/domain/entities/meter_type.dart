@@ -13,7 +13,7 @@ class MeterType {
     int? color,
   })  : id = id ?? generateId(),
         iconCode = iconCode ?? Icons.electric_meter.codePoint,
-        color = color ?? Colors.black.value;
+        color = color ?? Colors.black.toARGB32();
 
   @override
   bool operator ==(Object other) {

@@ -7,15 +7,15 @@ import 'package:rh_collector/ui/widgets/meter_widget.dart';
 import 'package:rh_collector/ui/widgets/meters_bottom_panel_widget.dart';
 
 class MetersScreen extends StatelessWidget {
-  const MetersScreen({Key? key}) : super(key: key);
+  const MetersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     Get.find<MetersState>().getMeters(Get.find<MeterGroups>().selected);
     return Scaffold(
       appBar: AppBar(
-        title: GetX<MeterGroups>(builder: (_) {
-          return Text("${_.selected.map((e) => _.getName(e))}");
+        title: GetX<MeterGroups>(builder: (state) {
+          return Text("${state.selected.map((e) => state.getName(e))}");
         }),
         actions: [
           IconButton(
@@ -25,15 +25,15 @@ class MetersScreen extends StatelessWidget {
               icon: const Icon(Icons.add)),
         ],
       ),
-      body: GetBuilder<MetersState>(builder: (_) {
-        if (_.meters.isNotEmpty) {
+      body: GetBuilder<MetersState>(builder: (state) {
+        if (state.meters.isNotEmpty) {
           return ListView.builder(
-            itemCount: _.meters.length,
+            itemCount: state.meters.length,
             itemBuilder: (BuildContext context, int i) {
               return MeterWidget(
-                meter: _.meters[i],
+                meter: state.meters[i],
                 newReadingSetCallBack: () {
-                  _.updateMeter(_.meters[i]);
+                  state.updateMeter(state.meters[i]);
                 },
               );
             },
@@ -42,7 +42,7 @@ class MetersScreen extends StatelessWidget {
           return Container();
         }
       }),
-      bottomNavigationBar: const MetersBottomPanalWidget(),
+      bottomNavigationBar: const MetersBottomPanelWidget(),
       resizeToAvoidBottomInset: true,
       drawer: const DrawerMenuWidget(
         key: Key('menu'),

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:rh_collector/domain/states/values_calculations_state.dart';
 
 class CalculationSelectWidget extends StatelessWidget {
-  const CalculationSelectWidget({Key? key}) : super(key: key);
+  const CalculationSelectWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class CalculationSelectWidget extends StatelessWidget {
                 title: Text(
                     state.calculationStrategies[i].getLocalizedName(context)),
                 subtitle: Text(state.calculationStrategies[i]
-                    .getLocalizedDescriprion(context)),
+                    .getLocalizedDescription(context)),
                 value: i,
                 groupValue: state.selectedCalculationStrategie.value,
                 onChanged: (val) {

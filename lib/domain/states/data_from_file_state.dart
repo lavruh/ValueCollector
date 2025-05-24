@@ -108,9 +108,6 @@ class DataFromFileState extends GetxController {
   }
 
   String generateFilePath() {
-    return appDataPath +
-        "/readings@" +
-        DateFormat("yyyy-MM-dd_ms").format(DateTime.now()) +
-        fileExtension;
+    return "$appDataPath/readings@${DateFormat("yyyy-MM-dd_ms").format(DateTime.now())}$fileExtension";
   }
 }

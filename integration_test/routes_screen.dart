@@ -15,7 +15,7 @@ import 'utils.dart';
 Future<void> routesScreenTest(WidgetTester tester) async {
   expect(readyToRun, true);
   (fsSelect as FsSelectionServiceMock).filePath =
-      appDataPath + "/meters_test.csv";
+      "$appDataPath/meters_test.csv";
   await tester.pumpWidget(testableWidget(const MetersScreen()));
   await tester.pump();
   await Get.find<DataFromFileState>().initImportData();
@@ -33,7 +33,7 @@ Future<void> routesScreenTest(WidgetTester tester) async {
   expect(find.byIcon(Icons.get_app_outlined), findsOneWidget);
   expect(Get.find<MetersState>().meters.length, greaterThan(0));
   (fsSelect as FsSelectionServiceMock).filePath =
-      appDataPath + "/weekly_route.csv";
+      "$appDataPath/weekly_route.csv";
   await tester.tap(find.byIcon(Icons.get_app_outlined));
   await tester.pump(const Duration(seconds: 1));
 

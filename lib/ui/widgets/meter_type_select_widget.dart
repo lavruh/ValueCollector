@@ -4,8 +4,7 @@ import 'package:rh_collector/domain/states/meter_types_state.dart';
 
 class MeterTypeSelectWidget extends StatelessWidget {
   MeterTypeSelectWidget(
-      {Key? key, required this.initValueId, required this.callback})
-      : super(key: key);
+      {super.key, required this.initValueId, required this.callback});
   final meterTypesState = Get.find<MeterTypesState>();
   final String initValueId;
   final Function(String val) callback;
@@ -19,6 +18,7 @@ class MeterTypeSelectWidget extends StatelessWidget {
       items: meterTypesState
           .getMeterTypesList()
           .map((e) => DropdownMenuItem<String>(
+                value: e.id,
                 child: Row(
                   children: [
                     Icon(
@@ -28,7 +28,6 @@ class MeterTypeSelectWidget extends StatelessWidget {
                     Text(e.name),
                   ],
                 ),
-                value: e.id,
               ))
           .toList(),
       onChanged: (value) {

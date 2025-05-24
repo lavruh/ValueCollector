@@ -3,12 +3,12 @@ import 'package:rh_collector/ui/widgets/delete_confirm_dialog.dart';
 
 class ActionsPanelWidget extends StatelessWidget {
   const ActionsPanelWidget({
-    Key? key,
+    super.key,
     required this.saveCallback,
     required this.deleteCallback,
     required this.clearContent,
     required this.showSaveButton,
-  }) : super(key: key);
+  });
   final bool showSaveButton;
   final void Function() saveCallback;
   final void Function() deleteCallback;

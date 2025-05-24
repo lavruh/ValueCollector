@@ -17,7 +17,7 @@ import 'utils.dart';
 Future<void> importDataAndSearchTest(WidgetTester tester) async {
   expect(readyToRun, true);
   (fsSelect as FsSelectionServiceMock).filePath =
-      appDataPath + "/meters_test.csv";
+      "$appDataPath/meters_test.csv";
   await tester.pumpWidget(testableWidget(const MetersScreen()));
   await tester.pump(const Duration(seconds: 1));
   expect(find.text('(Weekly)'), findsOneWidget);
@@ -45,7 +45,7 @@ Future<void> importDataAndSearchTest(WidgetTester tester) async {
   await tester.pump(const Duration(seconds: 10));
   expect(find.text('(Monthly)'), findsOneWidget);
   (fsSelect as FsSelectionServiceMock).filePath =
-      appDataPath + "/RBW-ChkRnHrs-M.pdf";
+      "$appDataPath/RBW-ChkRnHrs-M.pdf";
   await tester.dragFrom(
       tester.getTopLeft(find.byType(MaterialApp)), const Offset(300, 0));
   await tester.pumpAndSettle();

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/states/reminders_state.dart';
 import 'package:rh_collector/ui/widgets/reminder_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/l10n/app_localizations.dart';
 
 class RemindersScreen extends StatelessWidget {
-  const RemindersScreen({Key? key}) : super(key: key);
+  const RemindersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,22 +20,22 @@ class RemindersScreen extends StatelessWidget {
               icon: const Icon(Icons.add)),
         ],
       ),
-      body: GetX<RemindersState>(builder: (_) {
+      body: GetX<RemindersState>(builder: (state) {
         return ListView.builder(
-          itemCount: _.reminders.length,
+          itemCount: state.reminders.length,
           itemBuilder: ((context, index) => ReminderWidget(
-                reminder: _.reminders[index],
+                reminder: state.reminders[index],
                 updateCallback: (reminder) {
-                  _.updateReminder(reminder: reminder, index: index);
+                  state.updateReminder(reminder: reminder, index: index);
                 },
                 saveCallback: () {
-                  _.saveUpdatedNotification(index);
+                  state.saveUpdatedNotification(index);
                 },
                 deleteCallback: () {
-                  _.deleteNotification(index);
+                  state.deleteNotification(index);
                 },
                 clearContent: () {
-                  _.clearScheduleContent(index);
+                  state.clearScheduleContent(index);
                 },
               )),
         );

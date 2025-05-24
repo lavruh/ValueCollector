@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:rh_collector/domain/states/camera_state.dart';
-import 'package:rh_collector/ui/widgets/cam_prev_widget.dart';
+import 'package:photo_data_picker/domain/data_picker_state.dart';
+import 'package:photo_data_picker/ui/widget/data_picker_widget.dart';
 
 class CameraScreen extends StatefulWidget {
-  CameraScreen({super.key, this.meterName})
-      : state = Get.find<CameraState>();
-  final CameraState state;
+  const CameraScreen({super.key, this.meterName});
   final String? meterName;
 
   @override
@@ -15,79 +12,63 @@ class CameraScreen extends StatefulWidget {
 
 class _CameraScreenState extends State<CameraScreen> {
   TextEditingController textCtrl = TextEditingController();
+  late DataPickerState state = DataPickerState(
+      onReadingChanged: (v) => setState(() => textCtrl.text = v));
+
   @override
   void initState() {
+    state.addListener(() => setState(() {}));
     super.initState();
-    widget.state.initCamera();
   }
 
   @override
   void dispose() {
+    state.dispose();
+    state.disposeCamera();
     super.dispose();
-    widget.state.disposeCamera();
-    widget.state.saveState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        dispose();
-        return true;
-      },
-      child: SafeArea(
-        child: Scaffold(
-          // backgroundColor: Colors.black12,
-          appBar: AppBar(
-            title: Text(widget.meterName ?? ""),
-          ),
-          body: SingleChildScrollView(
-            child: Wrap(
-              direction: Axis.vertical,
-              alignment: WrapAlignment.start,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                const CamPrevWidget(),
-                FloatingActionButton(
-                  child: const Icon(Icons.camera),
-                  onPressed: () {
-                    widget.state.takePhoto();
-                  },
+    final screenWidth = MediaQuery.of(context).size.width;
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.meterName ?? ""),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: screenWidth * 0.95,
+                child: DataPickerWidget(state: state),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: textCtrl,
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      suffix: IconButton(
+                          onPressed: () {
+                            final valString = textCtrl.text;
+                            if (valString.isEmpty) return;
+                            final v = int.tryParse(valString.replaceAll(
+                                RegExp(r'[a-z \W]', caseSensitive: false), ""));
+                            if (v == null) return;
+                            Navigator.pop(context, v.toString());
+                          },
+                          icon: const Icon(Icons.check))),
                 ),
-                ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width),
-                    child: GetBuilder<CameraState>(
-                      builder: (_) {
-                        if (textCtrl.text != _.reading.value) {
-                          textCtrl.text = _.reading.value;
-                        }
-                        return TextField(
-                          controller: textCtrl,
-                          showCursor: true,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          onSubmitted: _setValue,
-                          onChanged: _setValue,
-                          decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
-                              suffix: IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(context, _.reading.value);
-                                  },
-                                  icon: const Icon(Icons.check))),
-                        );
-                      },
-                    )),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
-  }
-
-  _setValue(String val) {
-    widget.state.reading.value = val;
   }
 }

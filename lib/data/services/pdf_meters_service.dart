@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:file/local.dart';
 import 'package:file/file.dart';
-import 'package:file/src/interface/file_system.dart';
 import 'package:intl/intl.dart';
 import 'package:rh_collector/data/dtos/meter_dto.dart';
 import 'package:rh_collector/data/dtos/meter_value_dto.dart';
@@ -134,7 +133,7 @@ class PdfMetersService implements DataFromFileService {
   Map processRawData({
     required int page,
   }) {
-    String _id = meter[0];
+    String id = meter[0];
     DateTime? d;
     int l = meter.length;
     String name = "";
@@ -154,8 +153,8 @@ class PdfMetersService implements DataFromFileService {
       name += meter[i];
     }
     return {
-      "id": _id,
-      "name": name.isNotEmpty ? name : _id,
+      "id": id,
+      "name": name.isNotEmpty ? name : id,
       "date": d ?? dateOfReadings,
       "reading": reading,
       "rect": pos,

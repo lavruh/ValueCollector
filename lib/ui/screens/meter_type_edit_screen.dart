@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/meter_type.dart';
@@ -7,7 +7,7 @@ import 'package:rh_collector/domain/states/meter_types_state.dart';
 import 'package:rh_collector/ui/widgets/meter_type_edit_widget.dart';
 
 class MeterTypeEditScreen extends StatelessWidget {
-  const MeterTypeEditScreen({Key? key}) : super(key: key);
+  const MeterTypeEditScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +25,6 @@ class MeterTypeEditScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             final type = typesList[index];
             return Slidable(
-                child: MeterTypeEditWidget(
-                  meterType: type,
-                  updateCallback: (t) => state.updateMeterType(t),
-                ),
                 endActionPane:
                     ActionPane(motion: const ScrollMotion(), children: [
                   SlidableAction(
@@ -37,7 +33,11 @@ class MeterTypeEditScreen extends StatelessWidget {
                       onPressed: (BuildContext context) {
                         state.removeMeterType(type.id);
                       }),
-                ]));
+                ]),
+                child: MeterTypeEditWidget(
+                  meterType: type,
+                  updateCallback: (t) => state.updateMeterType(t),
+                ));
           },
         );
       }),

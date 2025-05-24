@@ -1,4 +1,4 @@
-@Skip("Runs on device, takes few minutes")
+// @Skip("Runs on device, takes few minutes")
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/data/services/db_service.dart';

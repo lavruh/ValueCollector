@@ -1,5 +1,5 @@
+import 'package:file/file.dart';
 import 'package:file/memory.dart';
-import 'package:file/src/interface/file_system.dart';
 import 'package:rh_collector/data/dtos/meter_dto.dart';
 import 'package:rh_collector/data/dtos/meter_value_dto.dart';
 import 'package:rh_collector/data/services/data_from_service.dart';
@@ -19,10 +19,6 @@ class DataFromFileMock implements DataFromFileService {
 
   @override
   List<MeterValueDto> getMeterValues(String meterId) {
-    // List<Map> output = [];
-    // if (data.isNotEmpty) {
-    //   output.add(data[meterId]);
-    // }
     if (values.keys.contains(meterId)) {
       return [MeterValueDto.fromMap(values[meterId])];
     }

@@ -7,7 +7,7 @@ import 'package:rh_collector/ui/screens/meter_values_calculations_screen.dart';
 import 'package:rh_collector/ui/widgets/delete_confirm_dialog.dart';
 import 'package:rh_collector/ui/widgets/meter_editor/editor_text_input_field_widget.dart';
 import 'package:rh_collector/ui/widgets/meter_editor/meter_values_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/l10n/app_localizations.dart';
 import 'package:rh_collector/ui/widgets/meter_group_select_widget.dart';
 import 'package:rh_collector/ui/widgets/meter_type_select_widget.dart';
 
@@ -21,6 +21,8 @@ class MeterEditScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context);
+    if (local == null) return const Center(child: CircularProgressIndicator());
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
@@ -41,7 +43,7 @@ class MeterEditScreen extends StatelessWidget {
                           spacing: 15,
                           children: [
                             EditorTextInputFieldWidget(
-                              lable: AppLocalizations.of(context)?.name,
+                              lable: local.name,
                               initValue: _meter.name,
                               setValue: (val) {
                                 _meter.name = val;
@@ -49,7 +51,7 @@ class MeterEditScreen extends StatelessWidget {
                               key: const Key('NameInput'),
                             ),
                             EditorTextInputFieldWidget(
-                              lable: AppLocalizations.of(context)?.unit,
+                              lable: local.unit,
                               initValue: _meter.unit ?? "",
                               setValue: (val) {
                                 _meter.unit = val;
@@ -58,7 +60,7 @@ class MeterEditScreen extends StatelessWidget {
                             ),
                             const MeterGroupSelectWidget(),
                             EditorTextInputFieldWidget(
-                              lable: AppLocalizations.of(context)?.correction,
+                              lable: local.correction,
                               initValue: _meter.correction.toString(),
                               setValue: (val) {
                                 _meter.correction = int.parse(val);

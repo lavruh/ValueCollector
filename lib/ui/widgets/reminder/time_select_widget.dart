@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/reminder.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rh_collector/l10n/app_localizations.dart';
 
 class TimeSelectWidget extends StatelessWidget {
-  TimeSelectWidget({Key? key, required this.updateTime, required this.schedule})
-      : super(key: key);
+  TimeSelectWidget({super.key, required this.updateTime, required this.schedule});
   final _now = DateTime.now();
   final ValidSchedule schedule;
   final void Function(TimeOfDay time) updateTime;

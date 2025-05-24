@@ -38,5 +38,9 @@
     "prodCostMaxLimDescr": "Обчислюе сумму витрат за досягнутим лімітом",
     "inDays": "за дні",
     "avaragePerDay": "В середньому за день",
-    "reachedLimit": "Досягнутий ліміт"
+    "reachedLimit": "Досягнутий ліміт",
+    "reading": "Показник",
+    "remarks": "Нотатки",
+    "warningReadingEmpty":"Показник має бути заповнений",
+    "warningReadingIsNotInteger":"Показник має бути цілим числом"
 }

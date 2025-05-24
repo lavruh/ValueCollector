@@ -6,6 +6,7 @@ import 'package:rh_collector/ui/screens/camera_screen.dart';
 import 'package:rh_collector/ui/screens/meter_edit_screen.dart';
 import 'package:rh_collector/ui/widgets/meter_value_delta_widget.dart';
 import 'package:rh_collector/ui/widgets/meter_value_widget.dart';
+import 'package:rh_collector/ui/widgets/remark_button.dart';
 
 class MeterWidget extends StatelessWidget {
   const MeterWidget({
@@ -20,6 +21,7 @@ class MeterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lastValue = _meter.values.last;
     return Card(
         elevation: 3,
         child: Wrap(
@@ -27,7 +29,7 @@ class MeterWidget extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             SizedBox(
-              width: 120,
+              width: 100,
               child: TextButton(
                 onPressed: () {
                   _openEditor(context);
@@ -52,9 +54,9 @@ class MeterWidget extends StatelessWidget {
             _meter.values.length > 1 && suffix == null
                 ? MeterValueWidget(v: _meter.values.reversed.toList()[1])
                 : const SizedBox.shrink(),
-            _meter.values.isNotEmpty
-                ? MeterValueWidget(v: _meter.values.last)
-                : const SizedBox.shrink(),
+            MeterValueWidget(v: lastValue),
+            RemarkButton(
+                meterValue: lastValue, updateCallback: _editValueRemark),
             IconButton(
                 onPressed: () {
                   _addReading(context);
@@ -75,18 +77,19 @@ class MeterWidget extends StatelessWidget {
   }
 
   _addReading(BuildContext context) async {
-    String? reading = await Navigator.push(
+    final reading = await Navigator.push<MeterValue>(
         context,
         MaterialPageRoute(
             builder: (context) => CameraScreen(
                   meterName: _meter.name,
                 )));
     if (reading != null) {
-      await _meter
-          .addValue(MeterValue(DateTime.now(), int.tryParse(reading) ?? 0));
-      if (newReadingSetCallBack != null) {
-        newReadingSetCallBack!();
-      }
+      await _meter.addValue(reading);
+      if (newReadingSetCallBack != null) newReadingSetCallBack!();
     }
+  }
+
+  _editValueRemark(MeterValue v) {
+    _meter.updateValue(v);
   }
 }

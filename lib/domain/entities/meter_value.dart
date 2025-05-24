@@ -6,9 +6,16 @@ class MeterValue {
   int _value;
   int _correctedValue;
   int? _correction;
+  String? remark;
 
   MeterValue(this.date, this._value, {int? correct, String? id})
       : _id = id ?? UniqueKey().toString(),
+        _correction = correct,
+        _correctedValue = _value + (correct ?? 0);
+
+  MeterValue.current(this._value, {int? correct, String? id, this.remark})
+      : _id = id ?? UniqueKey().toString(),
+        date = DateTime.now(),
         _correction = correct,
         _correctedValue = _value + (correct ?? 0);
 
@@ -32,6 +39,7 @@ class MeterValue {
       "date": date.millisecondsSinceEpoch,
       "value": value,
       "correction": correction,
+      "remark": remark,
     };
   }
 
@@ -40,7 +48,8 @@ class MeterValue {
         date = DateTime.fromMillisecondsSinceEpoch(map["date"]),
         _value = map["value"],
         _correction = map["correction"],
-        _correctedValue = map["value"] + (map["correction"] ?? 0);
+        _correctedValue = map["value"] + (map["correction"] ?? 0),
+        remark = map["remark"];
 
   @override
   bool operator ==(Object other) {
@@ -51,7 +60,8 @@ class MeterValue {
         other.date == date &&
         other._value == _value &&
         other._correctedValue == _correctedValue &&
-        other._correction == _correction;
+        other._correction == _correction &&
+        other.remark == remark;
   }
 
   @override
@@ -60,7 +70,8 @@ class MeterValue {
         date.hashCode ^
         _value.hashCode ^
         _correctedValue.hashCode ^
-        _correction.hashCode;
+        _correction.hashCode ^
+        remark.hashCode;
   }
 
   @override

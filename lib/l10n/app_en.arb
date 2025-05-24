@@ -38,5 +38,9 @@
     "prodCostMaxLimDescr": "Calculates meter production cost, counter value times price of reached limit",
     "inDays": "in days",
     "avaragePerDay": "Average per day",
-    "reachedLimit": "Reached limit is"
+    "reachedLimit": "Reached limit is",
+    "reading": "Reading",
+    "remarks": "Remarks",
+    "warningReadingEmpty":"Reading should not be empty",
+    "warningReadingIsNotInteger":"Reading should be integer"
 }

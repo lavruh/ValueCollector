@@ -337,6 +337,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reached limit is'**
   String get reachedLimit;
+
+  /// No description provided for @reading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading'**
+  String get reading;
+
+  /// No description provided for @remarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Remarks'**
+  String get remarks;
+
+  /// No description provided for @warningReadingEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading should not be empty'**
+  String get warningReadingEmpty;
+
+  /// No description provided for @warningReadingIsNotInteger.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading should be integer'**
+  String get warningReadingIsNotInteger;
 }
 
 class _AppLocalizationsDelegate

@@ -130,4 +130,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reachedLimit => 'Reached limit is';
+
+  @override
+  String get reading => 'Reading';
+
+  @override
+  String get remarks => 'Remarks';
+
+  @override
+  String get warningReadingEmpty => 'Reading should not be empty';
+
+  @override
+  String get warningReadingIsNotInteger => 'Reading should be integer';
 }

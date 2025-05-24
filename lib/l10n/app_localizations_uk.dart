@@ -129,4 +129,16 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get reachedLimit => 'Досягнутий ліміт';
+
+  @override
+  String get reading => 'Показник';
+
+  @override
+  String get remarks => 'Нотатки';
+
+  @override
+  String get warningReadingEmpty => 'Показник має бути заповнений';
+
+  @override
+  String get warningReadingIsNotInteger => 'Показник має бути цілим числом';
 }

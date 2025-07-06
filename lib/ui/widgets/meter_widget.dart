@@ -21,7 +21,7 @@ class MeterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lastValue = _meter.values.last;
+    final lastValue = _meter.values.isNotEmpty ? _meter.values.last : null;
     return Card(
         elevation: 3,
         child: Wrap(
@@ -54,9 +54,10 @@ class MeterWidget extends StatelessWidget {
             _meter.values.length > 1 && suffix == null
                 ? MeterValueWidget(v: _meter.values.reversed.toList()[1])
                 : const SizedBox.shrink(),
-            MeterValueWidget(v: lastValue),
-            RemarkButton(
-                meterValue: lastValue, updateCallback: _editValueRemark),
+            if (lastValue != null) MeterValueWidget(v: lastValue),
+            if (lastValue != null)
+              RemarkButton(
+                  meterValue: lastValue, updateCallback: _editValueRemark),
             IconButton(
                 onPressed: () {
                   _addReading(context);

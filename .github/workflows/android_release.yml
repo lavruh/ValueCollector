@@ -7,7 +7,7 @@ jobs:
     name: flutter release apk
     runs-on: ubuntu-latest
     env:
-      APP_NAME: tagged_todos_organizer
+      APP_NAME: value_collector
       BUILD_PATH: build/app/outputs/flutter-apk/
 
     steps:

@@ -1,7 +1,7 @@
 name: rh_collector
 description: A new Flutter project.
 publish_to: 'none' 
-version: 1.4.7+2
+version: 1.4.8+2
 
 environment:
   sdk: ">=3.2.2 <4.0.0"

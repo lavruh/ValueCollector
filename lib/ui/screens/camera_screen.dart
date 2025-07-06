@@ -17,7 +17,10 @@ class _CameraScreenState extends State<CameraScreen> {
   final textCtrl = TextEditingController();
   final remarkCtrl = TextEditingController();
   late DataPickerState state = DataPickerState(
-      onReadingChanged: (v) => setState(() => textCtrl.text = v));
+      onReadingChanged: (v) => setState(() {
+        final int = parseReading(v);
+        textCtrl.text = "${int ?? ""}";
+      }));
 
   @override
   void initState() {

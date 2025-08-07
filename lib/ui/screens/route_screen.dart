@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rh_collector/domain/states/meter_editor_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/domain/states/route_state.dart';
 import 'package:rh_collector/ui/widgets/meter_widget.dart';
@@ -46,9 +47,13 @@ class RouteScreen extends StatelessWidget {
                 return ListView.builder(
                   itemCount: state.route.length,
                   itemBuilder: (BuildContext context, int i) {
+                    final meter = metersState.getMeter(state.route[i]);
                     return MeterWidget(
-                      meter: metersState.getMeter(state.route[i]),
-                      newReadingSetCallBack: () {
+                      meter: meter,
+                      newReadingSetCallBack: (val) async {
+                        final editor = Get.find<MeterEditorState>();
+                        Get.find<MetersState>().updateMeter(await editor
+                            .addValueToMeter(value: val, meter: meter));
                         state.readingDoneGoNext(doneMeterIndex: i);
                       },
                       suffix: IconButton(

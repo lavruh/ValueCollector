@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class EditorTextInputFieldWidget extends StatelessWidget {
+class EditorTextInputFieldWidget extends StatefulWidget {
   const EditorTextInputFieldWidget({
     super.key,
     this.keyboardType,
@@ -14,18 +14,37 @@ class EditorTextInputFieldWidget extends StatelessWidget {
   final Function(String val)? setValue;
 
   @override
+  State<EditorTextInputFieldWidget> createState() =>
+      _EditorTextInputFieldWidgetState();
+}
+
+class _EditorTextInputFieldWidgetState
+    extends State<EditorTextInputFieldWidget> {
+  final controller = TextEditingController();
+
+  @override
+  initState() {
+    super.initState();
+    controller.text = widget.initValue;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
         width: MediaQuery.of(context).size.width * 0.4,
         child: TextField(
-          controller: TextEditingController(text: initValue),
+          controller: controller,
           showCursor: true,
-          keyboardType: keyboardType,
+          keyboardType: widget.keyboardType,
           textAlign: TextAlign.center,
-          decoration: InputDecoration(
-            labelText: lable,
-          ),
-          onChanged: setValue,
+          decoration: InputDecoration(labelText: widget.lable),
+          onSubmitted: submit,
+          onTapOutside: (_) => submit(controller.text),
         ));
+  }
+
+  void submit(String v) {
+    final callback = widget.setValue;
+    if (callback != null) callback(v);
   }
 }

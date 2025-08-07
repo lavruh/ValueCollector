@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:rh_collector/domain/entities/meter_value_delta.dart';
+import 'package:rh_collector/domain/states/meter_editor_state.dart';
+import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/screens/camera_screen.dart';
 import 'package:rh_collector/ui/screens/meter_edit_screen.dart';
 import 'package:rh_collector/ui/widgets/meter_value_delta_widget.dart';
@@ -16,7 +19,7 @@ class MeterWidget extends StatelessWidget {
     this.suffix,
   }) : _meter = meter;
   final Meter _meter;
-  final Function? newReadingSetCallBack;
+  final Function(MeterValue)? newReadingSetCallBack;
   final Widget? suffix;
 
   @override
@@ -42,7 +45,7 @@ class MeterWidget extends StatelessWidget {
             ),
             SizedBox(
               width: 30,
-              child: Text(_meter.unit ?? ""),
+              child: Text(_meter.unit),
             ),
             _meter.values.length > 1
                 ? MeterValueDeltaWidget(
@@ -68,13 +71,9 @@ class MeterWidget extends StatelessWidget {
         ));
   }
 
-  _openEditor(BuildContext context) async {
-    await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => MeterEditScreen(
-                  meter: _meter,
-                )));
+  _openEditor(BuildContext context) {
+    Get.find<MeterEditorState>().set(_meter);
+    Get.to(() => MeterEditScreen());
   }
 
   _addReading(BuildContext context) async {
@@ -85,12 +84,15 @@ class MeterWidget extends StatelessWidget {
                   meterName: _meter.name,
                 )));
     if (reading != null) {
-      await _meter.addValue(reading);
-      if (newReadingSetCallBack != null) newReadingSetCallBack!();
+      final fnk = newReadingSetCallBack;
+      if (fnk != null) fnk(reading);
     }
   }
 
   _editValueRemark(MeterValue v) {
-    _meter.updateValue(v);
+    final editor = Get.find<MeterEditorState>();
+    editor.set(_meter);
+    editor.updateValue(v);
+    Get.find<MetersState>().updateMeter(editor.get());
   }
 }

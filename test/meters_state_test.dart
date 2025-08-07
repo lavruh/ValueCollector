@@ -5,6 +5,7 @@ import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/data/services/mocks/db_service_mock.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
+import 'package:rh_collector/domain/states/meter_editor_state.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -32,6 +33,7 @@ main() {
   Get.put<InfoMsgService>(ConsoleInfoMsgService());
   Get.put<DbService>(
       DbServiceMock.testData(values: values, tableName: "meters"));
+  final editor = Get.put<MeterEditorState>(MeterEditorState());
   Get.put(MeterGroups());
   MetersState state = Get.put<MetersState>(MetersState());
   test("get meters", () async {
@@ -55,7 +57,8 @@ main() {
   test('Update meter', () async {
     await state.getMeters(["W"]);
     Meter m = state.meters.first;
-    m.unit = "mm";
+    editor.set(m.copyWith(unit: "mm"));
+    m = editor.get();
     await state.updateMeter(m);
     await state.getMeters(["W"]);
     expect(

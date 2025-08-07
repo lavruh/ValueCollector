@@ -1,43 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
+import 'package:rh_collector/domain/entities/meter_group.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
+import 'package:rh_collector/ui/widgets/meter_editor/option_picker_dialog.dart';
 
 class MeterGroupSelectWidget extends StatelessWidget {
-  const MeterGroupSelectWidget({super.key});
+  const MeterGroupSelectWidget(
+      {super.key, required this.meter, required this.onChanged});
+  final Meter meter;
+  final Function(Meter) onChanged;
 
   @override
   Widget build(BuildContext context) {
     final groups = Get.find<MeterGroups>();
+    final group = groups.getGroup(meter.groupId);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text("Group:"),
-        ),
-        GetX<Meter>(
-            tag: "meterEdit",
-            builder: (state) {
-              return DropdownButton<String>(
-                  hint: const Text("Group:"),
-                  value: state.groupId,
-                  items: groups.getMeterGroups
-                      .map((group) => DropdownMenuItem<String>(
-                            value: group.id,
-                            child: Text(group.name),
-                          ))
-                      .toList(),
-                  onChanged: _updateMeterGroup);
-            }),
-      ],
+    if (group == null) return Container();
+
+    return OptionPickerDialog<MeterGroup>(
+      initValue: group,
+      options: groups.getMeterGroups,
+      onChanged: (g) {
+        onChanged(meter.copyWith(groupId: g.id));
+      },
+      titleBuilder: (g) => Text(g.name),
+      optionBuilder: (g) => Text(g.name),
     );
-  }
-
-  void _updateMeterGroup(String? value) {
-    if (value != null) {
-      Get.find<Meter>(tag: "meterEdit").groupId = value;
-    }
   }
 }

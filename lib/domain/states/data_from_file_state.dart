@@ -6,6 +6,7 @@ import 'package:rh_collector/data/services/fs_selection_service.dart';
 import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/di.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
+import 'package:rh_collector/domain/states/meter_editor_state.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/widgets/export_options_dialog_widget.dart';
@@ -17,6 +18,7 @@ class DataFromFileState extends GetxController {
   DataFromFileService service = Get.find<DataFromFileService>(tag: "csv");
   final filePath = "".obs;
   final msg = Get.find<InfoMsgService>();
+  final editor = Get.find<MeterEditorState>();
   final exportFileType = AllowedFileTypes.csv.obs;
   String fileExtension = ".csv";
 
@@ -71,12 +73,17 @@ class DataFromFileState extends GetxController {
           } catch (err) {
             metersState.addNewMeter(m);
           }
+
+          final editor = Get.find<MeterEditorState>();
+          editor.set(m);
+
           final values = service.getMeterValues(m.id);
           for (final v in values) {
-            m.addValue(v.toDomain());
+            editor.addValue(v.toDomain());
           }
+          metersState.updateMeter(editor.get());
         }
-        Get.find<MetersState>().update();
+        metersState.update();
         msg.push(msg: "Import done");
       } on Exception catch (e) {
         msg.push(msg: "Import Error, fail open file: $e");

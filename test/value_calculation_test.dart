@@ -12,6 +12,7 @@ import 'package:rh_collector/domain/entities/meter_rate.dart';
 import 'package:rh_collector/domain/entities/meter_type.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:rh_collector/domain/entities/meter_value_delta.dart';
+import 'package:rh_collector/domain/states/meter_editor_state.dart';
 import 'package:rh_collector/domain/states/meter_types_state.dart';
 import 'package:rh_collector/domain/states/rates_state.dart';
 import 'package:rh_collector/domain/states/values_calculations_state.dart';
@@ -22,12 +23,13 @@ final typeColdWater = MeterType(name: 'coldwater', id: 'coldwater');
 void main() {
   Get.put<DbService>(DbServiceMock(tableName: "meters"));
   Get.put<InfoMsgService>(ConsoleInfoMsgService());
+  final editor = Get.put<MeterEditorState>(MeterEditorState());
   final types = Get.put(MeterTypesState());
   Get.put(RatesState());
   types.addMeterType(typeRh);
   types.addMeterType(typeColdWater);
   final service = ValuesCalculationsState();
-  final testMeter = Meter(name: "name", groupId: "W");
+  Meter testMeter = Meter(name: "name", groupId: "W");
 
   setUp(() {});
 
@@ -36,13 +38,16 @@ void main() {
   });
 
   test("perform delta calculation on values", () async {
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 1), 1));
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 2), 142));
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 3), 14));
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 4), 14));
+    testMeter = testMeter.copyWith(values: [
+      MeterValue(DateTime(2022, 1, 1), 1),
+      MeterValue(DateTime(2022, 1, 2), 142),
+      MeterValue(DateTime(2022, 1, 3), 14),
+      MeterValue(DateTime(2022, 1, 4), 14),
+    ]);
 
-    testMeter.typeId = typeRh.id;
-    Get.put<Meter>(testMeter, tag: 'meterEdit');
+    editor.set(testMeter.copyWith(typeId: typeRh.id));
+    testMeter = editor.get();
+
     service.setCalculationStrategie(0);
     await service.calculate();
     List<CalculationResult> res = service.calculationResults;
@@ -55,11 +60,16 @@ void main() {
   });
 
   test('perform meter value price calc in one rate limit', () async {
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 1), 1));
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 2), 9));
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 3), 28));
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 4), 60));
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 5), 40));
+    testMeter = testMeter.copyWith(values: [
+      MeterValue(DateTime(2022, 1, 1), 1),
+      MeterValue(DateTime(2022, 1, 2), 9),
+      MeterValue(DateTime(2022, 1, 3), 28),
+      MeterValue(DateTime(2022, 1, 4), 60),
+      MeterValue(DateTime(2022, 1, 5), 40),
+    ]);
+    editor.set(testMeter.copyWith(typeId: typeRh.id));
+    testMeter = editor.get();
+
     Get.find<RatesState>().addRate(
       rate: MeterRate(
           meterType: typeColdWater.id,
@@ -67,9 +77,9 @@ void main() {
               start: DateTime(2022, 1, 1), end: DateTime(2022, 1, 31)),
           rateLimits: {20: 1}),
     );
+    testMeter = editor.get().copyWith(typeId: typeColdWater.id);
+    editor.set(testMeter);
 
-    testMeter.typeId = typeColdWater.id;
-    Get.put<Meter>(testMeter, tag: 'meterEdit');
     service.setCalculationStrategie(1);
     await service.calculate();
     List<CalculationResult> res = service.calculationResults;
@@ -82,11 +92,16 @@ void main() {
   });
 
   test('perform meter value price calc in few rate limits', () async {
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 1), 1));
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 2), 9));
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 3), 28));
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 4), 60));
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 5), 40));
+    testMeter = testMeter.copyWith(values: [
+      MeterValue(DateTime(2022, 1, 1), 1),
+      MeterValue(DateTime(2022, 1, 2), 9),
+      MeterValue(DateTime(2022, 1, 3), 28),
+      MeterValue(DateTime(2022, 1, 4), 60),
+      MeterValue(DateTime(2022, 1, 5), 40),
+    ]);
+    editor.set(testMeter.copyWith(typeId: typeRh.id));
+    testMeter = editor.get();
+
     Get.find<RatesState>().addRate(
       rate: MeterRate(
           meterType: typeColdWater.id,
@@ -94,9 +109,9 @@ void main() {
               start: DateTime(2022, 1, 1), end: DateTime(2022, 1, 31)),
           rateLimits: {10: 0.5, 20: 1, 30: 3}),
     );
+    testMeter = editor.get().copyWith(typeId: typeColdWater.id);
+    editor.set(testMeter);
 
-    testMeter.typeId = typeColdWater.id;
-    Get.put<Meter>(testMeter, tag: 'meterEdit');
     service.setCalculationStrategie(1);
     await service.calculate();
     List<CalculationResult> res = service.calculationResults;
@@ -109,11 +124,16 @@ void main() {
   });
 
   test('perform meter value price calc max rate', () async {
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 1), 1));
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 2), 9));
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 3), 28));
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 4), 60));
-    testMeter.addValue(MeterValue(DateTime(2022, 1, 5), 40));
+    testMeter = testMeter.copyWith(values: [
+      MeterValue(DateTime(2022, 1, 1), 1),
+      MeterValue(DateTime(2022, 1, 2), 9),
+      MeterValue(DateTime(2022, 1, 3), 28),
+      MeterValue(DateTime(2022, 1, 4), 60),
+      MeterValue(DateTime(2022, 1, 5), 40),
+    ]);
+    editor.set(testMeter.copyWith(typeId: typeRh.id));
+    testMeter = editor.get();
+
     Get.find<RatesState>().addRate(
       rate: MeterRate(
           meterType: typeColdWater.id,
@@ -122,8 +142,9 @@ void main() {
           rateLimits: {10: 0.5, 15: 1, 30: 3}),
     );
 
-    testMeter.typeId = typeColdWater.id;
-    Get.put<Meter>(testMeter, tag: 'meterEdit');
+    testMeter = editor.get().copyWith(typeId: typeColdWater.id);
+    editor.set(testMeter);
+
     service.setCalculationStrategie(2);
     await service.calculate();
     List<CalculationResult> res = service.calculationResults;

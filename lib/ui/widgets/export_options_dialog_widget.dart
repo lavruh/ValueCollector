@@ -9,7 +9,7 @@ class ExportOptionsDialogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context);
-    if(local == null) return Center(child: CircularProgressIndicator());
+    if (local == null) return Center(child: CircularProgressIndicator());
     return FractionallySizedBox(
       heightFactor: 0.4,
       widthFactor: 0.8,
@@ -19,10 +19,7 @@ class ExportOptionsDialogWidget extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                local.exportOptions,
-                style: Theme.of(context).textTheme.displayLarge,
-              ),
+              Text(local.exportOptions),
               GetX<DataFromFileState>(builder: (state) {
                 return ListView(
                   shrinkWrap: true,
@@ -34,14 +31,6 @@ class ExportOptionsDialogWidget extends StatelessWidget {
                         toggleable: true,
                         onChanged: (AllowedFileTypes? value) {
                           state.exportFileType.value = AllowedFileTypes.csv;
-                        }),
-                    RadioListTile(
-                        title: Text(local.bokaPdf),
-                        value: AllowedFileTypes.bokaPdf,
-                        groupValue: state.exportFileType.value,
-                        toggleable: true,
-                        onChanged: (AllowedFileTypes? value) {
-                          state.exportFileType.value = AllowedFileTypes.bokaPdf;
                         }),
                   ],
                 );

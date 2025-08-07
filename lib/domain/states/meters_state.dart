@@ -3,6 +3,7 @@ import 'package:rh_collector/data/dtos/meter_dto.dart';
 import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
+import 'package:rh_collector/domain/states/meter_editor_state.dart';
 
 import 'meter_groups_state.dart';
 
@@ -11,6 +12,7 @@ class MetersState extends GetxController {
   final db = Get.find<DbService>();
   final msg = Get.find<InfoMsgService>();
   final meterGroups = Get.find<MeterGroups>();
+  final editor = Get.find<MeterEditorState>();
 
   Meter getMeter(String id) {
     int idx = meters.indexWhere((element) => element.id == id);
@@ -25,8 +27,10 @@ class MetersState extends GetxController {
     List res = await db.getEntries(_createRequest(groupId), table: "meters");
     for (final e in res) {
       Meter m = MeterDto.fromMap(e).toDomain();
-      await m.getValues();
-      meters.add(m);
+      editor.set(m);
+      await editor.getValues();
+      final meter = editor.get();
+      meters.add(meter);
     }
     update();
   }
@@ -38,15 +42,16 @@ class MetersState extends GetxController {
       return;
     }
     meters[index] = m;
-    await m.updateDb();
+    await db.updateEntry(MeterDto.fromDomain(m).toMap(), table: "meters");
     update();
   }
 
   addNewMeter(Meter? meter) {
-    Meter m = meter ?? Meter(
-      name: "new_meter",
-      groupId: meterGroups.getFirstSelectedGroupId(),
-    );
+    Meter m = meter ??
+        Meter(
+          name: "new_meter",
+          groupId: meterGroups.getFirstSelectedGroupId(),
+        );
     meters.add(m);
     updateMeter(m);
   }
@@ -71,8 +76,9 @@ class MetersState extends GetxController {
     for (final e in res) {
       Meter m = MeterDto.fromMap(e).toDomain();
       if (m.name.contains(RegExp(filter, caseSensitive: false))) {
-        await m.getValues();
-        meters.add(m);
+        editor.set(m);
+        await editor.getValues();
+        meters.add(editor.get());
       }
     }
     update();

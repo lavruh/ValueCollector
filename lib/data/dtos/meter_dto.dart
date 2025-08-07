@@ -54,7 +54,7 @@ class MeterDto {
     return Meter(
       id: _id,
       name: _name,
-      unit: _unit,
+      unit: _unit ?? "",
       groupId: _groupId,
       typeId: _typeId,
       correction: _correction,

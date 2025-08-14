@@ -42,5 +42,9 @@
     "reading": "Показник",
     "remarks": "Нотатки",
     "warningReadingEmpty":"Показник має бути заповнений",
-    "warningReadingIsNotInteger":"Показник має бути цілим числом"
+    "warningReadingIsNotInteger":"Показник має бути цілим числом",
+    "incorrectFormula": "Помилкова формула",
+    "formula": "Формула",
+    "lastValueSign": "n - останнє значення",
+    "inputNumber":"Введіть число"
 }

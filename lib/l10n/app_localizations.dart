@@ -361,6 +361,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reading should be integer'**
   String get warningReadingIsNotInteger;
+
+  /// No description provided for @incorrectFormula.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect formula'**
+  String get incorrectFormula;
+
+  /// No description provided for @formula.
+  ///
+  /// In en, this message translates to:
+  /// **'Formula'**
+  String get formula;
+
+  /// No description provided for @lastValueSign.
+  ///
+  /// In en, this message translates to:
+  /// **'n - is last value'**
+  String get lastValueSign;
+
+  /// No description provided for @inputNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Input number'**
+  String get inputNumber;
 }
 
 class _AppLocalizationsDelegate

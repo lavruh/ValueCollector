@@ -4,6 +4,7 @@ import 'package:rh_collector/data/services/mocks/db_service_mock.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rh_collector/domain/states/meter_editor_state.dart';
 
 main() {
   final values = [
@@ -27,6 +28,7 @@ main() {
     },
   ];
   final db = Get.put<DbService>(DbServiceMock());
+  final editor = Get.put<MeterEditorState>(MeterEditorState());
   late Meter meter;
   late Meter m2;
 
@@ -42,11 +44,13 @@ main() {
   test("Update value", () async {
     await (db as DbServiceMock)
         .addEntries(values: values, keyField: "id", table: meter.id);
-    await meter.getValues();
+    editor.set(meter);
+    await editor.getValues();
+    meter = editor.get();
     expect(meter.values, isNotEmpty);
     final val = meter.values.first;
     val.value = 666;
-    await meter.updateValue(val);
+    await editor.updateValue(val);
     final res = await db.getEntries([
       ["id", val.id]
     ], table: meter.id);
@@ -59,16 +63,23 @@ main() {
 
   test('get values', () async {
     await (db as DbServiceMock).addEntries(values: values, table: meter.id);
-    await meter.getValues();
+    editor.set(meter);
+    await editor.getValues();
+    meter = editor.get();
     expect(meter.values.length, values.length);
   });
 
   test('add value', () async {
     MeterValue v1 = MeterValue(DateTime.now(), 2);
     MeterValue v2 = MeterValue(DateTime(2016, 8, 26), 4);
-    await meter.addValue(v1);
-    await m2.addValue(v2);
-    await meter.getValues();
+    await editor.addValueToMeter(value: v1, meter: meter);
+    await editor.addValueToMeter(value: v2, meter: m2);
+    editor.set(meter);
+    await editor.getValues();
+    meter = editor.get();
+    editor.set(m2);
+    await editor.getValues();
+    m2 = editor.get();
 
     expect(meter.values.any((element) => element.value == v1.value), true);
     expect(m2.values.any((element) => element.value == v2.value), true);
@@ -79,9 +90,14 @@ main() {
   test('add corrected value', () async {
     MeterValue v1 = MeterValue(DateTime.now(), 2);
     MeterValue v2 = MeterValue(DateTime(2016, 8, 26), 4, correct: 4);
-    await meter.addValue(v1);
-    await m2.addValue(v2);
-    await meter.getValues();
+    await editor.addValueToMeter(value: v1, meter: meter);
+    await editor.addValueToMeter(value: v2, meter: m2);
+    editor.set(meter);
+    await editor.getValues();
+    meter = editor.get();
+    editor.set(m2);
+    await editor.getValues();
+    m2 = editor.get();
 
     expect(meter.values.any((element) => element.value == v1.value), true);
     expect(meter.values.any((element) => element.correctedValue == 2), true);

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:rh_collector/di.dart';
 
 class MeterType {
-  String id;
-  String name;
-  int iconCode;
-  int color;
+  final String id;
+  final String name;
+  final int iconCode;
+  final int color;
   MeterType({
     String? id,
     required this.name,
@@ -14,6 +14,13 @@ class MeterType {
   })  : id = id ?? generateId(),
         iconCode = iconCode ?? Icons.electric_meter.codePoint,
         color = color ?? Colors.black.toARGB32();
+
+  const MeterType.preset({
+    required this.id,
+    required this.name,
+    required this.iconCode,
+    this.color = 0xFF000000,
+  });
 
   @override
   bool operator ==(Object other) {

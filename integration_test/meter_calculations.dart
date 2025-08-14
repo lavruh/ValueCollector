@@ -18,13 +18,14 @@ import 'utils.dart';
 Future<void> meterCalculations(WidgetTester tester) async {
   expect(readyToRun, true);
   final meterState = Get.find<MetersState>();
-  final meter = Meter(name: "meter1", groupId: "W");
+  final meter = Meter(name: "meter1", groupId: "W").copyWith(values: [
+    MeterValue(DateTime(2022, 1, 1), 1),
+    MeterValue(DateTime(2022, 1, 2), 2),
+    MeterValue(DateTime(2022, 1, 3), 3),
+    MeterValue(DateTime(2022, 1, 4), 10),
+    MeterValue(DateTime(2022, 1, 5), 30),
+  ]);
   meterState.addNewMeter(meter);
-  meter.addValue(MeterValue(DateTime(2022, 1, 1), 1));
-  meter.addValue(MeterValue(DateTime(2022, 1, 2), 2));
-  meter.addValue(MeterValue(DateTime(2022, 1, 3), 3));
-  meter.addValue(MeterValue(DateTime(2022, 1, 4), 10));
-  meter.addValue(MeterValue(DateTime(2022, 1, 5), 30));
 
   final meterTypes = Get.find<MeterTypesState>();
   final type = MeterType(name: "elec", id: "elec");

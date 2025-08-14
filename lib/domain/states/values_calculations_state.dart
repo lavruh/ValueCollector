@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/domain/entities/calculation_result.dart';
-import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_calculation.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
+import 'package:rh_collector/domain/states/meter_editor_state.dart';
 import 'package:rh_collector/domain/states/meter_types_state.dart';
 
 class ValuesCalculationsState extends GetxController {
@@ -22,8 +22,8 @@ class ValuesCalculationsState extends GetxController {
 
   calculate() async {
     calculationResults.clear();
-    final meter = Get.find<Meter>(tag: 'meterEdit');
-    List<MeterValue> data = meter.values.toList();
+    final editor = Get.find<MeterEditorState>();
+    List<MeterValue> data = editor.mValues.toList();
     data.sort(((a, b) =>
         a.date.millisecondsSinceEpoch - b.date.millisecondsSinceEpoch));
     for (int i = 1; i < data.length; i++) {
@@ -41,8 +41,8 @@ class ValuesCalculationsState extends GetxController {
 
   setCalculationStrategie(int val) {
     selectedCalculationStrategie.value = val;
-    final meter = Get.find<Meter>(tag: 'meterEdit');
-    final meterType = meter.typeId;
+    final editor = Get.find<MeterEditorState>();
+    final meterType = editor.get().typeId;
     if (val > 0) {
       if (meterType == "rh") {
         infoMsg.push(

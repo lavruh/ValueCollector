@@ -6,6 +6,15 @@ import 'package:rh_collector/data/services/info_msg_service.dart';
 
 import 'package:rh_collector/domain/entities/meter_type.dart';
 
+enum DefaultMeterTypes {
+  rh(MeterType.preset(name: "Running hours", id: "rh", iconCode: 0xe556)),
+  calc(MeterType.preset(name: "Calculated", id: "calc", iconCode: 0xe121));
+
+  final MeterType value;
+  const DefaultMeterTypes(this.value);
+}
+
+
 class MeterTypesState extends GetxController {
   final meterTypes = <String, MeterType>{}.obs;
   final icons = [
@@ -18,7 +27,8 @@ class MeterTypesState extends GetxController {
     Icons.schedule,
     Icons.solar_power,
     Icons.directions_car,
-    Icons.heat_pump
+    Icons.heat_pump,
+    Icons.calculate,
   ];
   final table = "MeterTypes";
   final _db = Get.find<DbService>();
@@ -27,8 +37,8 @@ class MeterTypesState extends GetxController {
   @override
   void onInit() async {
     await getMeterTypes();
-    if (meterTypes.isEmpty) {
-      await addMeterType(MeterType(name: "Running hours", id: "rh"));
+    for (final type in DefaultMeterTypes.values) {
+      addMeterType(type.value);
     }
     super.onInit();
   }

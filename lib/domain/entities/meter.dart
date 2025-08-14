@@ -1,93 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:rh_collector/domain/entities/calculated_meter.dart';
 
-import 'package:rh_collector/data/dtos/meter_dto.dart';
-import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
+import 'package:rh_collector/domain/states/meter_types_state.dart';
 
-class Meter extends GetxController {
-  final String _id;
-  String name;
-  String? unit;
-  final _group = "W".obs;
-  int correction = 0;
-  final _type = "rh".obs;
-  final values = <MeterValue>[].obs;
-
-  final db = Get.find<DbService>();
+class Meter {
+  final String id;
+  final String name;
+  final String unit;
+  final String groupId;
+  final int correction;
+  final String typeId;
+  final List<MeterValue> values;
 
   Meter({
     String? id,
     required this.name,
-    required String groupId,
-    this.unit,
-    String? typeId,
+    this.unit = "",
+    this.typeId = "rh",
+    this.groupId = "W",
     this.correction = 0,
-  }) : _id = id ?? UniqueKey().toString() {
-    _group.value = groupId;
-    _type.value = typeId ?? "rh";
-    getValues();
-  }
+    this.values = const [],
+  }) : id = id ?? UniqueKey().toString();
 
-  String get id => _id;
-  String get typeId => _type.value;
-  String get groupId => _group.value;
+  Meter._({
+    required this.id,
+    required this.name,
+    required this.unit,
+    required this.typeId,
+    required this.groupId,
+    required this.correction,
+    required this.values,
+  });
 
-  set groupId(String val) {
-    _group.value = val;
-  }
-
-  set typeId(String val) {
-    _type.value = val;
-  }
-
-  updateDb() async {
-    await db.updateEntry(MeterDto.fromDomain(this).toMap(), table: "meters");
-  }
-
-  Future<void> getValues() async {
-    values.clear();
-    List res = await db.getEntries([], table: _id);
-    for (final e in res) {
-      final value = MeterValue.fromJson(e);
-      if(!values.any((element) => element.id == value.id)) {
-        values.add(value);
-      }
-    }
-    values.sort(((a, b) =>
-        a.date.millisecondsSinceEpoch - b.date.millisecondsSinceEpoch));
-  }
-
-  addValue(MeterValue v) async {
+  MeterValue processValue(MeterValue v) {
     v.correction ??= correction;
-    if (!values.contains(v)) {
-      values.add(v);
-      await db.updateEntry(v.toJson(), table: _id);
-    }
-  }
-
-  updateValue(MeterValue v) async {
-    int index = values.indexWhere((element) => element.id == v.id);
-    if (index == -1) {
-      throw Exception("Update failure - Meter value does not exist");
-    }
-    values[index] = v;
-    await db.updateEntry(v.toJson(), table: _id);
-  }
-
-  deleteValue(MeterValue v) async {
-    if (values.contains(v)) {
-      values.removeWhere((element) => element.id == v.id);
-      await db.removeEntry(v.id, table: _id);
-    }
-  }
-
-  int getLastValueCorrected() {
-    if (values.isNotEmpty) {
-      return values.last.correctedValue;
-    } else {
-      throw Exception("No values in meter $_id - $name");
-    }
+    return v;
   }
 
   @override
@@ -95,20 +43,30 @@ class Meter extends GetxController {
     if (identical(this, other)) return true;
 
     return other is Meter &&
-        other._id == _id &&
+        other.id == id &&
         other.name == name &&
         other.unit == unit &&
-        other.groupId == groupId;
+        other.groupId == groupId &&
+        other.typeId == typeId &&
+        other.correction == correction &&
+        other.values == values;
   }
 
   @override
   int get hashCode {
-    return _id.hashCode ^ name.hashCode ^ unit.hashCode ^ groupId.hashCode;
+    return id.hashCode ^
+        name.hashCode ^
+        unit.hashCode ^
+        groupId.hashCode ^
+        typeId.hashCode ^
+        correction.hashCode ^
+        values.hashCode;
   }
 
   @override
   String toString() {
-    return 'Meter(_id: $_id, name: $name, unit: $unit, groupId: $groupId)';
+    return 'Meter(id: $id, name: $name, unit: $unit, groupId: $groupId)';
+    // return 'Meter(_id: $id, \nname: $name, \nunit: $unit, \ngroupId: $groupId, \ntypeId: $typeId, \ncorrection: $correction, \nvalues: $values)';
   }
 
   Meter copyWith({
@@ -118,14 +76,36 @@ class Meter extends GetxController {
     String? groupId,
     String? typeId,
     int? correction,
+    List<MeterValue>? values,
+    // String? formula,
   }) {
-    return Meter(
-      id: id ?? _id,
+    if (typeId != null && typeId == DefaultMeterTypes.calc.value.id) {
+      return CalculatedMeter(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        unit: unit ?? this.unit,
+        groupId: groupId ?? this.groupId,
+        correction: correction ?? this.correction,
+        values: values ?? this.values,
+      );
+    }
+
+    return Meter._(
+      id: id ?? this.id,
       name: name ?? this.name,
       unit: unit ?? this.unit,
       groupId: groupId ?? this.groupId,
-      typeId: typeId ?? _type.value,
+      typeId: typeId ?? this.typeId,
       correction: correction ?? this.correction,
+      values: values ?? this.values,
     );
+  }
+
+  int getLastValueCorrected() {
+    if (values.isNotEmpty) {
+      return values.last.correctedValue;
+    } else {
+      throw Exception("No values in meter $id - $name");
+    }
   }
 }

@@ -19,6 +19,7 @@ import 'package:rh_collector/data/services/route_service.dart';
 import 'package:rh_collector/data/services/sembast_db_service.dart';
 import 'package:rh_collector/data/services/snackbar_info_msg_service.dart';
 import 'package:rh_collector/domain/states/data_from_file_state.dart';
+import 'package:rh_collector/domain/states/meter_editor_state.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meter_types_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
@@ -39,6 +40,7 @@ initDependencies() async {
   final db = Get.put<DbService>(SembastDbService(dbName: "metersReadings"));
   await db.openDb();
   Get.put<FsSelectionService>(FilePickerSelectionService());
+  Get.put<MeterEditorState>(MeterEditorState());
   Get.put<DataFromFileService>(PdfMetersService(), tag: "bokaPdf");
   Get.put<DataFromFileService>(CsvMetersService(), tag: "csv");
   Get.put<RouteService>(CsvRouteService());
@@ -57,6 +59,7 @@ initDependenciesTest() {
   Get.put<FsSelectionService>(FsSelectionServiceMock());
   Get.put<DataFromFileService>(DataFromFileMock());
   Get.put<DbService>(DbServiceMock(tableName: "meters"));
+  Get.put<MeterEditorState>(MeterEditorState());
   Get.put<MeterGroups>(MeterGroups());
   Get.put<MetersState>(MetersState());
 }

@@ -19,6 +19,9 @@ class MeterValue {
         _correction = correct,
         _correctedValue = _value + (correct ?? 0);
 
+  MeterValue._(this._id, this.date, this._value, this._correctedValue,
+      this._correction, this.remark);
+
   String get id => _id;
   int get correctedValue => _correctedValue;
   int get value => _value;
@@ -77,4 +80,22 @@ class MeterValue {
   @override
   String toString() =>
       'MeterValue(date: $date, value: $_value, correction: $_correction)';
+
+  MeterValue copyWith({
+    String? id,
+    DateTime? date,
+    int? value,
+    int? correctedValue,
+    int? correction,
+    String? remark,
+  }) {
+    return MeterValue._(
+      id ?? _id,
+      date ?? this.date,
+      value ?? _value,
+      correctedValue ?? _correctedValue,
+      correction ?? _correction,
+      remark ?? this.remark,
+    );
+  }
 }

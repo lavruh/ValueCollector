@@ -161,6 +161,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.5"
+  change_case:
+    dependency: transitive
+    description:
+      name: change_case
+      sha256: e41ef3df58521194ef8d7649928954805aeb08061917cf658322305e61568003
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   characters:
     dependency: transitive
     description:
@@ -241,6 +249,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.0"
+  dart_eval:
+    dependency: "direct main"
+    description:
+      name: dart_eval
+      sha256: c42d4ddbd70cc0e5b94452f60ff6376b76dd4e761fa155f7d7008d7287415b7c
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.1"
   dart_style:
     dependency: transitive
     description:
@@ -265,6 +281,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.2"
+  directed_graph:
+    dependency: transitive
+    description:
+      name: directed_graph
+      sha256: "6582283519fc08a6a14172d8a3798238f09275a1147e7599baf09c6245e3104a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.5"
+  exception_templates:
+    dependency: transitive
+    description:
+      name: exception_templates
+      sha256: "517f7c770da690073663f867ee2057ae2f4ffb28edae9da9faa624aa29ac76eb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.1"
   fake_async:
     dependency: transitive
     description:
@@ -500,6 +532,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.9.0"
+  lazy_memo:
+    dependency: transitive
+    description:
+      name: lazy_memo
+      sha256: dcb30b4184a6d767e1d779d74ce784d752d38313b8fb4bad6b659ae7af4bb34d
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.3"
   leak_tracker:
     dependency: transitive
     description:
@@ -789,6 +829,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  quote_buffer:
+    dependency: transitive
+    description:
+      name: quote_buffer
+      sha256: "5be4662a87aac8152aa05cdcf467e421aa2edc3b147f069798e2d26539b7ed0a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.7"
   sembast:
     dependency: "direct main"
     description:

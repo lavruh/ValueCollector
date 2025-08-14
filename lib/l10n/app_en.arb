@@ -42,5 +42,9 @@
     "reading": "Reading",
     "remarks": "Remarks",
     "warningReadingEmpty":"Reading should not be empty",
-    "warningReadingIsNotInteger":"Reading should be integer"
+    "warningReadingIsNotInteger":"Reading should be integer",
+    "incorrectFormula": "Incorrect formula",
+    "formula": "Formula",
+    "lastValueSign": "n - is last value",
+    "inputNumber":"Input number"
 }

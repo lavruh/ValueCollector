@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:rh_collector/domain/entities/calculated_meter.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:rh_collector/domain/entities/meter_value_delta.dart';
+import 'package:rh_collector/domain/states/meter_editor_state.dart';
+import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/screens/camera_screen.dart';
 import 'package:rh_collector/ui/screens/meter_edit_screen.dart';
 import 'package:rh_collector/ui/widgets/meter_value_delta_widget.dart';
@@ -16,7 +20,7 @@ class MeterWidget extends StatelessWidget {
     this.suffix,
   }) : _meter = meter;
   final Meter _meter;
-  final Function? newReadingSetCallBack;
+  final Function(MeterValue)? newReadingSetCallBack;
   final Widget? suffix;
 
   @override
@@ -42,7 +46,7 @@ class MeterWidget extends StatelessWidget {
             ),
             SizedBox(
               width: 30,
-              child: Text(_meter.unit ?? ""),
+              child: Text(_meter.unit),
             ),
             _meter.values.length > 1
                 ? MeterValueDeltaWidget(
@@ -58,26 +62,30 @@ class MeterWidget extends StatelessWidget {
             if (lastValue != null)
               RemarkButton(
                   meterValue: lastValue, updateCallback: _editValueRemark),
-            IconButton(
-                onPressed: () {
-                  _addReading(context);
-                },
-                icon: const Icon(Icons.add_a_photo_outlined)),
+            _meter is CalculatedMeter
+                ? IconButton(
+                    onPressed: addCalculatedMeterValue, icon: Icon(Icons.add))
+                : IconButton(
+                    onPressed: () => _addReading(context),
+                    icon: const Icon(Icons.add_a_photo_outlined)),
             if (suffix != null) suffix!,
           ],
         ));
   }
 
-  _openEditor(BuildContext context) async {
-    await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => MeterEditScreen(
-                  meter: _meter,
-                )));
+  void addCalculatedMeterValue() async {
+    final editor = Get.find<MeterEditorState>();
+    final m = await editor.addValueToMeter(
+        value: MeterValue.current(0), meter: _meter);
+    Get.find<MetersState>().updateMeter(m);
   }
 
-  _addReading(BuildContext context) async {
+  void _openEditor(BuildContext context) {
+    Get.find<MeterEditorState>().set(_meter);
+    Get.to(() => MeterEditScreen());
+  }
+
+  void _addReading(BuildContext context) async {
     final reading = await Navigator.push<MeterValue>(
         context,
         MaterialPageRoute(
@@ -85,12 +93,15 @@ class MeterWidget extends StatelessWidget {
                   meterName: _meter.name,
                 )));
     if (reading != null) {
-      await _meter.addValue(reading);
-      if (newReadingSetCallBack != null) newReadingSetCallBack!();
+      final fnk = newReadingSetCallBack;
+      if (fnk != null) fnk(reading);
     }
   }
 
-  _editValueRemark(MeterValue v) {
-    _meter.updateValue(v);
+  void _editValueRemark(MeterValue v) {
+    final editor = Get.find<MeterEditorState>();
+    editor.set(_meter);
+    editor.updateValue(v);
+    Get.find<MetersState>().updateMeter(editor.get());
   }
 }

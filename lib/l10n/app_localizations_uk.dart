@@ -141,4 +141,16 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get warningReadingIsNotInteger => 'Показник має бути цілим числом';
+
+  @override
+  String get incorrectFormula => 'Помилкова формула';
+
+  @override
+  String get formula => 'Формула';
+
+  @override
+  String get lastValueSign => 'n - останнє значення';
+
+  @override
+  String get inputNumber => 'Введіть число';
 }

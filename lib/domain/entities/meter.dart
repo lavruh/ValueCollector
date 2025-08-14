@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:rh_collector/domain/entities/calculated_meter.dart';
 
 import 'package:rh_collector/domain/entities/meter_value.dart';
+import 'package:rh_collector/domain/states/meter_types_state.dart';
 
 class Meter {
   final String id;
@@ -75,7 +77,19 @@ class Meter {
     String? typeId,
     int? correction,
     List<MeterValue>? values,
+    // String? formula,
   }) {
+    if (typeId != null && typeId == DefaultMeterTypes.calc.value.id) {
+      return CalculatedMeter(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        unit: unit ?? this.unit,
+        groupId: groupId ?? this.groupId,
+        correction: correction ?? this.correction,
+        values: values ?? this.values,
+      );
+    }
+
     return Meter._(
       id: id ?? this.id,
       name: name ?? this.name,

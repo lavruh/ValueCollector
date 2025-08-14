@@ -1,7 +1,7 @@
 name: rh_collector
 description: A new Flutter project.
 publish_to: 'none' 
-version: 1.5.1+1
+version: 1.5.2+1
 
 environment:
   sdk: ">=3.2.2 <4.0.0"
@@ -32,6 +32,7 @@ dependencies:
       url: https://github.com/lavruh/photo_data_picker.git
   file: ^7.0.1
   path: ^1.9.1
+  dart_eval: ^0.8.1
 
 
 dev_dependencies:

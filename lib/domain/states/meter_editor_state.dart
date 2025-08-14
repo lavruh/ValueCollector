@@ -51,7 +51,7 @@ class MeterEditorState extends GetxController {
     if (meter == null) return;
     final value = meter.processValue(v);
     mValues.add(value);
-    await db.updateEntry(v.toJson(), table: _id);
+    await db.updateEntry(value.toJson(), table: _id);
   }
 
   updateValue(MeterValue v) async {

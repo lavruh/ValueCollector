@@ -142,4 +142,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get warningReadingIsNotInteger => 'Reading should be integer';
+
+  @override
+  String get incorrectFormula => 'Incorrect formula';
+
+  @override
+  String get formula => 'Formula';
+
+  @override
+  String get lastValueSign => 'n - is last value';
+
+  @override
+  String get inputNumber => 'Input number';
 }

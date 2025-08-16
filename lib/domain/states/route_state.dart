@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/data/services/fs_selection_service.dart';
 import 'package:rh_collector/data/services/info_msg_service.dart';
@@ -13,10 +14,11 @@ class RouteState extends GetxController {
   final doneMeters = <String>[].obs;
   final routeName = "".obs;
 
-  loadRoute() async {
+  loadRoute(BuildContext context) async {
     route.clear();
     doneMeters.clear();
-    String path = await fs.selectFile(allowedExtensions: ["csv"]);
+    String path =
+        await fs.selectFile(allowedExtensions: ["csv"], context: context);
     List<String> ids = await routeService.getMetersRoute(path);
     extractRouteName(path);
     for (String id in ids) {
@@ -38,7 +40,6 @@ class RouteState extends GetxController {
     routeName.value =
         path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
   }
-
 
   postponeReading({required int postponeMeterIndex}) {
     String id = route.removeAt(postponeMeterIndex);

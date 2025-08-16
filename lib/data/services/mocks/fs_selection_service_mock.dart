@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:rh_collector/data/services/fs_selection_service.dart';
 
 class FsSelectionServiceMock implements FsSelectionService {
@@ -5,7 +6,9 @@ class FsSelectionServiceMock implements FsSelectionService {
 
   @override
   Future<String> selectFile(
-      {List<String>? allowedExtensions, String? dialogTitle}) async {
+      {List<String>? allowedExtensions,
+      String? dialogTitle,
+      required BuildContext context}) async {
     return filePath;
   }
 }

@@ -81,7 +81,7 @@ class DrawerMenuWidget extends StatelessWidget {
               return Text(f.filePath.value.toString());
             }),
             onTap: () async {
-              Get.find<DataFromFileState>().initImportData();
+              Get.find<DataFromFileState>().initImportData(context);
             },
           ),
           ListTile(
@@ -93,7 +93,7 @@ class DrawerMenuWidget extends StatelessWidget {
             subtitle: Text(
                 "${AppLocalizations.of(context)!.exportedTo} $appDataPath"),
             onTap: () async {
-              Get.find<DataFromFileState>().initExportData();
+              Get.find<DataFromFileState>().initExportData(context);
             },
           ),
         ],

@@ -27,7 +27,8 @@ class RouteScreen extends StatelessWidget {
           }),
           actions: [
             IconButton(
-                onPressed: _loadRoute, icon: const Icon(Icons.get_app_outlined))
+                onPressed: () => Get.find<RouteState>().loadRoute(context),
+                icon: const Icon(Icons.get_app_outlined))
           ],
           bottom: TabBar(
             tabs: [
@@ -83,9 +84,5 @@ class RouteScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  _loadRoute() {
-    Get.find<RouteState>().loadRoute();
   }
 }

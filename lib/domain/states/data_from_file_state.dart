@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:rh_collector/data/dtos/meter_dto.dart';
@@ -22,9 +23,10 @@ class DataFromFileState extends GetxController {
   final exportFileType = AllowedFileTypes.csv.obs;
   String fileExtension = ".csv";
 
-  initImportData() async {
+  initImportData(BuildContext context) async {
     try {
-      filePath.value = await fs.selectFile(allowedExtensions: ["pdf", "csv"]);
+      filePath.value = await fs
+          .selectFile(allowedExtensions: ["pdf", "csv"], context: context);
       if (filePath.value.endsWith(".pdf")) {
         service = Get.find<DataFromFileService>(tag: "bokaPdf");
         getDataFromFile(filePath.value);
@@ -39,7 +41,7 @@ class DataFromFileState extends GetxController {
     }
   }
 
-  initExportData() async {
+  initExportData(BuildContext context) async {
     try {
       await Get.dialog(const ExportOptionsDialogWidget());
       if (exportFileType.value == AllowedFileTypes.csv) {
@@ -50,6 +52,7 @@ class DataFromFileState extends GetxController {
         service = Get.find<DataFromFileService>(tag: "bokaPdf");
         fileExtension = ".pdf";
         filePath.value = await fs.selectFile(
+            context: context,
             allowedExtensions: ["pdf"],
             dialogTitle: "Select template to export");
       }

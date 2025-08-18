@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rh_collector/domain/entities/calculated_meter.dart';
+import 'package:rh_collector/data/dtos/meter_dto.dart';
 
 import 'package:rh_collector/domain/entities/meter_value.dart';
-import 'package:rh_collector/domain/states/meter_types_state.dart';
 
 class Meter {
   final String id;
@@ -23,15 +22,6 @@ class Meter {
     this.values = const [],
   }) : id = id ?? UniqueKey().toString();
 
-  Meter._({
-    required this.id,
-    required this.name,
-    required this.unit,
-    required this.typeId,
-    required this.groupId,
-    required this.correction,
-    required this.values,
-  });
 
   MeterValue processValue(MeterValue v) {
     v.correction ??= correction;
@@ -77,33 +67,21 @@ class Meter {
     String? typeId,
     int? correction,
     List<MeterValue>? values,
-    // String? formula,
   }) {
-    if (typeId != null && typeId == DefaultMeterTypes.calc.value.id) {
-      return CalculatedMeter(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        unit: unit ?? this.unit,
-        groupId: groupId ?? this.groupId,
-        correction: correction ?? this.correction,
-        values: values ?? this.values,
-      );
-    }
-
-    return Meter._(
+    return MeterDto(
       id: id ?? this.id,
-      name: name ?? this.name,
+      name: name ?? this.name, //,
       unit: unit ?? this.unit,
       groupId: groupId ?? this.groupId,
       typeId: typeId ?? this.typeId,
       correction: correction ?? this.correction,
       values: values ?? this.values,
-    );
+    ).toDomain();
   }
 
   int getLastValueCorrected() {
     if (values.isNotEmpty) {
-      return values.last.correctedValue;
+      return values.last.correctedValue.toInt();
     } else {
       throw Exception("No values in meter $id - $name");
     }

@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:photo_data_picker/main.dart';
 import 'package:rh_collector/data/services/console_info_msg_service.dart';
 import 'package:rh_collector/data/services/csv_route_service.dart';
 import 'package:rh_collector/data/services/fs_selection_service.dart';
@@ -21,17 +23,19 @@ main() async {
   final testFile = fs.file('${dir.path}/weekly_route.csv');
   testFile.createSync();
 
-
-  final selectionService = Get.put<FsSelectionService>(FsSelectionServiceMock());
+  final selectionService =
+      Get.put<FsSelectionService>(FsSelectionServiceMock());
   final meterState = Get.find<MetersState>();
   Get.put<RouteService>(CsvRouteService.test(fs));
   final state = Get.put<RouteState>(RouteState());
 
-  test('load weekly route', () async {
+  testWidgets('load weekly route', (WidgetTester tester) async {
     testFile.writeAsStringSync('BOWTH,Bowth,20');
     (selectionService as FsSelectionServiceMock).filePath = testFile.path;
     meterState.addNewMeter(Meter(id: 'BOWTH', name: "BOWTH", groupId: "W"));
-    await state.loadRoute();
+    await tester.pumpWidget(MyApp());
+    final BuildContext context = tester.element(find.byType(MyApp));
+    await state.loadRoute(context);
     expect(state.route.length, 1);
   });
 }

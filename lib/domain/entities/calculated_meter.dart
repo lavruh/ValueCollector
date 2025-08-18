@@ -1,5 +1,6 @@
 import 'package:dart_eval/dart_eval.dart';
 import 'package:get/get.dart';
+import 'package:rh_collector/data/dtos/meter_dto.dart';
 import 'package:rh_collector/domain/entities/calculation_functions.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/states/meter_types_state.dart';
@@ -37,26 +38,16 @@ class CalculatedMeter extends Meter with CalculationFunctions {
       int? correction,
       List<MeterValue>? values,
       List<String>? formula}) {
-    if (typeId != null && typeId != DefaultMeterTypes.calc.value.id) {
-      return super.copyWith(
-        id: id,
-        name: name,
-        unit: unit,
-        groupId: groupId,
-        typeId: typeId,
-        correction: correction,
-        values: values,
-      );
-    }
-    return CalculatedMeter(
+    return MeterDto(
       id: id ?? this.id,
-      name: name ?? this.name,
+      name: name ?? this.name, //,
       unit: unit ?? this.unit,
       groupId: groupId ?? this.groupId,
+      typeId: typeId ?? this.typeId,
       correction: correction ?? this.correction,
-      values: values ?? this.values,
       formula: formula ?? this.formula,
-    );
+      values: values ?? this.values,
+    ).toDomain();
   }
 
   @override
@@ -90,7 +81,7 @@ class CalculatedMeter extends Meter with CalculationFunctions {
   MeterValue processValue(MeterValue v) {
     final fx = parse(formula);
     final calc = eval(fx);
-    final value = calc is double ? calc.toInt() : calc is int ? calc : 0;
+    final value  = calc;
     return v.copyWith(value: value, correctedValue: value);
   }
 

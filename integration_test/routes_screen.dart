@@ -18,7 +18,10 @@ Future<void> routesScreenTest(WidgetTester tester) async {
       "$appDataPath/meters_test.csv";
   await tester.pumpWidget(testableWidget(const MetersScreen()));
   await tester.pump();
-  await Get.find<DataFromFileState>().initImportData();
+
+  final context =  tester.element(find.byType(MetersScreen));
+
+  await Get.find<DataFromFileState>().initImportData(context);
   await tester.pump();
   await tester.dragFrom(
       tester.getTopLeft(find.byType(MaterialApp)), const Offset(300, 0));

@@ -12,11 +12,14 @@ class MeterValueWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final value = v.correctedValue;
+    final valueString =
+        value is int ? value.toString() : value.toStringAsFixed(2);
     return Column(
       children: [
         Text(DateFormat("yy-MM-dd").format(v.date)),
         Text(DateFormat("HH:mm").format(v.date)),
-        Text(v.correctedValue.toString()),
+        Text(valueString),
       ],
     );
   }

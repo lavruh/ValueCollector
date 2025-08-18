@@ -15,7 +15,7 @@ dependencies {
 
 android {
     namespace = "com.example.rh_collector"
-    compileSdkVersion 35
+    compileSdkVersion 36
     ndkVersion "26.3.11579264"
 
     compileOptions {

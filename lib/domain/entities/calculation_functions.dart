@@ -24,7 +24,7 @@ mixin CalculationFunctions {
     return "${meterId}_$indexString";
   }
 
-  int getValueOfEncodedMeter(String encodedMeter) {
+  num getValueOfEncodedMeter(String encodedMeter) {
     final vals = encodedMeter.split("_");
     if (vals.length != 2) return 0;
     final meterId = vals[0];

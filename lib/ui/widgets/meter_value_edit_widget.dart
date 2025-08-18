@@ -72,7 +72,7 @@ class MeterValueEditWidget extends StatelessWidget {
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(labelText: local.rawValue),
                   onSubmitted: (String v) {
-                    meterValue.value = int.tryParse(v) ?? 0;
+                    meterValue.value = num.tryParse(v) ?? 0;
                     updateCallback!(meterValue);
                   },
                 ),

@@ -6,14 +6,14 @@ import 'package:rh_collector/domain/entities/meter_value.dart';
 class MeterValueDto {
   final String _id;
   DateTime _date;
-  int _value;
-  int? _correction;
+  num _value;
+  num? _correction;
 
   MeterValueDto({
     String? id,
     DateTime? date,
-    int value = 0,
-    int correction = 0,
+    num value = 0,
+    num correction = 0,
   })  : _id = id ?? UniqueKey().toString(),
         _date = date ?? DateTime.now(),
         _value = value,
@@ -63,8 +63,8 @@ class MeterValueDto {
   MeterValueDto copyWith({
     String? id,
     DateTime? date,
-    int? value,
-    int? correction,
+    num? value,
+    num? correction,
   }) {
     return MeterValueDto(
       id: id ?? _id,

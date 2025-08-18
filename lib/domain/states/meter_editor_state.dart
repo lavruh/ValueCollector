@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
+import 'package:rh_collector/domain/entities/tank_level_meter.dart';
+import 'package:rh_collector/domain/states/sounding_tables.dart';
 
 class MeterEditorState extends GetxController {
   final _state = Rxn<Meter>();
@@ -15,6 +17,7 @@ class MeterEditorState extends GetxController {
   void set(Meter m) {
     _state.value = m;
     mValues(m.values.toList());
+    if (m is TankLevelMeter) _loadSoundingTable(m.soundingTablePath);
   }
 
   Meter get() {
@@ -61,8 +64,9 @@ class MeterEditorState extends GetxController {
     if (index == -1) {
       throw Exception("Update failure - Meter value does not exist");
     }
-    mValues[index] = meter.processValue(v);
-    await db.updateEntry(v.toJson(), table: _id);
+    final value = meter.processValue(v);
+    mValues[index] = value;
+    await db.updateEntry(value.toJson(), table: _id);
   }
 
   deleteValue(MeterValue v) async {
@@ -72,5 +76,10 @@ class MeterEditorState extends GetxController {
       mValues.removeWhere((element) => element.id == v.id);
       await db.removeEntry(v.id, table: _id);
     }
+  }
+
+  void _loadSoundingTable(String? soundingTablePath) {
+    if (soundingTablePath == null) return;
+    Get.find<SoundingTables>().loadTable(soundingTablePath);
   }
 }

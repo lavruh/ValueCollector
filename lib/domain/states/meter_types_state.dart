@@ -8,6 +8,7 @@ import 'package:rh_collector/domain/entities/meter_type.dart';
 
 enum DefaultMeterTypes {
   rh(MeterType.preset(name: "Running hours", id: "rh", iconCode: 0xe556)),
+  tank(MeterType.preset(name: "Tank level", id: "tank", iconCode: 0xe207)),
   calc(MeterType.preset(name: "Calculated", id: "calc", iconCode: 0xe121));
 
   final MeterType value;
@@ -29,6 +30,7 @@ class MeterTypesState extends GetxController {
     Icons.directions_car,
     Icons.heat_pump,
     Icons.calculate,
+    Icons.drag_indicator
   ];
   final table = "MeterTypes";
   final _db = Get.find<DbService>();

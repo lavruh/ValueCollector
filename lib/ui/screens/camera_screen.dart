@@ -18,9 +18,9 @@ class _CameraScreenState extends State<CameraScreen> {
   final remarkCtrl = TextEditingController();
   late DataPickerState state = DataPickerState(
       onReadingChanged: (v) => setState(() {
-        final int = parseReading(v);
-        textCtrl.text = "${int ?? ""}";
-      }));
+            final int = parseReading(v);
+            textCtrl.text = "${int ?? ""}";
+          }));
 
   @override
   void initState() {
@@ -116,8 +116,8 @@ class _CameraScreenState extends State<CameraScreen> {
     Navigator.pop<MeterValue>(context, MeterValue.current(v, remark: remark));
   }
 
-  int? parseReading(String valString) {
-    return int.tryParse(
-        valString.replaceAll(RegExp(r'[a-z \W]', caseSensitive: false), ""));
+  num? parseReading(String valString) {
+    return num.tryParse(
+        valString.replaceAll(RegExp(r'[^. 0-9]', caseSensitive: false), ""));
   }
 }

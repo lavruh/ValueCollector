@@ -1,7 +1,9 @@
+import 'package:file_provider/file_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rh_collector/domain/entities/calculated_meter.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
+import 'package:rh_collector/domain/entities/tank_level_meter.dart';
 import 'package:rh_collector/domain/states/meter_editor_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/ui/screens/calculation_editor_screen.dart';
@@ -103,12 +105,18 @@ class MeterEditScreen extends StatelessWidget {
                             editor.set(meter.copyWith(formula: v));
                           }));
                     },
-                    icon: const Icon(Icons.facebook)),
+                    icon: Image.asset("assets/calculate.png",
+                        height: 20, width: 20)),
+              if (meter is TankLevelMeter)
+                IconButton(
+                    onPressed: () => setSoundingTable(context, meter),
+                    icon: Image.asset("assets/measure.png",
+                        height: 20, width: 20)),
               IconButton(
                   onPressed: _goToCalculationsScreen,
-                  icon: const Icon(Icons.calculate)),
+                  icon: const Icon(Icons.bar_chart_outlined)),
               IconButton(onPressed: _addNewValue, icon: const Icon(Icons.add)),
-              IconButton(onPressed: _submit, icon: const Icon(Icons.check)),
+              IconButton(onPressed: _submit, icon: const Icon(Icons.save)),
               IconButton(
                   onPressed: _delete, icon: const Icon(Icons.delete_forever)),
             ],
@@ -144,5 +152,12 @@ class MeterEditScreen extends StatelessWidget {
   _addNewValue() {
     final editor = Get.find<MeterEditorState>();
     editor.addValue(MeterValue(DateTime.now(), 0));
+  }
+
+  void setSoundingTable(BuildContext context, TankLevelMeter m) async {
+    final fileProvider = FileProvider.getInstance();
+    final file = await fileProvider.selectFile(
+        context: context, allowedExtensions: ["csv"], title: 'Sounding table');
+    Get.find<MeterEditorState>().set(m.copyWith(soundingTablePath: file.path));
   }
 }

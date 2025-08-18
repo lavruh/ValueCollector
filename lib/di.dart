@@ -10,6 +10,7 @@ import 'package:rh_collector/data/services/data_from_service.dart';
 import 'package:rh_collector/data/services/db_service.dart';
 import 'package:rh_collector/data/services/filepicker_selection_service.dart';
 import 'package:rh_collector/data/services/fs_selection_service.dart';
+import 'package:rh_collector/data/services/i_sounding_table_data.dart';
 import 'package:rh_collector/data/services/info_msg_service.dart';
 import 'package:rh_collector/data/services/mocks/data_from_file_mock.dart';
 import 'package:rh_collector/data/services/mocks/db_service_mock.dart';
@@ -26,6 +27,7 @@ import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/domain/states/rates_state.dart';
 import 'package:rh_collector/domain/states/reminders_state.dart';
 import 'package:rh_collector/domain/states/route_state.dart';
+import 'package:rh_collector/domain/states/sounding_tables.dart';
 import 'package:rh_collector/domain/states/values_calculations_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -46,6 +48,7 @@ initDependencies() async {
   Get.put<RouteService>(CsvRouteService());
   Get.put(MeterTypesState());
   Get.put(RatesState());
+  Get.put(SoundingTables(CsvSoundingTableData()));
   Get.lazyPut(() => RemindersState());
   Get.put<MeterGroups>(MeterGroups());
   Get.put<MetersState>(MetersState());

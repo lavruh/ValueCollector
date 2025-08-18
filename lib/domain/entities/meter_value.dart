@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 class MeterValue {
   final String _id;
   DateTime date;
-  int _value;
-  int _correctedValue;
-  int? _correction;
+  num _value;
+  num _correctedValue;
+  num? _correction;
   String? remark;
 
-  MeterValue(this.date, this._value, {int? correct, String? id})
+  MeterValue(this.date, this._value, {num? correct, String? id})
       : _id = id ?? UniqueKey().toString(),
         _correction = correct,
         _correctedValue = _value + (correct ?? 0);
 
-  MeterValue.current(this._value, {int? correct, String? id, this.remark})
+  MeterValue.current(this._value, {num? correct, String? id, this.remark})
       : _id = id ?? UniqueKey().toString(),
         date = DateTime.now(),
         _correction = correct,
@@ -23,15 +23,15 @@ class MeterValue {
       this._correction, this.remark);
 
   String get id => _id;
-  int get correctedValue => _correctedValue;
-  int get value => _value;
-  set value(int value) {
+  num get correctedValue => _correctedValue;
+  num get value => _value;
+  set value(num value) {
     _value = value;
     _correctedValue = value + (correction ?? 0);
   }
 
-  int? get correction => _correction;
-  set correction(int? correction) {
+  num? get correction => _correction;
+  set correction(num? correction) {
     _correction = correction;
     _correctedValue = value + (correction ?? 0);
   }
@@ -42,6 +42,7 @@ class MeterValue {
       "date": date.millisecondsSinceEpoch,
       "value": value,
       "correction": correction,
+      "correctedValue": correctedValue,
       "remark": remark,
     };
   }
@@ -51,7 +52,8 @@ class MeterValue {
         date = DateTime.fromMillisecondsSinceEpoch(map["date"]),
         _value = map["value"],
         _correction = map["correction"],
-        _correctedValue = map["value"] + (map["correction"] ?? 0),
+        _correctedValue =
+            map["correctedValue"] ?? (map["value"] + (map["correction"] ?? 0)),
         remark = map["remark"];
 
   @override
@@ -84,9 +86,9 @@ class MeterValue {
   MeterValue copyWith({
     String? id,
     DateTime? date,
-    int? value,
-    int? correctedValue,
-    int? correction,
+    num? value,
+    num? correctedValue,
+    num? correction,
     String? remark,
   }) {
     return MeterValue._(

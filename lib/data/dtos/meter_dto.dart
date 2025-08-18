@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:rh_collector/domain/entities/calculated_meter.dart';
 import 'package:rh_collector/domain/entities/meter.dart';
+import 'package:rh_collector/domain/entities/meter_value.dart';
+import 'package:rh_collector/domain/entities/tank_level_meter.dart';
 import 'package:rh_collector/domain/states/meter_types_state.dart';
 
 class MeterDto {
@@ -13,25 +15,31 @@ class MeterDto {
   String _typeId;
   int _correction = 0;
   List<String>? _formula;
+  String? _soundingTablePath;
+
+  final List<MeterValue>? values;
 
   String get id => _id;
   String get name => _name;
 
-  MeterDto(
-      {String? id,
-      String? name,
-      String? unit,
-      String? groupId,
-      String? typeId,
-      int correction = 0,
-      List<String>? formula})
-      : _id = id ?? UniqueKey().toString(),
+  MeterDto({
+    String? id,
+    String? name,
+    String? unit,
+    String? groupId,
+    String? typeId,
+    int correction = 0,
+    List<String>? formula,
+    String? soundingTablePath,
+    this.values = const [],
+  })  : _id = id ?? UniqueKey().toString(),
         _name = name ?? "",
         _unit = unit,
         _groupId = groupId ?? "W",
         _typeId = typeId ?? "rh",
         _correction = correction,
-        _formula = formula;
+        _formula = formula,
+        _soundingTablePath = soundingTablePath;
 
   Map<String, dynamic> toMap() {
     return {
@@ -42,6 +50,7 @@ class MeterDto {
       'typeId': _typeId,
       'correction': _correction,
       "formula": _formula,
+      "soundingTablePath": _soundingTablePath,
     };
   }
 
@@ -55,6 +64,7 @@ class MeterDto {
       typeId: map['typeId'],
       correction: map['correction'] ?? 0,
       formula: formula,
+      soundingTablePath: map['soundingTablePath'],
     );
   }
 
@@ -66,8 +76,19 @@ class MeterDto {
         unit: _unit ?? "",
         groupId: _groupId,
         correction: _correction,
-        values: [],
         formula: _formula ?? <String>[],
+        values: values ?? [],
+      );
+    }
+    if (_typeId == DefaultMeterTypes.tank.value.id) {
+      return TankLevelMeter(
+        id: _id,
+        name: _name,
+        unit: _unit ?? "",
+        groupId: _groupId,
+        correction: _correction,
+        values: values ?? [],
+        soundingTablePath: _soundingTablePath,
       );
     }
     return Meter(
@@ -77,11 +98,12 @@ class MeterDto {
       groupId: _groupId,
       typeId: _typeId,
       correction: _correction,
+      values: values ?? [],
     );
   }
 
   factory MeterDto.fromDomain(Meter m) {
-    if(m is CalculatedMeter){
+    if (m is CalculatedMeter) {
       return MeterDto(
         id: m.id,
         name: m.name,
@@ -90,6 +112,19 @@ class MeterDto {
         typeId: m.typeId,
         correction: m.correction,
         formula: m.formula,
+        values: m.values,
+      );
+    }
+    if (m is TankLevelMeter) {
+      return MeterDto(
+        id: m.id,
+        name: m.name,
+        unit: m.unit,
+        groupId: m.groupId,
+        typeId: m.typeId,
+        correction: m.correction,
+        soundingTablePath: m.soundingTablePath,
+        values: m.values,
       );
     }
     return MeterDto(
@@ -99,6 +134,7 @@ class MeterDto {
       groupId: m.groupId,
       typeId: m.typeId,
       correction: m.correction,
+      values: m.values,
     );
   }
 
@@ -115,6 +151,8 @@ class MeterDto {
     String? typeId,
     int? correction,
     List<String>? formula,
+    String? soundingTablePath,
+    List<MeterValue>? values,
   }) {
     return MeterDto(
       id: id ?? _id,
@@ -124,6 +162,8 @@ class MeterDto {
       typeId: typeId ?? _typeId,
       correction: correction ?? _correction,
       formula: formula ?? _formula,
+      soundingTablePath: soundingTablePath ?? _soundingTablePath,
+      values: values ?? this.values,
     );
   }
 }

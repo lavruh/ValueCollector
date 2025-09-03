@@ -80,7 +80,8 @@ class TankLevelMeter extends Meter {
   MeterValue processValue(MeterValue v) {
     final path = soundingTablePath;
     if (path == null) return super.processValue(v);
-    final vol = calculateVolume(soundingTablePath: path, level: v.value);
+    final value = v.value+correction;
+    final vol = calculateVolume(soundingTablePath: path, level: value);
     return v.copyWith(correctedValue: vol);
   }
 

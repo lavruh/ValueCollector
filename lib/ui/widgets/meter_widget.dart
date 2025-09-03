@@ -58,7 +58,7 @@ class MeterWidget extends StatelessWidget {
             _meter.values.length > 1 && suffix == null
                 ? MeterValueWidget(v: _meter.values.reversed.toList()[1])
                 : const SizedBox.shrink(),
-            if (lastValue != null) MeterValueWidget(v: lastValue),
+            if (lastValue != null) MeterValueWidget(v: lastValue, textColor: _selectColorBasedOnValueDate(lastValue)),
             if (lastValue != null)
               RemarkButton(
                   meterValue: lastValue, updateCallback: _editValueRemark),
@@ -103,5 +103,12 @@ class MeterWidget extends StatelessWidget {
     editor.set(_meter);
     editor.updateValue(v);
     Get.find<MetersState>().updateMeter(editor.get());
+  }
+
+  Color _selectColorBasedOnValueDate(MeterValue lastValue) {
+    final now = DateTime.now();
+    final diff = now.difference(lastValue.date).inHours;
+    if (diff > 24) return Colors.black;
+    return Colors.green;
   }
 }

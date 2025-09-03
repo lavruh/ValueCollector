@@ -1,4 +1,4 @@
-name: Android Release
+name: Android Release Dev
 on:
   workflow_dispatch:
 
@@ -33,10 +33,10 @@ jobs:
         run: flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Build artifacts
-        run: flutter build apk --release --flavor production
+        run: flutter build apk --release --flavor dev
 
       - name: Rename file
-        run: mv ${{ env.BUILD_PATH }}app-production-release.apk ${{ env.BUILD_PATH }}${{ env.APP_NAME }}-${{ steps.read-version.outputs.version-number }}.apk
+        run: mv ${{ env.BUILD_PATH }}app-dev-release.apk ${{ env.BUILD_PATH }}${{ env.APP_NAME }}-${{ steps.read-version.outputs.version-number }}.apk
 
       - name: Release
         uses: softprops/action-gh-release@v1

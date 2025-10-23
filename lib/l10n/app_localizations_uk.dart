@@ -153,4 +153,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get inputNumber => 'Введіть число';
+
+  @override
+  String get settings => 'Налаштування';
 }

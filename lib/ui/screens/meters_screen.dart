@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rh_collector/domain/states/meter_editor_state.dart';
 import 'package:rh_collector/domain/states/meter_groups_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
+import 'package:rh_collector/domain/states/settings_state.dart';
 import 'package:rh_collector/ui/widgets/drawer_menu_widget.dart';
 import 'package:rh_collector/ui/widgets/meter_widget.dart';
 import 'package:rh_collector/ui/widgets/meters_bottom_panel_widget.dart';
@@ -27,6 +28,7 @@ class MetersScreen extends StatelessWidget {
         ],
       ),
       body: GetBuilder<MetersState>(builder: (state) {
+        final settings = Get.find<SettingsState>();
         if (state.meters.isNotEmpty) {
           return ListView.builder(
             itemCount: state.meters.length,
@@ -34,6 +36,7 @@ class MetersScreen extends StatelessWidget {
               final meter = state.meters[i];
               return MeterWidget(
                 meter: meter,
+                settings: settings,
                 newReadingSetCallBack: (val) async {
                   final editor = Get.find<MeterEditorState>();
                   state.updateMeter(

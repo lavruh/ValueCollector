@@ -27,6 +27,7 @@ import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/domain/states/rates_state.dart';
 import 'package:rh_collector/domain/states/reminders_state.dart';
 import 'package:rh_collector/domain/states/route_state.dart';
+import 'package:rh_collector/domain/states/settings_state.dart';
 import 'package:rh_collector/domain/states/sounding_tables.dart';
 import 'package:rh_collector/domain/states/values_calculations_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,6 +47,7 @@ initDependencies() async {
   Get.put<DataFromFileService>(PdfMetersService(), tag: "bokaPdf");
   Get.put<DataFromFileService>(CsvMetersService(), tag: "csv");
   Get.put<RouteService>(CsvRouteService());
+  Get.put<SettingsState>(SettingsState(db));
   Get.put(MeterTypesState());
   Get.put(RatesState());
   Get.put(SoundingTables(CsvSoundingTableData()));

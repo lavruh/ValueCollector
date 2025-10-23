@@ -154,4 +154,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get inputNumber => 'Input number';
+
+  @override
+  String get settings => 'Settings';
 }

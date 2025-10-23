@@ -7,6 +7,7 @@ import 'package:rh_collector/ui/screens/meter_rates_edit_screen.dart';
 import 'package:rh_collector/ui/screens/meter_type_edit_screen.dart';
 import 'package:rh_collector/ui/screens/reminders_screen.dart';
 import 'package:rh_collector/ui/screens/route_screen.dart';
+import 'package:rh_collector/ui/screens/settings_screen.dart';
 import 'package:rh_collector/ui/widgets/meters_groups_widget.dart';
 import 'package:rh_collector/l10n/app_localizations.dart';
 
@@ -20,10 +21,7 @@ class DrawerMenuWidget extends StatelessWidget {
         children: [
           ListTile(
             leading: const Icon(Icons.checklist_outlined),
-            title: Text(
-              AppLocalizations.of(context)!.meterGroups,
-              // style: textTheme,
-            ),
+            title: Text(AppLocalizations.of(context)!.meterGroups),
             onTap: () async {
               await showDialog(
                   context: context,
@@ -33,10 +31,7 @@ class DrawerMenuWidget extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.timeline_outlined),
-            title: Text(
-              AppLocalizations.of(context)!.routes,
-              // style: textTheme,
-            ),
+            title: Text(AppLocalizations.of(context)!.routes),
             onTap: () async {
               await Navigator.push(context,
                   MaterialPageRoute(builder: (context) => RouteScreen()));
@@ -45,38 +40,26 @@ class DrawerMenuWidget extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.request_page),
-            title: Text(
-              AppLocalizations.of(context)!.meterRates,
-              // style: textTheme,
-            ),
+            title: Text(AppLocalizations.of(context)!.meterRates),
             onTap: () {
               Get.to(() => const MeterRatesEditScreen());
             },
           ),
           ListTile(
             leading: const Icon(Icons.electric_meter),
-            title: Text(
-              AppLocalizations.of(context)!.meterTypes,
-              // style: textTheme,
-            ),
+            title: Text(AppLocalizations.of(context)!.meterTypes),
             onTap: () {
               Get.to(() => const MeterTypeEditScreen());
             },
           ),
           ListTile(
             leading: const Icon(Icons.notifications),
-            title: Text(
-              AppLocalizations.of(context)!.reminders,
-              // style: textTheme,
-            ),
+            title: Text(AppLocalizations.of(context)!.reminders),
             onTap: () => Get.to(() => const RemindersScreen()),
           ),
           ListTile(
             leading: const Icon(Icons.login_outlined),
-            title: Text(
-              AppLocalizations.of(context)!.import,
-              // style: textTheme,
-            ),
+            title: Text(AppLocalizations.of(context)!.import),
             subtitle: GetX<DataFromFileState>(builder: (f) {
               return Text(f.filePath.value.toString());
             }),
@@ -86,14 +69,18 @@ class DrawerMenuWidget extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.logout_outlined),
-            title: Text(
-              AppLocalizations.of(context)!.export,
-              // style: textTheme,
-            ),
+            title: Text(AppLocalizations.of(context)!.export),
             subtitle: Text(
                 "${AppLocalizations.of(context)!.exportedTo} $appDataPath"),
             onTap: () async {
               Get.find<DataFromFileState>().initExportData(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: Text(AppLocalizations.of(context)!.settings),
+            onTap: () async {
+              Get.to(() => const SettingsScreen());
             },
           ),
         ],

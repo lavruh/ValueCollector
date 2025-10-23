@@ -6,6 +6,7 @@ import 'package:rh_collector/domain/entities/meter_value.dart';
 import 'package:rh_collector/domain/entities/meter_value_delta.dart';
 import 'package:rh_collector/domain/states/meter_editor_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
+import 'package:rh_collector/domain/states/settings_state.dart';
 import 'package:rh_collector/ui/screens/camera_screen.dart';
 import 'package:rh_collector/ui/screens/meter_edit_screen.dart';
 import 'package:rh_collector/ui/widgets/meter_value_delta_widget.dart';
@@ -18,10 +19,12 @@ class MeterWidget extends StatelessWidget {
     required Meter meter,
     this.newReadingSetCallBack,
     this.suffix,
+    required this.settings,
   }) : _meter = meter;
   final Meter _meter;
   final Function(MeterValue)? newReadingSetCallBack;
   final Widget? suffix;
+  final SettingsState settings;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +61,10 @@ class MeterWidget extends StatelessWidget {
             _meter.values.length > 1 && suffix == null
                 ? MeterValueWidget(v: _meter.values.reversed.toList()[1])
                 : const SizedBox.shrink(),
-            if (lastValue != null) MeterValueWidget(v: lastValue, textColor: _selectColorBasedOnValueDate(lastValue)),
+            if (lastValue != null)
+              MeterValueWidget(
+                  v: lastValue,
+                  textColor: _selectColorBasedOnValueDate(lastValue)),
             if (lastValue != null)
               RemarkButton(
                   meterValue: lastValue, updateCallback: _editValueRemark),
@@ -108,7 +114,7 @@ class MeterWidget extends StatelessWidget {
   Color _selectColorBasedOnValueDate(MeterValue lastValue) {
     final now = DateTime.now();
     final diff = now.difference(lastValue.date).inHours;
-    if (diff > 24) return Colors.black;
-    return Colors.green;
+    if (diff > settings.valueColorNotificationTime) return Colors.black;
+    return settings.highlightColor;
   }
 }

@@ -46,5 +46,6 @@
     "incorrectFormula": "Помилкова формула",
     "formula": "Формула",
     "lastValueSign": "n - останнє значення",
-    "inputNumber":"Введіть число"
+    "inputNumber":"Введіть число",
+    "settings": "Налаштування"
 }

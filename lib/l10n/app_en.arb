@@ -46,5 +46,6 @@
     "incorrectFormula": "Incorrect formula",
     "formula": "Formula",
     "lastValueSign": "n - is last value",
-    "inputNumber":"Input number"
+    "inputNumber":"Input number",
+    "settings": "Settings"
 }

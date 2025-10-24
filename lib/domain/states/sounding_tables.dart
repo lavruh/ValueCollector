@@ -34,6 +34,17 @@ class SoundingTables {
     }
   }
 
+  num calculateVolumeFromUllage(String table, num ullage) {
+    try {
+      final t = _getTable(table);
+      final maxLevel = t.keys.last;
+      final level = maxLevel - ullage;
+      return calculateVolume(table, level);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Map<num, num> _getTable(String table) {
     if (tables.containsKey(table)) {
       final t = tables[table];

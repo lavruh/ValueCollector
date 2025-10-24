@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rh_collector/domain/states/meter_editor_state.dart';
 import 'package:rh_collector/domain/states/meters_state.dart';
 import 'package:rh_collector/domain/states/route_state.dart';
+import 'package:rh_collector/domain/states/settings_state.dart';
 import 'package:rh_collector/ui/widgets/meter_widget.dart';
 import 'package:rh_collector/l10n/app_localizations.dart';
 
@@ -14,6 +15,7 @@ class RouteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context);
     if (local == null) return const Center(child: CircularProgressIndicator());
+    final settings = Get.find<SettingsState>();
 
     return DefaultTabController(
       length: 2,
@@ -51,6 +53,7 @@ class RouteScreen extends StatelessWidget {
                     final meter = metersState.getMeter(state.route[i]);
                     return MeterWidget(
                       meter: meter,
+                      settings: settings,
                       newReadingSetCallBack: (val) async {
                         final editor = Get.find<MeterEditorState>();
                         Get.find<MetersState>().updateMeter(await editor
@@ -75,6 +78,7 @@ class RouteScreen extends StatelessWidget {
                   itemBuilder: (BuildContext context, int i) {
                     return MeterWidget(
                       meter: metersState.getMeter(state.doneMeters[i]),
+                      settings: settings,
                     );
                   },
                 );

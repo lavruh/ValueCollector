@@ -16,6 +16,7 @@ class MeterDto {
   int _correction = 0;
   List<String>? _formula;
   String? _soundingTablePath;
+  bool? _isUllage;
 
   final List<MeterValue>? values;
 
@@ -31,6 +32,7 @@ class MeterDto {
     int correction = 0,
     List<String>? formula,
     String? soundingTablePath,
+    bool? isUllage,
     this.values = const [],
   })  : _id = id ?? UniqueKey().toString(),
         _name = name ?? "",
@@ -39,6 +41,7 @@ class MeterDto {
         _typeId = typeId ?? "rh",
         _correction = correction,
         _formula = formula,
+        _isUllage = isUllage,
         _soundingTablePath = soundingTablePath;
 
   Map<String, dynamic> toMap() {
@@ -50,6 +53,7 @@ class MeterDto {
       'typeId': _typeId,
       'correction': _correction,
       "formula": _formula,
+      "isUllage": _isUllage,
       "soundingTablePath": _soundingTablePath,
     };
   }
@@ -64,6 +68,7 @@ class MeterDto {
       typeId: map['typeId'],
       correction: map['correction'] ?? 0,
       formula: formula,
+      isUllage: map['isUllage'],
       soundingTablePath: map['soundingTablePath'],
     );
   }
@@ -88,6 +93,7 @@ class MeterDto {
         groupId: _groupId,
         correction: _correction,
         values: values ?? [],
+        isUllage: _isUllage ?? false,
         soundingTablePath: _soundingTablePath,
       );
     }
@@ -124,6 +130,7 @@ class MeterDto {
         typeId: m.typeId,
         correction: m.correction,
         soundingTablePath: m.soundingTablePath,
+        isUllage: m.isUllage,
         values: m.values,
       );
     }
@@ -151,6 +158,7 @@ class MeterDto {
     String? typeId,
     int? correction,
     List<String>? formula,
+    bool? isUllage,
     String? soundingTablePath,
     List<MeterValue>? values,
   }) {
@@ -162,6 +170,7 @@ class MeterDto {
       typeId: typeId ?? _typeId,
       correction: correction ?? _correction,
       formula: formula ?? _formula,
+      isUllage: isUllage ?? _isUllage,
       soundingTablePath: soundingTablePath ?? _soundingTablePath,
       values: values ?? this.values,
     );

@@ -1,7 +1,7 @@
 name: rh_collector
 description: A new Flutter project.
 publish_to: 'none' 
-version: 1.5.5+1
+version: 1.5.8+1
 
 environment:
   sdk: ">=3.2.2 <4.0.0"
@@ -13,28 +13,29 @@ dependencies:
     sdk: flutter
   intl: ^0.20.2
   path_provider: ^2.1.5
-  get: ^4.6.6
-  shared_preferences: ^2.3.3
+  get: ^4.7.2
+  shared_preferences: ^2.5.3
 #  google_ml_vision: ^0.0.8
-  image: ^4.3.0
-  syncfusion_flutter_pdf: ^29.2.5
-  file_picker: ^10.1.9
-  sembast: ^3.7.2
-  permission_handler: ^12.0.0+1
+  image: ^4.5.4
+  syncfusion_flutter_pdf: ^31.2.3
+  file_picker: ^10.3.3
+  sembast: ^3.8.5+1
+  permission_handler: ^12.0.1
   csv: ^6.0.0
   awesome_notifications: ^0.10.1
   numberpicker: ^2.1.2
-  flutter_slidable: ^4.0.0
+  flutter_slidable: ^4.0.3
   device_info_plus: ^11.1.1
-  graphic: ^2.5.0
+  graphic: ^2.6.0
   photo_data_picker:
     git:
       url: https://github.com/lavruh/photo_data_picker.git
   file: ^7.0.1
   path: ^1.9.1
-  dart_eval: ^0.8.1
+  dart_eval: ^0.8.2
   file_provider:
     git: https://github.com/lavruh/file_provider.git
+  flutter_colorpicker: ^1.1.0
 
 
 dev_dependencies:

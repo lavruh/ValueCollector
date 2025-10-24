@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_data_picker/domain/data_picker_state.dart';
 import 'package:photo_data_picker/ui/widget/data_picker_widget.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
+import 'package:rh_collector/domain/helpers/reading_utils.dart';
 import 'package:rh_collector/l10n/app_localizations.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -59,7 +60,7 @@ class _CameraScreenState extends State<CameraScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
-                    validator: readingValidator,
+                    validator: (v) => readingValidator(context, v),
                     controller: textCtrl,
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
@@ -97,15 +98,6 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  String? readingValidator(v) {
-    final loc = AppLocalizations.of(context);
-    if (v == null || v.isEmpty) {
-      return loc!.warningReadingEmpty;
-    }
-    if (parseReading(v) == null) return loc!.warningReadingIsNotInteger;
-    return null;
-  }
-
   void confirm() {
     if (!_formKey.currentState!.validate()) return;
     final valString = textCtrl.text;
@@ -114,10 +106,5 @@ class _CameraScreenState extends State<CameraScreen> {
     final remark = remarkCtrl.text.isNotEmpty ? remarkCtrl.text : null;
     if (v == null) return;
     Navigator.pop<MeterValue>(context, MeterValue.current(v, remark: remark));
-  }
-
-  num? parseReading(String valString) {
-    return num.tryParse(
-        valString.replaceAll(RegExp(r'[^. 0-9]', caseSensitive: false), ""));
   }
 }

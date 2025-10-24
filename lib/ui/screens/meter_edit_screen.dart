@@ -97,21 +97,8 @@ class MeterEditScreen extends StatelessWidget {
           appBar: AppBar(
             actions: [
               if (meter is CalculatedMeter)
-                IconButton(
-                    onPressed: () {
-                      Get.to(() => CalculationEditorScreen(
-                          meter: meter,
-                          onFormulaChanged: (v) {
-                            editor.set(meter.copyWith(formula: v));
-                          }));
-                    },
-                    icon: Image.asset("assets/calculate.png",
-                        height: 20, width: 20)),
-              if (meter is TankLevelMeter)
-                IconButton(
-                    onPressed: () => setSoundingTable(context, meter),
-                    icon: Image.asset("assets/measure.png",
-                        height: 20, width: 20)),
+                ..._calculatedMeterActions(editor, meter),
+              if (meter is TankLevelMeter) ..._tankMeterActions(context, meter),
               IconButton(
                   onPressed: _goToCalculationsScreen,
                   icon: const Icon(Icons.bar_chart_outlined)),
@@ -159,5 +146,34 @@ class MeterEditScreen extends StatelessWidget {
     final file = await fileProvider.selectFile(
         context: context, allowedExtensions: ["csv"], title: 'Sounding table');
     Get.find<MeterEditorState>().set(m.copyWith(soundingTablePath: file.path));
+  }
+
+  List<Widget> _calculatedMeterActions(
+      MeterEditorState editor, CalculatedMeter meter) {
+    return [
+      IconButton(
+          onPressed: () {
+            Get.to(() => CalculationEditorScreen(
+                meter: meter,
+                onFormulaChanged: (v) {
+                  editor.set(meter.copyWith(formula: v));
+                }));
+          },
+          icon: Image.asset("assets/calculate.png", height: 20, width: 20))
+    ];
+  }
+
+  List<Widget> _tankMeterActions(BuildContext context, TankLevelMeter meter) {
+    return [
+      TextButton(
+          onPressed: () {
+            Get.find<MeterEditorState>()
+                .set(meter.copyWith(isUllage: !meter.isUllage));
+          },
+          child: Text(meter.isUllage ? "Ullage" : "Level")),
+      IconButton(
+          onPressed: () => setSoundingTable(context, meter),
+          icon: Image.asset("assets/measure.png", height: 20, width: 20)),
+    ];
   }
 }

@@ -61,6 +61,7 @@ class _MeterWidgetState extends State<MeterWidget>
                     slideController.close();
                   }
                 },
+                keyboardType: TextInputType.number,
                 validator: (v) => readingValidator(context, v),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),

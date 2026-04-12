@@ -18,6 +18,8 @@ class SettingsState extends GetxController {
     ),
     'highlightColor':
         Setting<Color>('highlightColor', "Value highlight color", Colors.green),
+    'isKeyboardVisible':
+        Setting<bool>('isKeyboardVisible', "Keyboard visible", true),
   }.obs;
 
   final DbService db;
@@ -31,6 +33,15 @@ class SettingsState extends GetxController {
       _settings['valueColorNotificationTime']!.value;
 
   Color get highlightColor => _settings['highlightColor']!.value;
+
+  bool get isKeyboardVisible => _settings['isKeyboardVisible']!.value;
+  set isKeyboardVisible(bool val) {
+    final setting = _settings['isKeyboardVisible'];
+    if (setting == null) return;
+    setSetting(setting.setValue(val));
+  }
+
+  Setting? getSetting(String id) => _settings[id];
 
   void setSetting(Setting val) {
     _settings[val.id] = val;
@@ -55,4 +66,3 @@ class SettingsState extends GetxController {
     super.onInit();
   }
 }
-

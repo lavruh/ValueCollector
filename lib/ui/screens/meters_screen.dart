@@ -20,6 +20,19 @@ class MetersScreen extends StatelessWidget {
           return Text("${state.selected.map((e) => state.getName(e))}");
         }),
         actions: [
+          GetX<SettingsState>(builder: (settings) {
+            return IconButton(
+              tooltip: "Show keyboard",
+              icon: Icon(
+                settings.isKeyboardVisible
+                    ? Icons.keyboard_hide
+                    : Icons.keyboard_alt,
+              ),
+              onPressed: () {
+                settings.isKeyboardVisible = !settings.isKeyboardVisible;
+              },
+            );
+          }),
           IconButton(
               onPressed: () {
                 Get.find<MetersState>().addNewMeter(null);

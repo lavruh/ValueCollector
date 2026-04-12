@@ -49,26 +49,30 @@ class _MeterWidgetState extends State<MeterWidget>
         children: [
           CustomSlidableAction(
             onPressed: (context) {},
-            child: Form(
-              key: formKey,
-              child: TextFormField(
-                onFieldSubmitted: (v) {
-                  if (!formKey.currentState!.validate()) return;
-                  final fnk = widget.newReadingSetCallBack;
-                  final reading = parseReading(v);
-                  if (fnk != null && reading != null) {
-                    fnk(MeterValue.current(reading));
-                    slideController.close();
-                  }
-                },
-                keyboardType: TextInputType.number,
-                validator: (v) => readingValidator(context, v),
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'New value',
+            child: GetX<SettingsState>(builder: (settings) {
+              return Form(
+                key: formKey,
+                child: TextFormField(
+                  onFieldSubmitted: (v) {
+                    if (!formKey.currentState!.validate()) return;
+                    final fnk = widget.newReadingSetCallBack;
+                    final reading = parseReading(v);
+                    if (fnk != null && reading != null) {
+                      fnk(MeterValue.current(reading));
+                      slideController.close();
+                    }
+                  },
+                  keyboardType: settings.isKeyboardVisible
+                      ? TextInputType.number
+                      : TextInputType.none,
+                  validator: (v) => readingValidator(context, v),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'New value',
+                  ),
                 ),
-              ),
-            ),
+              );
+            }),
           ),
           if (lastValue != null)
             RemarkButton(

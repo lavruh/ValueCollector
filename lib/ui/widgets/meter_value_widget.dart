@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:rh_collector/domain/entities/meter_value.dart';
 
@@ -19,11 +20,11 @@ class MeterValueWidget extends StatelessWidget {
         value is int ? value.toString() : value.toStringAsFixed(2);
     return Column(
       children: [
-        Text(DateFormat("yy-MM-dd").format(v.date),
+        SelectableText(DateFormat("yy-MM-dd").format(v.date),
             style: TextStyle(color: textColor)),
-        Text(DateFormat("HH:mm").format(v.date),
+        SelectableText(DateFormat("HH:mm").format(v.date),
             style: TextStyle(color: textColor)),
-        Text(valueString, style: TextStyle(color: textColor)),
+        SelectableText(valueString, style: TextStyle(color: textColor)),
       ],
     );
   }

@@ -38,7 +38,7 @@ class CsvMetersService implements DataFromFileService {
       j++;
       data.add(meter);
     }
-    final res = const ListToCsvConverter().convert(data);
+    final res = csv.encode(data);
     final outFile = fs.file(output);
     await outFile.writeAsString(res, flush: true);
   }
@@ -71,7 +71,7 @@ class CsvMetersService implements DataFromFileService {
       setFilePath(filePath);
       final file = fs.file(filePath);
       final input = await file.readAsString();
-      document = const CsvToListConverter().convert(input, fieldDelimiter: ',');
+      document = Csv(fieldDelimiter: ',').decode(input);
       parseData();
     } on Exception catch (e) {
       throw Exception("Can not open file. $e");

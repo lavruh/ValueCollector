@@ -15,8 +15,9 @@ dependencies {
 
 android {
     namespace = "com.example.rh_collector"
-    compileSdkVersion 36
-    ndkVersion "27.0.12077973"
+    compileSdkVersion 37
+//    ndkVersion "27.0.12077973"
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17

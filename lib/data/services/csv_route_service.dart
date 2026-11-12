@@ -14,7 +14,7 @@ class CsvRouteService implements RouteService {
   @override
   Future<List<String>> getMetersRoute(String source) async {
     final input = await fs.file(source).readAsString();
-    final output = const CsvToListConverter().convert(input).toList();
+    final output = csv.decode(input).toList();
     return output.map((e) => e.first.toString()).toList();
   }
 }

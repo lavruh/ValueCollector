@@ -19,9 +19,7 @@ class CsvSoundingTableData implements ISoundingTableData {
     final file = fs.file(path);
     if (!file.existsSync()) throw Exception("File not found");
     final input = await file.readAsString();
-    final csvData = const CsvToListConverter(shouldParseNumbers: false)
-        .convert(input)
-        .toList();
+    final csvData = Csv(dynamicTyping: false).decode(input).toList();
     Map<num, num> output = {};
     for (int i = 0; i < csvData.length; i++) {
       final level = num.parse(csvData[i][0]);

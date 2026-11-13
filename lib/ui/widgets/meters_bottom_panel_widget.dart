@@ -24,9 +24,7 @@ class _MetersBottomPanelWidgetState extends State<MetersBottomPanelWidget> {
           children: [
             IconButton(
                 onPressed: () async {
-                  await showDialog(
-                      context: context,
-                      builder: (BuildContext context) => MetersGroupsWidget());
+                  await Get.to(() => MetersGroupsWidget());
                 },
                 icon: const Icon(Icons.checklist_outlined)),
             FractionallySizedBox(

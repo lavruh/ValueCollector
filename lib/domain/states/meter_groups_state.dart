@@ -36,6 +36,12 @@ class MeterGroups extends GetxController {
     update();
   }
 
+  selectSingleGroup(MeterGroup g) {
+    selected.assignAll([g.id]);
+    updateMetersState();
+    update();
+  }
+
   updateMetersState() {
     final metersState = Get.find<MetersState>();
     metersState.getMeters(selected);
@@ -93,6 +99,7 @@ class MeterGroups extends GetxController {
 
   toggleMode() {
     editMode.value = !editMode.value;
+    update();
   }
 
   String getFirstSelectedGroupId() {

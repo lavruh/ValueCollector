@@ -23,9 +23,8 @@ class DrawerMenuWidget extends StatelessWidget {
             leading: const Icon(Icons.checklist_outlined),
             title: Text(AppLocalizations.of(context)!.meterGroups),
             onTap: () async {
-              await showDialog(
-                  context: context,
-                  builder: (BuildContext context) => MetersGroupsWidget());
+              Get.back();
+              await Get.to(() => MetersGroupsWidget());
               Get.find<MetersState>().update();
             },
           ),

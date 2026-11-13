@@ -19,8 +19,11 @@ class _CameraScreenState extends State<CameraScreen> {
   final remarkCtrl = TextEditingController();
   late DataPickerState state = DataPickerState(
       onReadingChanged: (v) => setState(() {
-            final int = parseReading(v);
-            textCtrl.text = "${int ?? ""}";
+            final cleaned = v.replaceAll(RegExp(r'\D'), '');
+            final parsedInt = int.tryParse(cleaned);
+            if (parsedInt != null) {
+              textCtrl.text = parsedInt.toString();
+            }
           }));
 
   @override

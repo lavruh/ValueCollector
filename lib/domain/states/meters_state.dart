@@ -32,6 +32,18 @@ class MetersState extends GetxController {
       final meter = editor.get();
       meters.add(meter);
     }
+    meters.sort((a, b) => a.order.compareTo(b.order));
+    update();
+  }
+
+  void reorderMeters(int oldIndex, int newIndex) async {
+    final Meter item = meters.removeAt(oldIndex);
+    meters.insert(newIndex, item);
+    for (int i = 0; i < meters.length; i++) {
+      final updated = meters[i].copyWith(order: i);
+      meters[i] = updated;
+      await db.updateEntry(MeterDto.fromDomain(updated).toMap(), table: "meters");
+    }
     update();
   }
 
@@ -51,6 +63,7 @@ class MetersState extends GetxController {
         Meter(
           name: "new_meter",
           groupId: meterGroups.getFirstSelectedGroupId(),
+          order: meters.length,
         );
     meters.add(m);
     updateMeter(m);
@@ -81,6 +94,7 @@ class MetersState extends GetxController {
         meters.add(editor.get());
       }
     }
+    meters.sort((a, b) => a.order.compareTo(b.order));
     update();
   }
 

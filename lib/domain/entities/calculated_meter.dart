@@ -16,6 +16,7 @@ class CalculatedMeter extends Meter with CalculationFunctions {
     required super.unit,
     required super.groupId,
     required super.correction,
+    super.order = 0,
     required super.values,
     this.formula = const [],
   }) : super(typeId: DefaultMeterTypes.calc.value.id);
@@ -36,15 +37,17 @@ class CalculatedMeter extends Meter with CalculationFunctions {
       String? groupId,
       String? typeId,
       int? correction,
+      int? order,
       List<MeterValue>? values,
       List<String>? formula}) {
     return MeterDto(
       id: id ?? this.id,
-      name: name ?? this.name, //,
+      name: name ?? this.name,
       unit: unit ?? this.unit,
       groupId: groupId ?? this.groupId,
       typeId: typeId ?? this.typeId,
       correction: correction ?? this.correction,
+      order: order ?? this.order,
       formula: formula ?? this.formula,
       values: values ?? this.values,
     ).toDomain();

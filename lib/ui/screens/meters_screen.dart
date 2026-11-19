@@ -43,11 +43,15 @@ class MetersScreen extends StatelessWidget {
       body: GetBuilder<MetersState>(builder: (state) {
         final settings = Get.find<SettingsState>();
         if (state.meters.isNotEmpty) {
-          return ListView.builder(
+          return ReorderableListView.builder(
             itemCount: state.meters.length,
+            onReorderItem: (oldIndex, newIndex) {
+              state.reorderMeters(oldIndex, newIndex);
+            },
             itemBuilder: (BuildContext context, int i) {
               final meter = state.meters[i];
               return MeterWidget(
+                key: ValueKey(meter.id),
                 meter: meter,
                 settings: settings,
                 newReadingSetCallBack: (val) async {

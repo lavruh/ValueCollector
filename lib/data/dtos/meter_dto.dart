@@ -14,6 +14,7 @@ class MeterDto {
   String _groupId;
   String _typeId;
   int _correction = 0;
+  int _order = 0;
   List<String>? _formula;
   String? _soundingTablePath;
   bool? _isUllage;
@@ -22,6 +23,7 @@ class MeterDto {
 
   String get id => _id;
   String get name => _name;
+  int get order => _order;
 
   MeterDto({
     String? id,
@@ -30,6 +32,7 @@ class MeterDto {
     String? groupId,
     String? typeId,
     int correction = 0,
+    int order = 0,
     List<String>? formula,
     String? soundingTablePath,
     bool? isUllage,
@@ -40,6 +43,7 @@ class MeterDto {
         _groupId = groupId ?? "W",
         _typeId = typeId ?? "rh",
         _correction = correction,
+        _order = order,
         _formula = formula,
         _isUllage = isUllage,
         _soundingTablePath = soundingTablePath;
@@ -52,6 +56,7 @@ class MeterDto {
       'groupId': _groupId,
       'typeId': _typeId,
       'correction': _correction,
+      'order': _order,
       "formula": _formula,
       "isUllage": _isUllage,
       "soundingTablePath": _soundingTablePath,
@@ -67,6 +72,7 @@ class MeterDto {
       groupId: map['groupId'],
       typeId: map['typeId'],
       correction: map['correction'] ?? 0,
+      order: map['order'] ?? 0,
       formula: formula,
       isUllage: map['isUllage'],
       soundingTablePath: map['soundingTablePath'],
@@ -81,6 +87,7 @@ class MeterDto {
         unit: _unit ?? "",
         groupId: _groupId,
         correction: _correction,
+        order: _order,
         formula: _formula ?? <String>[],
         values: values ?? [],
       );
@@ -92,6 +99,7 @@ class MeterDto {
         unit: _unit ?? "",
         groupId: _groupId,
         correction: _correction,
+        order: _order,
         values: values ?? [],
         isUllage: _isUllage ?? false,
         soundingTablePath: _soundingTablePath,
@@ -104,6 +112,7 @@ class MeterDto {
       groupId: _groupId,
       typeId: _typeId,
       correction: _correction,
+      order: _order,
       values: values ?? [],
     );
   }
@@ -117,6 +126,7 @@ class MeterDto {
         groupId: m.groupId,
         typeId: m.typeId,
         correction: m.correction,
+        order: m.order,
         formula: m.formula,
         values: m.values,
       );
@@ -129,6 +139,7 @@ class MeterDto {
         groupId: m.groupId,
         typeId: m.typeId,
         correction: m.correction,
+        order: m.order,
         soundingTablePath: m.soundingTablePath,
         isUllage: m.isUllage,
         values: m.values,
@@ -141,6 +152,7 @@ class MeterDto {
       groupId: m.groupId,
       typeId: m.typeId,
       correction: m.correction,
+      order: m.order,
       values: m.values,
     );
   }
@@ -157,6 +169,7 @@ class MeterDto {
     String? groupId,
     String? typeId,
     int? correction,
+    int? order,
     List<String>? formula,
     bool? isUllage,
     String? soundingTablePath,
@@ -169,6 +182,7 @@ class MeterDto {
       groupId: groupId ?? _groupId,
       typeId: typeId ?? _typeId,
       correction: correction ?? _correction,
+      order: order ?? _order,
       formula: formula ?? _formula,
       isUllage: isUllage ?? _isUllage,
       soundingTablePath: soundingTablePath ?? _soundingTablePath,
